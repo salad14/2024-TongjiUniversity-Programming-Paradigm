@@ -1,6 +1,5 @@
 #include "BoardScene.h"
 
-
 USING_NS_CC;
 
 Scene* BoardScene::createScene() {
@@ -31,5 +30,6 @@ bool BoardScene::init() {
         title_sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
         this->addChild(title_sprite, 0);
     }
+
     return true;
 }
