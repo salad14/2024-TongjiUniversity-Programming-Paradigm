@@ -44,9 +44,6 @@
     <ClInclude Include="..\Classes\HelloWorldScene.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\board\Board.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\board\BoardScene.h">
       <Filter>src</Filter>
     </ClInclude>

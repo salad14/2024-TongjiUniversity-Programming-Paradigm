@@ -2,8 +2,6 @@
 
 #include "cocos2d.h"
 
-#include "cocos2d.h"
-
 class Card : public cocos2d::Sprite {
 public:
     // 构造函数
@@ -13,7 +11,7 @@ public:
     const std::string& getName() const { return name; }
 
     // 获取和设置描述
-    const std::string& getDescription() const { return description; }
+    std::string getDescription() const { return description; }
 
     // 获取和设置费用
     int getCost() const { return cost; }
