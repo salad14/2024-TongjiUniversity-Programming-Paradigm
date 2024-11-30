@@ -1,0 +1,5 @@
+!.gitignore
+
+.vs/
+
+Debug.win32/
