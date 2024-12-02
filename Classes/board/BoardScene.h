@@ -12,5 +12,11 @@ public:
 
 	CREATE_FUNC(BoardScene);
 
+	bool createCards();
+
+	bool onMouseDown(cocos2d::Event* event, int cardIndex);
+
 private:
+	std::vector<cocos2d::Sprite*> cards; // 存储所有卡片
+	cocos2d::Sprite* selectedCard; // 当前选中的卡片
 };
