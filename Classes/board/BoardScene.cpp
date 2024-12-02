@@ -18,9 +18,9 @@ bool BoardScene::init() {
     const auto visibleSize = Director::getInstance()->getVisibleSize();
     const Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    auto title_sprite = Sprite::create("heartstone_title.webp");
+    auto title_sprite = Sprite::create("board.png");
     if (title_sprite == nullptr) {
-        problemLoading("heartstone_title.webp");
+        problemLoading("board.png");
         return false;
     }
     else {
