@@ -41,7 +41,7 @@ public:
     }
 
 private:
-    int ID // 序列
+    int ID; // 序列
     int attack; // 攻击力
     int health; // 血量
 };
