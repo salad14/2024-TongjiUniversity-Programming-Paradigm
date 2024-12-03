@@ -3,9 +3,11 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include <functional>
+
 #include "cocos2d.h"
 
-class Card : public cocos2d::Sprite {
+class CardBase : public cocos2d::Sprite {
 public:
     // 获取和设置描述
     virtual const std::string getDescription() = 0;
@@ -16,9 +18,11 @@ public:
 
     virtual void play() = 0;
 
-private:
-    std::string ID;
+public:
+    std::string ID; // 每张卡使用一个特定的ID
     int cost; // 费用
+    std::string description; // 描述
+    std::string name; // 名字
 };
 
 enum class mKeyword {
@@ -38,15 +42,16 @@ inline mKeyword operator|(mKeyword lhs, mKeyword rhs) {
     return static_cast<mKeyword>(static_cast<int>(lhs) | static_cast<int>(rhs));
 }
 
-class MinionCard : public Card {
+// 战吼的效果类型定义：一个回调函数
+using BattlecryEffect = std::function<void()>;
+
+class MinionCard : public CardBase {
 public:
 
-
-private:
     int attack;
     int health;
     int maxhealth;
-    mKeyword keyword; // 关键词
-
+    mKeyword keywords; // 关键词
+    BattlecryEffect battlecryEffect; // 战吼效果回调
 
 };
