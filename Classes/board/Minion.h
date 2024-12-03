@@ -1,47 +1,79 @@
 #pragma once
 
+#include <functional>
+#include <string>
+#include <iostream>
+#include "card.h"
 #include "cocos2d.h"
 
 class Minion : public cocos2d::Sprite {
 public:
-    // 构造函数
-    Minion(const std::string& name, int attack, int health) : name(name), attack(attack), health(health) {}
+    int attack;
+    int health;
+    int currentHealth;
+    std::string name;
+    BattlecryEffect battlecryEffect;
+    MinionCard* minionCard;  // 存储 MinionCard 的实例
 
-    // 获取和设置攻击力
-    int getAttack() const { return attack; }
-    void setAttack(int attack) { this->attack = attack; }
+    // 构造函数：通过 MinionCard 初始化 Minion
+    Minion(MinionCard* card) {
+        minionCard = card;
+        attack = card->attack;
+        health = card->health;
+        currentHealth = health;
+        name = card->name;
 
-    // 获取和设置血量
-    int getHealth() const { return health; }
-    void setHealth(int health) { this->health = health; }
+        // 初始化战吼效果
+        battlecryEffect = card->battlecryEffect;
 
-    // 获取名称
-    const std::string& getName() const { return name; }
+        // 通过 cocos2d::Sprite 初始化精灵（假设有一个图片文件表示随从）
+        this->initWithFile("minion_image.png"); // 假设你有一张随从的图片
 
-    // 受到攻击
+        // 设置精灵的尺寸等
+        this->setContentSize(cocos2d::Size(100, 100));  // 设定大小
+    }
+
+    // 触发战吼
+    void triggerBattlecry() {
+        if (battlecryEffect) {
+            std::cout << name << "'s Battlecry triggered!" << std::endl;
+            battlecryEffect();  // 调用战吼效果
+        }
+    }
+
+    // 攻击目标
+    void attackTarget(Minion* target) {
+        if (target) {
+            std::cout << name << " is attacking " << target->name << "!" << std::endl;
+            target->takeDamage(attack);
+        }
+    }
+
+    // 承受伤害
     void takeDamage(int damage) {
-        health -= damage;
-        if (health < 0) {
-            health = 0;
+        currentHealth -= damage;
+        if (currentHealth <= 0) {
+            die();
         }
     }
 
-    // 检查是否存活
-    bool isAlive() const { return health > 0; }
-
-    // 创建一个随从对象
-    static Minion* create(const char* filename) {
-        auto sprite = new Minion("Minion", 1, 1); // 默认攻击力和血量为1
-        if (sprite && sprite->initWithFile(filename)) {
-            sprite->autorelease();
-            return sprite;
+    // 死亡处理
+    void die() {
+        std::cout << name << " has died!" << std::endl;
+        // 处理死亡时的其他逻辑，如触发亡语效果
+        if (static_cast<int>(minionCard->keywords) & static_cast<int>(mKeyword::Deathrattle)) {
+            std::cout << "Deathrattle triggered!" << std::endl;
+            // 亡语效果
         }
-        delete sprite;
-        return nullptr;
+        // 在 cocos2d 中移除精灵
+        this->removeFromParent();
     }
 
-private:
-    int ID; // 序列
-    int attack; // 攻击力
-    int health; // 血量
+    // 更新随从的状态或显示
+    void update() {
+        // 更新随从状态（例如显示剩余生命）
+        std::cout << "Minion " << name << " has " << currentHealth << " HP remaining." << std::endl;
+    }
+
+    // 其他功能如攻击、嘲讽、风怒等可以在此添加...
 };

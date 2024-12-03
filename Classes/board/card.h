@@ -18,10 +18,11 @@ public:
 
     virtual void play() = 0;
 
-private:
+public:
     std::string ID; // 每张卡使用一个特定的ID
     int cost; // 费用
     std::string description; // 描述
+    std::string name; // 名字
 };
 
 enum class mKeyword {
@@ -47,12 +48,10 @@ using BattlecryEffect = std::function<void()>;
 class MinionCard : public CardBase {
 public:
 
-
-private:
     int attack;
     int health;
     int maxhealth;
-    mKeyword keyword; // 关键词
+    mKeyword keywords; // 关键词
     BattlecryEffect battlecryEffect; // 战吼效果回调
 
 };
