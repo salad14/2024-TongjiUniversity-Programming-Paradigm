@@ -10,6 +10,12 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\board">
+      <UniqueIdentifier>{3e28cb67-94d1-410a-9704-a2a2b2116971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deckstring">
+      <UniqueIdentifier>{30e666de-65a4-4b80-9d5a-69c409ce24fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -24,23 +30,8 @@
     <ClCompile Include="..\Classes\MainScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\board\BoardScene.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\board\card.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\board\Hero.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\board\Minion.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\board\board.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\board\Hand.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\Classes\Base64\base64.cpp">
+      <Filter>src\deckstring</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,29 +47,35 @@
     <ClInclude Include="..\Classes\MainScene.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\board\BoardScene.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\Classes\board\board.h">
+      <Filter>src\board</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\board\card.h">
-      <Filter>src</Filter>
+      <Filter>src\board</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\board\Crystal.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\board\Hero.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\board\board.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\board\Hand.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\board\Minion.h">
-      <Filter>src</Filter>
+      <Filter>src\board</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\board\Deck.h">
-      <Filter>src</Filter>
+      <Filter>src\board</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\board\Hand.h">
+      <Filter>src\board</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\board\Hero.h">
+      <Filter>src\board</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\board\Minion.h">
+      <Filter>src\board</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Base64\base64.h">
+      <Filter>src\deckstring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\deckstring\deckstring.h">
+      <Filter>src\deckstring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\deckstring\buffer.h">
+      <Filter>src\deckstring</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

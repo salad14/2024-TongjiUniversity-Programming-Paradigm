@@ -7,9 +7,15 @@
 #include "Crystal.h"
 #include "Minion.h"
 
+// 支持 创建自定义牌库
+// 将卡组进行编码 编码后传入board中
+// board进行解码，将卡组还原
+
 class board {
 public:
-	board();
+    board(HeroType ownhero, HeroType oppohero) {
+        
+    }
     
 
 public:
