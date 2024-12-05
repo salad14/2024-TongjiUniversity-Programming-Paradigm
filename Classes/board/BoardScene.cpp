@@ -5,7 +5,7 @@ using namespace std;
 USING_NS_CC;
 
 // 卡片区域的起始位置坐标 注：需设置精灵锚点为左下角
-#define CARD_REGION_X 700
+#define CARD_REGION_X 100
 #define CARD_REGION_Y 20
 
 
