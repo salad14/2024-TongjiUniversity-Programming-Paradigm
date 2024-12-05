@@ -45,7 +45,7 @@ bool BoardScene::init() {
 
 bool BoardScene::createCards()
 {
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 2; i++)
     {
         auto card = Sprite::create("cardfortest.png");
         if (card == nullptr)
