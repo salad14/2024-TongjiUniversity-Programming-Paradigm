@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include "buffer.h"
-#include "../base64/base64.h"
+//#include "Base64/base64.h"
 
 // 假设DECKSTRING_VERSION 和 FormatType 相关常量
 #define DECKSTRING_VERSION 1

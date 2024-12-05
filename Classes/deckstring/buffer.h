@@ -1,6 +1,6 @@
 #include <vector>
 #include <string>
-#include "../Base64/base64.h" // Ê¹ÓÃ cpp-base64 ¿â
+#include "Base64/base64.h"
 
 // Varint±àÂëº¯Êı
 namespace varint {
