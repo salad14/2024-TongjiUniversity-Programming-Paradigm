@@ -39,7 +39,7 @@ public:
 
 	// 移除卡牌的显示
 	void removeCardDisplay(std::shared_ptr<CardBase> card) {
-		card->removeFromParent();
+		// card->removeFromParent();
 	}
 
 	// 获取手牌中的所有卡牌

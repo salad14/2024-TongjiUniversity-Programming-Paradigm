@@ -1,3 +1,6 @@
+#ifndef BUFFER
+#define BUFFER
+
 #include <vector>
 #include <string>
 #include "Base64/base64.h"
@@ -83,3 +86,6 @@ public:
         return varint::decode(buffer, it); // 使用迭代器解码
     }
 };
+
+
+#endif // BUFFER_H

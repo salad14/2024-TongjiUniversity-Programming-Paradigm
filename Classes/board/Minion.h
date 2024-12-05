@@ -61,7 +61,7 @@ public:
     void die() {
         std::cout << name << " has died!" << std::endl;
         // 处理死亡时的其他逻辑，如触发亡语效果
-        if (static_cast<int>(minionCard->keywords) & static_cast<int>(mKeyword::Deathrattle)) {
+        if (static_cast<int>(minionCard->keywords) & static_cast<int>(keyWord::Deathrattle)) {
             std::cout << "Deathrattle triggered!" << std::endl;
             // 亡语效果
         }
