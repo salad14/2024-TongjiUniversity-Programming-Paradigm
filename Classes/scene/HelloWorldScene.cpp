@@ -69,25 +69,16 @@ bool HelloWorld::init()
     auto menu = Menu::create(closeItem, startGame, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
-
-    /////////////////////////////
-    // 3. add your codes below...
-
     
-    auto sprite = Sprite::create("cover.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'cover.png'");
+    // ¼ÓÔØ±³¾°
+    const auto screenSize = cocos2d::Director::getInstance()->getVisibleSize();
+    const auto background = Sprite::create("../Resources/Scenes/HelloWorld.png");
+    if (background == nullptr) {
+        problemLoading("../Resources/Scenes/HelloWorld.png");
+        return false;
     }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
-    }
-    return true;
+    background->setPosition(Vec2(screenSize.width / 2, screenSize.height / 2));
+    this->addChild(background);
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
