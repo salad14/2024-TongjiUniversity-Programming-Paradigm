@@ -1,6 +1,5 @@
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
-#include "board/BoardScene.h"
 
 USING_NS_CC;
 
@@ -150,7 +149,7 @@ bool MainScene::init()
 
 void MainScene::normalGameCallback(Ref* pSender)
 {
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardScene::createScene()));
+    // Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardScene::createScene()));
 }
 
 void MainScene::adventureGameCallback(Ref* pSender)

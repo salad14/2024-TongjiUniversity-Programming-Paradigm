@@ -30,8 +30,17 @@
     <ClCompile Include="..\Classes\MainScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Base64\base64.cpp">
+    <ClCompile Include="..\Classes\deckstring\Base64\base64.cpp">
       <Filter>src\deckstring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\board\board.cpp">
+      <Filter>src\board</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\board\Card.cpp">
+      <Filter>src\board</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\board\Minion.cpp">
+      <Filter>src\board</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,13 +77,13 @@
     <ClInclude Include="..\Classes\board\Minion.h">
       <Filter>src\board</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Base64\base64.h">
-      <Filter>src\deckstring</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\deckstring\deckstring.h">
       <Filter>src\deckstring</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\deckstring\buffer.h">
+      <Filter>src\deckstring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\deckstring\Base64\base64.h">
       <Filter>src\deckstring</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,10 +8,10 @@ enum class HeroType {
     MAGE,
     // 战士
     WARRIOR,
-    // 牧师
-    PRIEST,
     // 潜行者
     ROGUE,
+    // 德鲁伊
+    DRUID,
 };
 
 class Hero : public cocos2d::Sprite {
@@ -28,9 +28,10 @@ public:
     // 获取职业
     HeroType getCareer() const { return career; }
 private:
-    HeroType career; // 职业名称
+    HeroType career;    // 职业名称
     int maxHealth = 30; // 最大血量
-    int currentHealth; // 当前血量
+    int currentHealth;  // 当前血量
+    int armor;          // 护甲
 };
 
 class MAGE : public Hero {
@@ -39,11 +40,11 @@ class MAGE : public Hero {
 class WARRIOR : public Hero {
 };
 
-class PRIEST : public Hero {
-};
-
 class ROGUE : public Hero {
 };
 
 class Shaman : public Hero {
+};
+
+class DRUID : public Hero {
 };
