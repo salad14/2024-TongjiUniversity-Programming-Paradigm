@@ -10,22 +10,19 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\scene">
+      <UniqueIdentifier>{3777e464-746d-4fa5-81fa-cf570984ea48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cards">
+      <UniqueIdentifier>{cf5ed931-ef49-4ee4-befa-dd90f96d2744}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\heros">
+      <UniqueIdentifier>{f373e5ee-796e-4b6b-8b57-e5fe26ff0fc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\AppDelegate.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\MainScene.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\board\BoardScene.cpp">
-      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\board\card.cpp">
       <Filter>src</Filter>
@@ -36,22 +33,25 @@
     <ClCompile Include="..\Classes\board\Minion.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\scene\StartScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\MainScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AppDelegate.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\BoardScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
       <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\MainScene.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\board\BoardScene.h">
-      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\board\card.h">
       <Filter>src</Filter>
@@ -61,6 +61,27 @@
     </ClInclude>
     <ClInclude Include="..\Classes\board\Hero.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\StartScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioPlayer.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="Alluse.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\HelloWorldScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\MainScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AppDelegate.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\BoardScene.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
