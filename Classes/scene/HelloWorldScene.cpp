@@ -77,9 +77,9 @@ bool HelloWorld::init()
     
     // ¼ÓÔØ±³¾°
     const auto screenSize = cocos2d::Director::getInstance()->getVisibleSize();
-    const auto background = Sprite::create("../Resources/Scenes/HelloWorld.png");
+    const auto background = Sprite::create("../Resources/Scenes/1HelloWorld.png");
     if (background == nullptr) {
-        problemLoading("../Resources/Scenes/HelloWorld.png");
+        problemLoading("../Resources/Scenes/1HelloWorld.png");
         return false;
     }
     background->setPosition(Vec2(screenSize.width / 2, screenSize.height / 2));

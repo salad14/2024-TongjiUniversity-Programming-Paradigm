@@ -1,4 +1,3 @@
-#pragma once
 /****************************************************************
  ”Œœ∑»´æ÷∏˜¿‡…Ë÷√º∞≥£¡ø∂®“Â
  ****************************************************************/
@@ -10,6 +9,10 @@
  // ”¶”√≥Ã–Ú…Ë÷√
 constexpr float FRAME_RATE = 60.0f;                                         // ”¶”√≥Ã–Ú÷°¬ 
 const std::string APPLICATION_TITLE = u8"Hearthstone ¬Ø Ø¥´Àµ";             // ”¶”√≥Ã–Ú±ÍÃ‚
+// “Ù¿÷œ‡πÿ…Ë÷√
+
+constexpr int DEFAULT_MUSIC_SIGN = -1;                                      // »´æ÷»± °“Ù¿÷±Í ∂
+constexpr float DEFAULT_MUSIC_VOLUMN = 0.1f;                                // »´æ÷»± °“Ù¡ø¥Û–°
 
 // Õ¯¬Áª∑æ≥…Ë÷√(‘§¡Ù)
 
@@ -26,20 +29,17 @@ constexpr int GOLDEN_B = 11;                                                // Ω
 constexpr int STARTUP_SCENE_FONT_SIZE = 20;                                 // ∆Ù∂Ø≥°æ∞◊÷ÃÂ¥Û–°
 constexpr int STARTUP_SCENE_LOADINGBAR_OFFSET_Y = -480;                     // ∆Ù∂Ø≥°æ∞º”‘ÿΩ¯∂»ÃıŒª÷√ Y ∆´“∆¡ø£®œ‡∂‘”⁄∆¡ƒª÷––ƒ£©
 constexpr int STARTUP_SCENE_LOADING_LABEL_OFFSET_X = -30;                   // ∆Ù∂Ø≥°æ∞º”‘ÿΩ¯∂»Ãı±Í«©Œª÷√ X ∆´“∆¡ø
-constexpr float STARTUP_SCENE_DURATION = 3.0f;                             // ∆Ù∂Ø≥°æ∞º”‘ÿ ±º‰
+constexpr float STARTUP_SCENE_DURATION = 1.0f;                              // ∆Ù∂Ø≥°æ∞º”‘ÿ ±º‰
 constexpr float SCENE_TRANSITION_DURATION = 0.2f;                           // ≥°æ∞«–ªª ±º‰
 
 // ≥ı º≥°æ∞Helloworld…Ë÷√
-constexpr int NICKNAME_MAX_LENGTH = 6;                                      // ”Œœ∑Í«≥∆◊Ó¥Û≥§∂»
-constexpr int INITIAL_SCENE_FONT_SIZE = 30;                                 // ≥ı º≥°æ∞◊÷ÃÂ¥Û–°
-constexpr int INITIAL_SCENE_LABELS_OFFSET_X = 349;                          // ≥ı º≥°æ∞±Í«©Œª÷√ X ∆´“∆¡ø
-constexpr int INITIAL_SCENE_TEXTFIELD_OFFSET_Y = 111;                       // ≥ı º≥°æ∞Œƒ±æøÚŒª÷√ Y ∆´“∆¡ø
-constexpr int INITIAL_SCENE_PROMPT_LABEL_OFFSET_Y = 180;                    // ≥ı º≥°æ∞Ã· æ±Í«©Œª÷√ Y ∆´“∆¡ø
-constexpr int INITIAL_SCENE_NAME_LABEL_OFFSET_Y = 280;                      // ≥ı º≥°æ∞ª∂”≠±Í«©Œª÷√ Y ∆´“∆¡ø
-constexpr int INITIAL_SCENE_BUTTON_OFFSET_Y = -310;                         // ≥ı º≥°æ∞∞¥≈•Œª÷√ Y ∆´“∆¡ø
 constexpr float PROMPT_MESSAGE_DURATION = 1.5f;                             // Ã· æ–≈œ¢Õ£¡Ù ±º‰
 
-// ≤Àµ•≥°æ∞…Ë÷√
+// MainScene≤Àµ•≥°æ∞…Ë÷√
+constexpr int MAIN_SCENE_PLAYBUTTON_OFFSET_Y = 200;                  // MainScene PLAY ∞¥º¸ Y ∆´“∆¡ø£®œ‡∂‘”⁄∆¡ƒª÷––ƒ£©
+constexpr int MAIN_SCENE_PLAYBUTTON_OFFSET_X = 0;                   // MainScene PLAY ∞¥º¸ X ∆´“∆¡ø
+constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_Y = 0;                    // MainScene adventure ∞¥º¸ Y ∆´“∆¡ø£®œ‡∂‘”⁄∆¡ƒª÷––ƒ£©
+constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_X = 0;                    // MainScene adventure ∞¥º¸ X ∆´“∆¡ø
 
 
 // ∂‘’Ω≥°æ∞…Ë÷√£®‘§¡Ù£©

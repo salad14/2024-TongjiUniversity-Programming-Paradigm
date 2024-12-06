@@ -5,11 +5,10 @@
 
 
 #include "StartScene.h"
-//#include "InitialScene.h"
 #include "HelloWorldScene.h"
 #include "ui/CocosGUI.h"
 #include "proj.win32/Alluse.h"
-//#include "proj.win32/AudioPlayer.h"
+#include "proj.win32/AudioPlayer.h"
 
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
@@ -39,13 +38,13 @@ bool StartScene::init()
     }
 
     // ¼ÓÔØÒôÀÖ
-    //audioPlayer("../Resources/", true);
+    audioPlayer("Music/MainScene.mp3", true);
 
     // ¼ÓÔØ±³¾°
     const auto screenSize = cocos2d::Director::getInstance()->getVisibleSize();
-    const auto background = Sprite::create("../Resources/Scenes/StartScene.png");
+    const auto background = Sprite::create("../Resources/Scenes/0StartScene.png");
     if (background == nullptr) {
-        problemLoading("../Resources/Scenes/StartupScene.png");
+        problemLoading("../Resources/Scenes/0StartScene.png");
         return false;
     }
     background->setPosition(Vec2(screenSize.width / 2, screenSize.height / 2));

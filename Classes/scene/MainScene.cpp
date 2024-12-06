@@ -1,7 +1,7 @@
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
 #include "scene/BoardScene.h"
-
+#include "proj.win32/Alluse.h"
 USING_NS_CC;
 
 Scene* MainScene::createScene()
@@ -53,7 +53,7 @@ bool MainScene::init()
     {
         float x = visibleSize.width / 2;
         float y = origin.y + visibleSize.height / 2;
-        normalGame->setPosition(Vec2(x, y));
+        normalGame->setPosition(Vec2(x+ MAIN_SCENE_PLAYBUTTON_OFFSET_X, y+ MAIN_SCENE_PLAYBUTTON_OFFSET_Y));
     }
 
 
@@ -71,8 +71,8 @@ bool MainScene::init()
     else
     {
         float x = visibleSize.width / 2;
-        float y = origin.y + adventureGame->getContentSize().height / 2;
-        adventureGame->setPosition(Vec2(x, y));
+        float y = origin.y + visibleSize.height / 2;
+        adventureGame->setPosition(Vec2(x+ MAIN_SCENE_ADVBUTTON_OFFSET_X, y+ MAIN_SCENE_ADVBUTTON_OFFSET_Y));
     }
 
     auto collection = MenuItemImage::create(
@@ -92,9 +92,6 @@ bool MainScene::init()
         float y = origin.y + collection->getContentSize().height / 2;
         collection->setPosition(Vec2(x, y));
     }
-
-
-
     // create menu, it's an autorelease object
     auto menu = Menu::create(normalGame, adventureGame, collection, NULL);
     menu->setPosition(Vec2::ZERO);
@@ -103,14 +100,10 @@ bool MainScene::init()
     /////////////////////////////
     // 3. add your codes below...
 
-    // add a label shows "Hello World"
-    // create and initialize a label
-    // add "HelloWorld" splash screen"
-
-    auto sprite = Sprite::create("mainbackground.png");
+    auto sprite = Sprite::create("../Resources/Scenes/2MainScene.png");
     if (sprite == nullptr)
     {
-        problemLoading("'mainbackground.png'");
+        problemLoading("'2MainScene.png'");
     }
     else
     {
