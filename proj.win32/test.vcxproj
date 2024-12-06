@@ -152,9 +152,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="..\Classes\board\card.cpp" />
-    <ClCompile Include="..\Classes\board\Hero.cpp" />
-    <ClCompile Include="..\Classes\board\Minion.cpp" />
+    <ClCompile Include="..\Classes\cards\card.cpp" />
+    <ClCompile Include="..\Classes\heroes\Hero.cpp" />
     <ClCompile Include="..\Classes\scene\BoardScene.cpp" />
     <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\scene\MainScene.cpp" />
@@ -163,9 +162,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\Classes\board\card.h" />
-    <ClInclude Include="..\Classes\board\Crystal.h" />
-    <ClInclude Include="..\Classes\board\Hero.h" />
+    <ClInclude Include="..\Classes\cards\card.h" />
+    <ClInclude Include="..\Classes\heroes\Hero.h" />
     <ClInclude Include="..\Classes\scene\BoardScene.h" />
     <ClInclude Include="..\Classes\scene\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\scene\MainScene.h" />

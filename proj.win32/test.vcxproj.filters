@@ -16,22 +16,13 @@
     <Filter Include="src\cards">
       <UniqueIdentifier>{cf5ed931-ef49-4ee4-befa-dd90f96d2744}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\heros">
+    <Filter Include="src\heroes">
       <UniqueIdentifier>{f373e5ee-796e-4b6b-8b57-e5fe26ff0fc8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\board\card.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\board\Hero.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\board\Minion.cpp">
-      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\scene\StartScene.cpp">
       <Filter>src\scene</Filter>
@@ -48,19 +39,16 @@
     <ClCompile Include="..\Classes\scene\BoardScene.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\cards\card.cpp">
+      <Filter>src\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\heroes\Hero.cpp">
+      <Filter>src\heroes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
       <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\board\card.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\board\Crystal.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\board\Hero.h">
-      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\scene\StartScene.h">
       <Filter>src\scene</Filter>
@@ -82,6 +70,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\scene\BoardScene.h">
       <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\cards\card.h">
+      <Filter>src\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\heroes\Hero.h">
+      <Filter>src\heroes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
