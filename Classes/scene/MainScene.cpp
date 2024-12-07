@@ -1,7 +1,10 @@
+// MainScene.cpp
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
-#include "scene/BoardScene.h"
+#include "BoardScene.h"
 #include "proj.win32/Alluse.h"
+#include "network/CocosUIListener.h"
+
 USING_NS_CC;
 
 Scene* MainScene::createScene()
@@ -13,7 +16,7 @@ Scene* MainScene::createScene()
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
-    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
+    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in MainScene.cpp\n");
 }
 
 // on "init" you need to initialize your instance
@@ -26,6 +29,7 @@ bool MainScene::init()
         return false;
     }
 
+    // 设置背景音乐
     CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.5f); // 设置音量为 50%
     CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("../Resources/Music/MainScene.mp3", true);
 
@@ -33,11 +37,9 @@ bool MainScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
+    // 2. 创建菜单项
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-
+    // 创建 normalGame 按钮
     auto normalGame = MenuItemImage::create(
         "normalgame.png",
         "normalgame.png",
@@ -53,10 +55,10 @@ bool MainScene::init()
     {
         float x = visibleSize.width / 2;
         float y = origin.y + visibleSize.height / 2;
-        normalGame->setPosition(Vec2(x+ MAIN_SCENE_PLAYBUTTON_OFFSET_X, y+ MAIN_SCENE_PLAYBUTTON_OFFSET_Y));
+        normalGame->setPosition(Vec2(x + MAIN_SCENE_PLAYBUTTON_OFFSET_X, y + MAIN_SCENE_PLAYBUTTON_OFFSET_Y));
     }
 
-
+    // 创建 adventureGame 按钮
     auto adventureGame = MenuItemImage::create(
         "adventure.png",
         "adventure.png",
@@ -72,9 +74,10 @@ bool MainScene::init()
     {
         float x = visibleSize.width / 2;
         float y = origin.y + visibleSize.height / 2;
-        adventureGame->setPosition(Vec2(x+ MAIN_SCENE_ADVBUTTON_OFFSET_X, y+ MAIN_SCENE_ADVBUTTON_OFFSET_Y));
+        adventureGame->setPosition(Vec2(x + MAIN_SCENE_ADVBUTTON_OFFSET_X, y + MAIN_SCENE_ADVBUTTON_OFFSET_Y));
     }
 
+    // 创建 collection 按钮
     auto collection = MenuItemImage::create(
         "collection.png",
         "collection.png",
@@ -92,13 +95,14 @@ bool MainScene::init()
         float y = origin.y + collection->getContentSize().height / 2;
         collection->setPosition(Vec2(x, y));
     }
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(normalGame, adventureGame, collection, NULL);
+
+    // 创建菜单
+    auto menu = Menu::create(normalGame, adventureGame, collection, nullptr);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
     /////////////////////////////
-    // 3. add your codes below...
+    // 3. 添加背景精灵
 
     auto sprite = Sprite::create("../Resources/Scenes/2MainScene.png");
     if (sprite == nullptr)
@@ -119,23 +123,53 @@ bool MainScene::init()
         sprite->setScaleY(visibleSize.height / sprite->getContentSize().height);
 
         // 将背景添加到场景中
-        this->addChild(sprite);;
+        this->addChild(sprite);
     }
+
+    /////////////////////////////
+    // 4. 创建并初始化 CocosUIListener 和 PhotonLib
+
+    // 创建一个用于UI的Layer
+    auto uiLayer = Layer::create();
+    this->addChild(uiLayer);
+
+    // 创建CocosUIListener并初始化日志标签
+    cocosUIListener = new CocosUIListener();
+    cocosUIListener->initializeLogLabel(uiLayer, Vec2(visibleSize.width / 2, visibleSize.height - 50));
+
+    // 初始化PhotonLib
+    photonLib = new PhotonLib(cocosUIListener);
+    photonLib->setRoomJoinedCallback([=]() {
+        // 切换到BoardScene
+        Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardScene::createScene()));
+        });
+
+    // 定期调用PhotonLib::update()
+    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::updatePhoton), 0.1f); // 每0.1秒调用一次
+
     return true;
 }
 
-
-void MainScene::normalGameCallback(Ref* pSender)
+void MainScene::updatePhoton(float dt)
 {
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardScene::createScene()));
+    if (photonLib)
+    {
+        photonLib->update();
+    }
 }
 
-void MainScene::adventureGameCallback(Ref* pSender)
+void MainScene::normalGameCallback(cocos2d::Ref* pSender)
 {
-
+    // 调用PhotonLib的joinOrCreateRoom方法
+    photonLib->joinOrCreateRoom(ExitGames::Common::JString(L"DefaultRoom")); // 可以自定义房间名
 }
 
-void MainScene::collectionCallback(Ref* pSender)
+void MainScene::adventureGameCallback(cocos2d::Ref* pSender)
 {
+    // 实现冒险模式的逻辑
+}
 
+void MainScene::collectionCallback(cocos2d::Ref* pSender)
+{
+    // 实现收藏模式的逻辑
 }
