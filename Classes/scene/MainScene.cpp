@@ -5,7 +5,7 @@
 
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
-#include "scene/BoardScene.h"
+#include "MatchingScene.h"
 #include "proj.win32/Alluse.h"
 USING_NS_CC;
 
@@ -132,7 +132,7 @@ bool MainScene::init()
 
 void MainScene::normalGameCallback(Ref* pSender)
 {
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardScene::createScene()));
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
 }
 
 void MainScene::adventureGameCallback(Ref* pSender)
