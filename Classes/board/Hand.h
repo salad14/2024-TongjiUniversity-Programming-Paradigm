@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Card.h"
+#include "card/card.h"
 #include <vector>
 #include <algorithm>
 #include "cocos2d.h"

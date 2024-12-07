@@ -6,7 +6,7 @@
 #include <random>
 #include <ctime>
 
-#include "Card.h"
+#include "card/card.h"
 #include "cocos2d.h"
 
 

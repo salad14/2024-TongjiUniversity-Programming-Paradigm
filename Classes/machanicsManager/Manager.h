@@ -1,11 +1,12 @@
-#pragma once
-#include <iostream>
+#ifndef MANAGER
+#define MANAGER
+
 #include <unordered_map>
 #include <functional>
 #include <string>
-#include "Card.h"
+#include "card/card.h"
 
-class SpecialEffectManager {
+class keyWordManager {
 private:
     // 存储卡牌ID与战吼、亡语效果之间的映射关系
     std::unordered_map<int, std::function<void()>> battlecryEffects;
@@ -28,7 +29,6 @@ public:
             battlecryEffects[dbfid]();
         }
         else {
-            std::cout << "No battlecry effect registered for card ID " << dbfid << std::endl; // 正式项目中删除
             throw std::runtime_error("No battlecry effect registered for card ID " + std::to_string(dbfid));
         }
     }
@@ -39,10 +39,11 @@ public:
             deathrattleEffects[dbfid]();
         }
         else {
-            std::cout << "No deathrattle effect registered for card ID " << dbfid << std::endl; // 正式项目中删除
             throw std::runtime_error("No deathrattle effect registered for card ID " + std::to_string(dbfid));
         }
     }
 };
 
-SpecialEffectManager manager;
+keyWordManager manager;
+
+#endif

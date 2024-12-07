@@ -1,11 +1,11 @@
 #pragma once
 
 #include <vector>
-#include "Hero.h"
+#include "entity/Hero.h"
 #include "Hand.h"
 #include "Deck.h"
 #include "Crystal.h"
-#include "Minion.h"
+#include "entity/Minion.h"
 
 // 支持 创建自定义牌库
 // 将卡组进行编码 编码后传入board中

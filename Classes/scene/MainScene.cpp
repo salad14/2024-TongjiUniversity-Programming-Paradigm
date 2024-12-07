@@ -1,4 +1,5 @@
 #include "MainScene.h"
+#include "BoardScene.h"
 #include "SimpleAudioEngine.h"
 
 USING_NS_CC;
@@ -38,15 +39,15 @@ bool MainScene::init()
     // add a "close" icon to exit the progress. it's an autorelease object
 
     auto normalGame = MenuItemImage::create(
-        "normalgame.png",
-        "normalgame.png",
+        "NormalGame.png",
+        "NormalgGame.png",
         CC_CALLBACK_1(MainScene::normalGameCallback, this));
 
     if (normalGame == nullptr ||
         normalGame->getContentSize().width <= 0 ||
         normalGame->getContentSize().height <= 0)
     {
-        problemLoading("'normalgame.png' and 'normalgame.png'");
+        problemLoading("'NormalGame.png' and 'NormalGame.png'");
     }
     else
     {
@@ -57,15 +58,15 @@ bool MainScene::init()
 
 
     auto adventureGame = MenuItemImage::create(
-        "adventure.png",
-        "adventure.png",
+        "Adventure.png",
+        "Adventure.png",
         CC_CALLBACK_1(MainScene::adventureGameCallback, this));
 
     if (adventureGame == nullptr ||
         adventureGame->getContentSize().width <= 0 ||
         adventureGame->getContentSize().height <= 0)
     {
-        problemLoading("'adventure.png' and 'adventure.png'");
+        problemLoading("'Adventure.png' and 'Adventure.png'");
     }
     else
     {
@@ -75,15 +76,15 @@ bool MainScene::init()
     }
 
     auto collection = MenuItemImage::create(
-        "collection.png",
-        "collection.png",
+        "Collection.png",
+        "Collection.png",
         CC_CALLBACK_1(MainScene::collectionCallback, this));
 
     if (collection == nullptr ||
         collection->getContentSize().width <= 0 ||
         collection->getContentSize().height <= 0)
     {
-        problemLoading("'collection.png' and 'collection.png'");
+        problemLoading("'Collection.png' and 'Collection.png'");
     }
     else
     {
@@ -122,10 +123,10 @@ bool MainScene::init()
 
     // add "HelloWorld" splash screen"
 
-    auto sprite = Sprite::create("mainbackground.png");
+    auto sprite = Sprite::create("MainBackground.png");
     if (sprite == nullptr)
     {
-        problemLoading("'mainbackground.png'");
+        problemLoading("'MainBackground.png'");
     }
     else
     {
@@ -149,7 +150,7 @@ bool MainScene::init()
 
 void MainScene::normalGameCallback(Ref* pSender)
 {
-    // Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardScene::createScene()));
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardScene::createScene()));
 }
 
 void MainScene::adventureGameCallback(Ref* pSender)
