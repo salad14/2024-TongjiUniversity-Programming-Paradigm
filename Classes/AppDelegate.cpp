@@ -3,6 +3,7 @@
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
+#include "scene/StartScene.h"
 #include "proj.win32/Alluse.h"
 
 #if USE_AUDIO_ENGINE && USE_SIMPLE_AUDIO_ENGINE

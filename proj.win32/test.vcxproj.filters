@@ -66,6 +66,9 @@
     <ClCompile Include="..\Classes\entity\Spell.cpp">
       <Filter>src\entity</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\scene\StartScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\machanicsManager\SpellManager.h">
       <Filter>src\mechanicsManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\StartScene.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
