@@ -150,7 +150,7 @@ bool MainScene::init()
 
 void MainScene::normalGameCallback(Ref* pSender)
 {
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardScene::createScene()));
+   
 }
 
 void MainScene::adventureGameCallback(Ref* pSender)
