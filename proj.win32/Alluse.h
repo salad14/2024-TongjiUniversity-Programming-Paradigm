@@ -38,7 +38,7 @@ constexpr float PROMPT_MESSAGE_DURATION = 1.5f;                             // Ì
 // MainScene²Ëµ¥³¡¾°ÉèÖÃ
 constexpr int MAIN_SCENE_PLAYBUTTON_OFFSET_Y = 200;                  // MainScene PLAY °´¼ü Y Æ«ÒÆÁ¿£¨Ïà¶ÔÓÚÆÁÄ»ÖÐÐÄ£©
 constexpr int MAIN_SCENE_PLAYBUTTON_OFFSET_X = 0;                   // MainScene PLAY °´¼ü X Æ«ÒÆÁ¿
-constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_Y = 0;                    // MainScene adventure °´¼ü Y Æ«ÒÆÁ¿£¨Ïà¶ÔÓÚÆÁÄ»ÖÐÐÄ£©
+constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_Y = 100;                    // MainScene adventure °´¼ü Y Æ«ÒÆÁ¿£¨Ïà¶ÔÓÚÆÁÄ»ÖÐÐÄ£©
 constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_X = 0;                    // MainScene adventure °´¼ü X Æ«ÒÆÁ¿
 
 
