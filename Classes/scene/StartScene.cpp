@@ -20,18 +20,24 @@ static void problemLoading(const char* filename)
 }
 
 // 初始的音频引擎设置
-int backgroundMusicSign = DEFAULT_MUSIC_SIGN;
-int soundEffectSign = DEFAULT_MUSIC_SIGN;
-float backgroundMusicVolumn = DEFAULT_MUSIC_VOLUMN;
-float soundEffectVolumn = DEFAULT_MUSIC_VOLUMN;
+int backgroundMusicSign = DEFAULT_MUSIC_SIGN;          // 背景音乐的缺省表示
+int soundEffectSign = DEFAULT_MUSIC_SIGN;              // 单个点击音效的缺省表示
+float backgroundMusicVolumn = DEFAULT_MUSIC_VOLUMN;    // 背景音乐的音量
+float soundEffectVolumn = DEFAULT_MUSIC_VOLUMN;        // 单次音效的音量
 
-// 音频引擎方法
-void audioPlayer(const std::string& audioPath, bool isLoop)
+/****************************************************************
+* 音频引擎方法
+* Author: Lee
+* 背景音乐和单个点击音效共用 由参数isLoop控制
+ ****************************************************************/void audioPlayer(const std::string& audioPath, bool isLoop)
 {
     if (isLoop) {
+        // 如果是背景音乐并且之前有背景音乐在播放
         if (backgroundMusicSign != DEFAULT_MUSIC_SIGN) {
+            // 停止当前的背景音乐
             cocos2d::experimental::AudioEngine::stop(backgroundMusicSign);
         }
+        // 播放新的背景音乐
         backgroundMusicSign = cocos2d::experimental::AudioEngine::play2d(audioPath, isLoop);
         cocos2d::experimental::AudioEngine::setVolume(backgroundMusicSign, backgroundMusicVolumn);
     }
