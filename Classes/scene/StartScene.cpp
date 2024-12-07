@@ -43,7 +43,7 @@ float soundEffectVolumn = DEFAULT_MUSIC_VOLUMN;        // 单次音效的音量
     }
     else {
         soundEffectSign = cocos2d::experimental::AudioEngine::play2d(audioPath, isLoop);
-        cocos2d::experimental::AudioEngine::setVolume(soundEffectSign, soundEffectVolumn);
+        cocos2d::experimental::AudioEngine::setVolume(soundEffectSign, soundEffectVolumn*5);
     }
 }
 

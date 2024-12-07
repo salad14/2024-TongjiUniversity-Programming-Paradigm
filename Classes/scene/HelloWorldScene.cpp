@@ -6,7 +6,7 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 #include "MainScene.h"
-
+#include "proj.win32/AudioPlayer.h"
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -88,6 +88,8 @@ bool HelloWorld::init()
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     //Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();
 
@@ -99,5 +101,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 
 void HelloWorld::menuReplaceCallback(Ref* pSender)
 {
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     Director::getInstance()->replaceScene(TransitionFade::create(0.2f,MainScene::createScene()));
 }

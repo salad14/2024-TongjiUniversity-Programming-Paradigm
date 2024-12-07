@@ -7,6 +7,7 @@
 #include "SimpleAudioEngine.h"
 #include "MatchingScene.h"
 #include "proj.win32/Alluse.h"
+#include "proj.win32/AudioPlayer.h"
 USING_NS_CC;
 
 Scene* MainScene::createScene()
@@ -132,6 +133,8 @@ bool MainScene::init()
 
 void MainScene::normalGameCallback(Ref* pSender)
 {
+    // ¼ÓÔØµã»÷ÒôÐ§
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
 }
 
