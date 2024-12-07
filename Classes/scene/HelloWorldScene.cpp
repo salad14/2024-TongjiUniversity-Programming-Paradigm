@@ -1,3 +1,8 @@
+/****************************************************************
+ * 加载完成开始界面实现
+ * Author:  Lee
+ * 注：利用了系统初始化时遗留的Helloworld场景文件，请注意名称区分
+ ****************************************************************/
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 #include "MainScene.h"
@@ -29,11 +34,6 @@ bool HelloWorld::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
-
-    // add a "close" icon to exit the progress. it's an autorelease object
     auto closeItem = MenuItemImage::create(
                                            "CloseNormal.png",
                                            "CloseSelected.png",
@@ -74,43 +74,16 @@ bool HelloWorld::init()
     auto menu = Menu::create(closeItem, startGame, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
-
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
+    
+    // 加载背景
+    const auto screenSize = cocos2d::Director::getInstance()->getVisibleSize();
+    const auto background = Sprite::create("../Resources/Scenes/1HelloWorld.png");
+    if (background == nullptr) {
+        problemLoading("../Resources/Scenes/1HelloWorld.png");
+        return false;
     }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
-
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("Cover.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'Cover.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
-    }
-    return true;
+    background->setPosition(Vec2(screenSize.width / 2, screenSize.height / 2));
+    this->addChild(background);
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)

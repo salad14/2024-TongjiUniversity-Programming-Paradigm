@@ -1,7 +1,7 @@
 #include "MainScene.h"
-#include "BoardScene.h"
 #include "SimpleAudioEngine.h"
-
+#include "scene/BoardScene.h"
+#include "proj.win32/Alluse.h"
 USING_NS_CC;
 
 Scene* MainScene::createScene()
@@ -39,52 +39,52 @@ bool MainScene::init()
     // add a "close" icon to exit the progress. it's an autorelease object
 
     auto normalGame = MenuItemImage::create(
-        "NormalGame.png",
-        "NormalgGame.png",
+        "normalgame.png",
+        "normalgame.png",
         CC_CALLBACK_1(MainScene::normalGameCallback, this));
 
     if (normalGame == nullptr ||
         normalGame->getContentSize().width <= 0 ||
         normalGame->getContentSize().height <= 0)
     {
-        problemLoading("'NormalGame.png' and 'NormalGame.png'");
+        problemLoading("'normalgame.png' and 'normalgame.png'");
     }
     else
     {
         float x = visibleSize.width / 2;
         float y = origin.y + visibleSize.height / 2;
-        normalGame->setPosition(Vec2(x, y));
+        normalGame->setPosition(Vec2(x+ MAIN_SCENE_PLAYBUTTON_OFFSET_X, y+ MAIN_SCENE_PLAYBUTTON_OFFSET_Y));
     }
 
 
     auto adventureGame = MenuItemImage::create(
-        "Adventure.png",
-        "Adventure.png",
+        "adventure.png",
+        "adventure.png",
         CC_CALLBACK_1(MainScene::adventureGameCallback, this));
 
     if (adventureGame == nullptr ||
         adventureGame->getContentSize().width <= 0 ||
         adventureGame->getContentSize().height <= 0)
     {
-        problemLoading("'Adventure.png' and 'Adventure.png'");
+        problemLoading("'adventure.png' and 'adventure.png'");
     }
     else
     {
         float x = visibleSize.width / 2;
-        float y = origin.y + adventureGame->getContentSize().height / 2;
-        adventureGame->setPosition(Vec2(x, y));
+        float y = origin.y + visibleSize.height / 2;
+        adventureGame->setPosition(Vec2(x+ MAIN_SCENE_ADVBUTTON_OFFSET_X, y+ MAIN_SCENE_ADVBUTTON_OFFSET_Y));
     }
 
     auto collection = MenuItemImage::create(
-        "Collection.png",
-        "Collection.png",
+        "collection.png",
+        "collection.png",
         CC_CALLBACK_1(MainScene::collectionCallback, this));
 
     if (collection == nullptr ||
         collection->getContentSize().width <= 0 ||
         collection->getContentSize().height <= 0)
     {
-        problemLoading("'Collection.png' and 'Collection.png'");
+        problemLoading("'collection.png' and 'collection.png'");
     }
     else
     {
@@ -92,9 +92,6 @@ bool MainScene::init()
         float y = origin.y + collection->getContentSize().height / 2;
         collection->setPosition(Vec2(x, y));
     }
-
-
-
     // create menu, it's an autorelease object
     auto menu = Menu::create(normalGame, adventureGame, collection, NULL);
     menu->setPosition(Vec2::ZERO);
@@ -103,30 +100,10 @@ bool MainScene::init()
     /////////////////////////////
     // 3. add your codes below...
 
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + visibleSize.height - label->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
-
-    // add "HelloWorld" splash screen"
-
-    auto sprite = Sprite::create("MainBackground.png");
+    auto sprite = Sprite::create("../Resources/Scenes/2MainScene.png");
     if (sprite == nullptr)
     {
-        problemLoading("'MainBackground.png'");
+        problemLoading("'2MainScene.png'");
     }
     else
     {
@@ -150,7 +127,7 @@ bool MainScene::init()
 
 void MainScene::normalGameCallback(Ref* pSender)
 {
-   
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardScene::createScene()));
 }
 
 void MainScene::adventureGameCallback(Ref* pSender)
