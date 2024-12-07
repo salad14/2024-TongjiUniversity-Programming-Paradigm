@@ -18,4 +18,7 @@ Developed by students from software engineering, Computer Science and Technology
 ## 版本注意事项：
 12.06 大幅修改了文件架构，素材、头文件及场景文件都用文件夹重新组织，注意改动代码内的文件路径
 
-12.08 重要头文件补充说明：proj.win32/Alluse.h内以常量形式放置了游戏全局需要的设置参数（如音量、颜色、位置坐标等）类似常量可以考虑放置在该头文件内； proj.win32\AudioPlayer.h 内统一设置了音频播放的方法。
+12.07 重要头文件补充说明：proj.win32/Alluse.h内以常量形式放置了游戏全局需要的设置参数（如音量、颜色、位置坐标等）类似常量可以考虑放置在该头文件内； proj.win32\AudioPlayer.h 内统一设置了音频播放的方法。
+
+12.08 关于AudioPlayer.h头文件的特别说明：其初值及函数定义在StartScene.cpp文件中，在其他场景中只需引用此头文件，并调用audioPlayer()即可。以便在游戏开始设置音量，避免后续出现重定义错误 及 音量不统一问题
+
