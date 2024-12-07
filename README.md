@@ -14,3 +14,8 @@ Developed by students from software engineering, Computer Science and Technology
 4. 其他可能可选规范；resource 的统一命名格式（eg：HelloWorld.png），repo 和各分支的命名（如 repo 命名 hearthstone，各分支分别为 network/core-logic/ui-ux）...
 5. 由于环境一样，.gitignore 文件中可以包括.vs/ Debug.win32/ release/ build/
 6. 其他可能规范
+
+## 版本注意事项：
+12.06 大幅修改了文件架构，素材、头文件及场景文件都用文件夹重新组织，注意改动代码内的文件路径
+
+12.08 重要头文件补充说明：proj.win32/Alluse.h内以常量形式放置了游戏全局需要的设置参数（如音量、颜色、位置坐标等）类似常量可以考虑放置在该头文件内； proj.win32\AudioPlayer.h 内统一设置了音频播放的方法。
