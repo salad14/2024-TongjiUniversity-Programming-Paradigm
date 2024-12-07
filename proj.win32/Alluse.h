@@ -50,12 +50,6 @@ constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_X = 0;                    // MainScene
 // 商店牌堆设置（预留）
 
 // 位置属性与屏幕坐标设置（预留）
-constexpr int WAITING_AREA_START_X = 415;                                   // 候战区起始屏幕坐标位置 X 坐标
-constexpr int WAITING_AREA_START_Y = 195;                                   // 候战区起始屏幕坐标位置 Y 坐标
-constexpr int BATTLE_AREA_START_X = 415;                                    // 战斗区起始屏幕坐标位置 X 坐标
-constexpr int BATTLE_AREA_START_Y = 275;                                    // 战斗区起始屏幕坐标位置 Y 坐标
-constexpr int CHAMPION_HORIZONTAL_INTERVAL = 60;                            // 战斗英雄水平间距
-constexpr int CHAMPION_VERTICAL_INTERVAL = 45;                              // 战斗英雄垂直间距
 
 // 战斗参数设置（预留）
 

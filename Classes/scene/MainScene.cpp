@@ -1,3 +1,8 @@
+/****************************************************************
+* 主菜单页面的实现
+* Author: Lee
+ ****************************************************************/
+
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
 #include "scene/BoardScene.h"
