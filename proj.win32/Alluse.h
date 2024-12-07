@@ -51,6 +51,7 @@ constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_X = 0;                    // MainScene
 
 // 位置属性与屏幕坐标设置（预留）
 
+
 // 战斗参数设置（预留）
 
 // 序号与欢迎提示语键值对

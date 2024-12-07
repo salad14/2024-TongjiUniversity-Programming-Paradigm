@@ -2,6 +2,7 @@
 * 主菜单页面的定义
 * Author: Lee
  ****************************************************************/
+
 #include "cocos2d.h"
 
 class MainScene : public cocos2d::Scene
