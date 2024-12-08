@@ -50,6 +50,8 @@ constexpr float MATCHING_SCENE_DURATION = 0.5f;              // 匹配页面停留时长
 // 卡片区域的起始位置坐标
 constexpr int CARD_REGION_X = 100;
 constexpr int CARD_REGION_Y = 100;
+constexpr int PUTOUT_CARD_REGION_HALF_X = 700;     // 出牌区域半宽X
+constexpr int PUTOUT_CARD_REGION_HALF_Y = 300;     // 出牌区域半高Y
 
 
 

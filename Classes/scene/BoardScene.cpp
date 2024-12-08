@@ -4,6 +4,7 @@
  ****************************************************************/
 
 #include "BoardScene.h"
+#include "MainScene.h"
 #include "proj.win32/Alluse.h"
 #include "proj.win32/audioPlayer.h"
 
@@ -39,30 +40,30 @@ bool BoardScene::init() {
         this->addChild(title_sprite, 0);
     }
 
-    // 创建添加卡牌的按钮(暂时用于测试)
-    auto addButton = MenuItemImage::create
-    (
-        "button/addcard.png",
-        "button/addcard.png",
-        CC_CALLBACK_0(BoardScene::addNewCard, this)
-    );
-    addButton->setPosition(Vec2(1800, 100));
-    auto menu = Menu::create(addButton, nullptr);
+    //// 创建添加卡牌的按钮(暂时用于测试)
+    //auto addButton = MenuItemImage::create("button/addcard.png", "button/addcard.png", CC_CALLBACK_0(BoardScene::addNewCard, this));
+    //addButton->setPosition(Vec2(1800, 400));
+   
+    // 创建返回按钮
+    auto cancel = MenuItemImage::create("button/cancel.png", "button/cancelSelected.png", CC_CALLBACK_1(BoardScene::cancelCallback, this));
+    cancel->setPosition(Vec2(1940,20));
+    auto menu = Menu::create(cancel, nullptr);
+
+    // 添加菜单
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu);
 
     // 创建触摸监听器
     auto listener = EventListenerTouchOneByOne::create();
     listener->setSwallowTouches(true);
-
     listener->onTouchBegan = CC_CALLBACK_2(BoardScene::onTouchBegan, this);
     listener->onTouchMoved = CC_CALLBACK_2(BoardScene::onTouchMoved, this);
     listener->onTouchEnded = CC_CALLBACK_2(BoardScene::onTouchEnded, this);
-
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     selectedCard = nullptr;
     
+    // 创建移动监听器
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseMove = CC_CALLBACK_1(BoardScene::onMouseMove, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
@@ -75,8 +76,20 @@ bool BoardScene::init() {
 
     // 启用update,按帧刷新
     //this->scheduleUpdate();
+    initPlayers();
+    createPlayerUI();
+    updatePlayerUI();
+    initDecks();  // 初始化牌堆
 
     return true;
+}
+
+//返回主菜单
+void BoardScene::cancelCallback(Ref* pSender)
+{
+    // 加载点击音效
+    audioPlayer("Music/ClickSoundEffect.mp3", false);
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MainScene::createScene()));
 }
 
 // 创建中央出牌区域
@@ -89,13 +102,13 @@ void BoardScene::createDropArea()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     Vec2 center = Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
 
-    // 绘制半透明的矩形区域（500x200）
+    // 绘制半透明的矩形区域
     Vec2 vertices[] = 
     {
-        Vec2(center.x - 500, center.y - 300),
-        Vec2(center.x + 500, center.y - 300),
-        Vec2(center.x + 500, center.y + 300),
-        Vec2(center.x - 500, center.y + 300)
+        Vec2(center.x - PUTOUT_CARD_REGION_HALF_X, center.y - PUTOUT_CARD_REGION_HALF_Y),
+        Vec2(center.x + PUTOUT_CARD_REGION_HALF_X, center.y - PUTOUT_CARD_REGION_HALF_Y),
+        Vec2(center.x + PUTOUT_CARD_REGION_HALF_X, center.y + PUTOUT_CARD_REGION_HALF_Y),
+        Vec2(center.x - PUTOUT_CARD_REGION_HALF_X, center.y + PUTOUT_CARD_REGION_HALF_Y)
     };
 
     Color4F fillColor(0.5f, 0.5f, 0.5f, 0.3f); // 半透明灰色
@@ -116,8 +129,8 @@ void BoardScene::checkDropArea() {
 
     // 检查是否在投放区域内
     bool inDropArea =
-        abs(spritePos.x - center.x) <= 500 &&
-        abs(spritePos.y - center.y) <= 300;
+        abs(spritePos.x - center.x) <= PUTOUT_CARD_REGION_HALF_X &&
+        abs(spritePos.y - center.y) <= PUTOUT_CARD_REGION_HALF_Y;
 
     if (inDropArea)
     {
@@ -159,54 +172,59 @@ void BoardScene::checkDropArea() {
     }
 }
 
-//添加一张新的卡牌
-void BoardScene::addNewCard() 
-{
-    // 创建新精灵
-    auto sprite = Sprite::create("cardfortest.png");
-    
-    Vec2 originalPos(Vec2(CARD_REGION_X + dragCards.size() * (sprite->getContentSize().width + 30), CARD_REGION_Y));
-    sprite->setPosition(originalPos);
-
-    //加载牌音效
-    audioPlayer("music/putcard.mp3", false);
-
-    // 记录原始位置
-    cardOriginalPositions[sprite] = originalPos;
-
-    // 添加到场景和容器中
-    this->addChild(sprite);
-    dragCards.push_back(sprite);
-    CCLOG("Current sprite count: %zu", dragCards.size());
-}
-
+////添加一张新的卡牌
+//void BoardScene::addNewCard() 
+//{
+//    // 创建新精灵
+//    auto sprite = Sprite::create("cardfortest.png");
+//    
+//    Vec2 originalPos(Vec2(CARD_REGION_X + dragCards.size() * (sprite->getContentSize().width + 30), CARD_REGION_Y));
+//    sprite->setPosition(originalPos);
+//
+//    //加载牌音效
+//    audioPlayer("music/putcard.mp3", false);
+//
+//    // 记录原始位置
+//    cardOriginalPositions[sprite] = originalPos;
+//
+//    // 添加到场景和容器中
+//    this->addChild(sprite);
+//    dragCards.push_back(sprite);
+//    CCLOG("Current sprite count: %zu", dragCards.size());
+//}
 
 //从出牌区域移除一张卡牌
 void BoardScene::removeCard(Sprite* sprite) {
+    //if (!sprite) return;
+
+    //if (sprite == hoveredCard) {
+    //    hoveredCard = nullptr;
+    //}
+
+
+    
+
+    //CCLOG("Current sprite count: %zu", dragCards.size());
+
     if (!sprite) return;
 
     if (sprite == hoveredCard) {
         hoveredCard = nullptr;
     }
 
-    // 从位置记录中移除
-    cardOriginalPositions.erase(sprite);
-    //加载牌音效
-    audioPlayer("music/putcard.mp3", false);
+    // 从手牌移除
     auto iter = std::find(dragCards.begin(), dragCards.end(), sprite);
     if (iter != dragCards.end()) {
         dragCards.erase(iter);
-        sprite->stopAllActions();
-        this->runAction(Sequence::create(
-            DelayTime::create(0.1f),
-            CallFunc::create([sprite]() {
-                sprite->removeFromParent();
-                }),
-            nullptr
-        ));
-    }
+        // 从位置记录中移除
+        cardOriginalPositions.erase(sprite);
+        // 添加到已打出卡牌区域
+        playedCards.push_back(sprite);
+        updatePlayedCardsPosition();
 
-    CCLOG("Current sprite count: %zu", dragCards.size());
+        // 播放音效
+        audioPlayer("music/putcard.mp3", false);
+    }
 }
 
 // 鼠标移动检测
@@ -288,17 +306,34 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
         Vec2 finalPos = selectedCard->getPosition();
 
         bool inDropArea =
-            abs(finalPos.x - center.x) <= 500 &&
-            abs(finalPos.y - center.y) <= 300;
+            abs(finalPos.x - center.x) <= PUTOUT_CARD_REGION_HALF_X &&
+            abs(finalPos.y - center.y) <= PUTOUT_CARD_REGION_HALF_Y;
 
         Sprite* cardToHandle = selectedCard;
         selectedCard = nullptr;  // 先清除选中状态
 
         if (inDropArea) {
             // 在出牌区域内，执行移除
-            removeCard(cardToHandle);
+           // removeCard(cardToHandle);
+            Player* currentPlayer = isPlayer1Turn ? player1 : player2;
+
+            // 这里需要添加获取卡牌费用的逻辑
+            int cardCost = 1; // 示例费用
+
+            if (currentPlayer->money >= cardCost) {
+                currentPlayer->money -= cardCost;
+                removeCard(cardToHandle);
+                updatePlayerUI();
+            }
+            else 
+            {
+                // 费用不足，回到原位
+                Vec2 originalPos = cardOriginalPositions[cardToHandle];
+                cardToHandle->runAction(EaseBackOut::create(MoveTo::create(0.5f, originalPos)));
+            }
         }
-        else {
+        else 
+        {
             // 不在出牌区域，回到原位
             Vec2 originalPos = cardOriginalPositions[cardToHandle];
 
@@ -317,5 +352,188 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
                 scaleSprite(cardToHandle, 1.5f);
             }
         }
+    }
+}
+
+// 初始化玩家
+void BoardScene::initPlayers() 
+{
+    player1 = new Player("Player1");
+    player2 = new Player("Player2");
+    isPlayer1Turn = true;  // 默认玩家1先手
+
+    // 初始化玩家卡组
+    
+    // ... 初始化卡组(待完善)
+    //详见 player.h及player.cpp
+    player1->setPlayerCards();
+    player2->setPlayerCards();
+}
+
+void BoardScene::createPlayerUI() {
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+
+    // 创建己方玩家信息显示
+    player1Health = Label::createWithTTF("HP: 30", "fonts/arial.ttf", 24);
+    player1Health->setPosition(Vec2(800, 220));
+    this->addChild(player1Health);
+    // 设置描边（同时设置颜色和粗细）
+    player1Health->enableOutline(Color4B::BLACK, 2);         // 黑色描边，粗细为2
+
+    player1Mana = Label::createWithTTF("Mana: 1/1", "fonts/arial.ttf", 24);
+    player1Mana->setPosition(Vec2(800, 280));
+    this->addChild(player1Mana);
+    // 设置描边（同时设置颜色和粗细）
+    player1Mana->enableOutline(Color4B::BLACK, 2);         // 黑色描边，粗细为2
+
+    // 创建对方玩家信息显示
+    player2Health = Label::createWithTTF("HP: 30", "fonts/arial.ttf", 24);
+    player2Health->setPosition(Vec2(800, visibleSize.height - 100));
+    this->addChild(player2Health);
+    player2Health->enableOutline(Color4B::BLACK, 2);         // 黑色描边，粗细为2
+
+    player2Mana = Label::createWithTTF("Mana: 1/1", "fonts/arial.ttf", 24);
+    player2Mana->setPosition(Vec2(800, visibleSize.height - 150));
+    this->addChild(player2Mana);
+    player2Mana->enableOutline(Color4B::BLACK, 2);         // 黑色描边，粗细为2
+
+    // 回合指示器
+    turnIndicator = Label::createWithTTF("Your Turn", "fonts/arial.ttf", 32);
+    turnIndicator->setPosition(Vec2(1880, 600));
+    this->addChild(turnIndicator);
+    // 设置描边（同时设置颜色和粗细）
+    turnIndicator->enableOutline(Color4B::BLACK, 2);         // 黑色描边，粗细为2
+
+    // 添加回合结束按钮
+    auto endTurnBtn = MenuItemImage::create(
+        "button/endturn.png",
+        "button/endturnSelected.png",
+        CC_CALLBACK_0(BoardScene::switchTurn, this)
+    );
+    endTurnBtn->setPosition(Vec2(1880, 700));
+    auto menu = Menu::create(endTurnBtn, nullptr);
+    menu->setPosition(Vec2::ZERO);
+    this->addChild(menu);
+}
+
+void BoardScene::updatePlayerUI() {
+    // 更新生命值显示
+    player1Health->setString("HP: " + std::to_string(player1->health));
+    player2Health->setString("HP: " + std::to_string(player2->health));
+
+    // 更新法力值显示
+    player1Mana->setString("Mana: " + std::to_string(player1->money) + "/" +
+        std::to_string(player1->maxmoney));
+    player2Mana->setString("Mana: " + std::to_string(player2->money) + "/" +
+        std::to_string(player2->maxmoney));
+
+    // 更新回合指示
+    turnIndicator->setString(isPlayer1Turn ? "Your Turn" : "Opponent's Turn");
+}
+
+void BoardScene::switchTurn() 
+{
+    isPlayer1Turn = !isPlayer1Turn;
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
+    // 切换回合时的逻辑
+    Player* currentPlayer = isPlayer1Turn ? player1 : player2;
+    currentPlayer->maxmoney = std::min(currentPlayer->maxmoney + 1, 10);
+    currentPlayer->money = currentPlayer->maxmoney;
+
+    // 更新UI
+    updatePlayerUI();
+
+    // 可以添加回合切换动画
+    turnIndicator->runAction(Sequence::create(
+        FadeOut::create(0.2f),
+        CallFunc::create([this]() {
+            updatePlayerUI();
+            }),
+        FadeIn::create(0.2f),
+        nullptr
+    ));
+    // 回合开始时抽一张牌
+    drawCard();
+}
+
+void BoardScene::initDecks() {
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+
+    // 创建牌堆容器节点
+    deckNode1 = Node::create();
+    deckNode2 = Node::create();
+    this->addChild(deckNode1);
+    this->addChild(deckNode2);
+
+    // 设置牌堆位置
+    deckNode1->setPosition(Vec2(1950, 500));
+    deckNode2->setPosition(Vec2(1950, 900));
+
+    // 显示两个牌堆
+    for (int i = 0; i < 30; i++) 
+    {
+        // 创建玩家1的牌堆
+        player1->playerCards.at(i)->setPosition(Vec2(-i * 2.0f, -i * 2.0f));
+        deckNode1->addChild(player1->playerCards.at(i));
+        // 创建玩家2的牌堆
+        player2->playerCards.at(i)->setPosition(Vec2(-i * 2.0f, -i * 2.0f));
+        deckNode2->addChild(player2->playerCards.at(i));
+    }
+}
+
+// 从牌堆中抽一张牌
+void BoardScene::drawCard() {
+    if (isPlayer1Turn && !player1->playerCards.empty()) {
+        // 从牌堆抽一张牌
+        auto card = player1->playerCards.back();
+        player1->playerCards.pop_back();
+
+        // 创建新的可操作卡牌
+        auto newCard = Sprite::create("cardfortest.png");
+        Vec2 originalPos(CARD_REGION_X + dragCards.size() * (newCard->getContentSize().width + 30), CARD_REGION_Y);
+        newCard->setPosition(originalPos);
+
+        // 添加抽牌动画
+        card->runAction(Sequence::create(
+            Spawn::create(
+                MoveTo::create(0.3f, originalPos),
+                ScaleTo::create(0.3f, 1.0f),
+                nullptr
+            ),
+            RemoveSelf::create(),
+            nullptr
+        ));
+
+        // 记录新卡牌
+        cardOriginalPositions[newCard] = originalPos;
+        this->addChild(newCard);
+        dragCards.push_back(newCard);
+
+        // 更新牌堆显示
+        deckNode1->removeChild(card);
+    }
+    // 对手回合的抽牌逻辑类似
+    else if (!player2->playerCards.empty()) {
+        // 由于对手手牌不显示，本处加入对战逻辑即可，不做显示处理
+    }
+}
+
+void BoardScene::updatePlayedCardsPosition() {
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height / 2);
+    float cardWidth = 100;  // 假设卡牌宽度为100
+    float spacing = 20;     // 卡牌间距
+
+    // 计算起始位置（使卡牌居中显示）
+    float startX = center.x - (playedCards.size() * (cardWidth + spacing) - spacing) / 2;
+
+    // 更新每张已打出卡牌的位置
+    for (size_t i = 0; i < playedCards.size(); i++) {
+        Sprite* card = playedCards[i];
+        Vec2 targetPos = Vec2(startX + i * (cardWidth + spacing), center.y);
+
+        // 使用动画移动到目标位置
+        card->runAction(EaseBackOut::create(MoveTo::create(0.3f, targetPos)));
     }
 }

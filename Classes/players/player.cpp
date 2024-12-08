@@ -14,10 +14,10 @@ Player::Player(const string s)
 }
 
 //用户自定义卡组函数（待修改，此处仅引入30张最简单的手牌，仅测试用）
-void Player::setPlayerCards(vector<Sprite*> cards)
+void Player::setPlayerCards()
 {
-	for (int i = 0; i < 30; i++)
-	{
-		playerCards.push_back(cards[i]);
+	for (int i = 0; i < 30; ++i) {
+		auto sprite = Sprite::create("cardfortest.png");
+		this->playerCards.push_back(sprite);
 	}
 }

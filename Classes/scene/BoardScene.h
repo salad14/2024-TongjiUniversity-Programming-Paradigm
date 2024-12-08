@@ -35,6 +35,7 @@ private:
     EventListenerMouse* mouseListener;
     Sprite* hoveredCard;             // 当前鼠标悬停的精灵
 
+    void cancelCallback(Ref* pSender);
     void createDropArea();              // 创建出牌区域
     void checkDropArea();               // 检查是否在出牌区域
     void addNewCard();               //  添加新精灵
@@ -47,6 +48,29 @@ private:
     void onTouchMoved(Touch* touch, Event* event);
     void onTouchEnded(Touch* touch, Event* event);
    
+    Player* player1;    // 己方玩家
+    Player* player2;    // 敌方玩家
+    bool isPlayer1Turn; // 当前回合标志
 
+    // UI元素
+    Label* player1Health;
+    Label* player1Mana;
+    Label* player2Health;
+    Label* player2Mana;
+    Label* turnIndicator;  // 回合指示器
+
+    void initPlayers();    // 初始化玩家
+    void updatePlayerUI(); // 更新玩家信息显示
+    void switchTurn();     // 切换回合
+    void createPlayerUI(); // 创建玩家UI
    // void update(float dt);
+
+    // 新增成员变量
+    vector<Sprite*> playedCards;    // 已打出的卡牌
+    Node* deckNode1;                     // 牌堆显示节点1
+    Node* deckNode2;                     // 牌堆显示节点2
+
+    void initDecks();                    // 初始化牌堆
+    void drawCard();                     // 抽牌
+    void updatePlayedCardsPosition();    // 更新已打出卡牌的位置
 };

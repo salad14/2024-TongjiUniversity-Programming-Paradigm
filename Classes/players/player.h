@@ -18,14 +18,15 @@ class Player
 public:
     // 构造函数
     Player(const string nickname);
+    std::vector<Sprite*> playerCards;  // 玩家携带的卡组
     // 自定义玩家携带的卡组
-    void setPlayerCards(vector<Sprite*> cards);
+    void setPlayerCards();
     int health = 30;   // 当前生命值
     int money = 0;     // 当前费
     int maxmoney = 1;  // 最大费
 private:
     string nickname;
     int maxhealth = 30;// 最大生命值
-    std::vector<Sprite*> playerCards;  // 玩家携带的卡组
+    
 };
 #endif // !_PLAYER_H_
