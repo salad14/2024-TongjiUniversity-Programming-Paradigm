@@ -59,6 +59,8 @@
     </ClCompile>
     <ClCompile Include="..\Classes\network\CocosUIListener.cpp">
       <Filter>src\network</Filter>
+    <ClCompile Include="..\Classes\scene\MatchingScene.cpp">
+      <Filter>src\scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +108,8 @@
     </ClInclude>
     <ClInclude Include="..\Classes\network\CocosUIListener.h">
       <Filter>src\network</Filter>
+    <ClInclude Include="..\Classes\scene\MatchingScene.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

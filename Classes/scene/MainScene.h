@@ -1,5 +1,8 @@
-// MainScene.h
-#pragma once
+/****************************************************************
+* 主菜单页面的定义
+* Author: Lee
+ ****************************************************************/
+
 #include "cocos2d.h"
 #include "network/Photon_lib.h"
 #include "network/CocosUIListener.h"

@@ -2,7 +2,9 @@
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
 #include "BoardScene.h"
+#include "MatchingScene.h"
 #include "proj.win32/Alluse.h"
+#include "proj.win32/AudioPlayer.h"
 #include "network/CocosUIListener.h"
 
 USING_NS_CC;
@@ -156,6 +158,9 @@ void MainScene::updatePhoton(float dt)
     {
         photonLib->update();
     }
+    // ¼ÓÔØµã»÷ÒôÐ§
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
 }
 
 void MainScene::normalGameCallback(cocos2d::Ref* pSender)
