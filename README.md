@@ -22,3 +22,5 @@ Developed by students from software engineering, Computer Science and Technology
 
 12.08 关于AudioPlayer.h头文件的特别说明：其初值及函数定义在StartScene.cpp文件中，在其他场景中只需引用此头文件，并调用audioPlayer()即可。以便在游戏开始设置音量，避免后续出现重定义错误 及 音量不统一问题
 
+12.09 鉴于目前尚未通过Photon中国的开发许可，匹配功能暂时不可用，基本逻辑已经预留，对于对战逻辑的相关代码尚未编写
+
