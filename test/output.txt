@@ -1,0 +1,27 @@
+当前工作目录: "D:\\cocos2dx\\test"
+当前目录下的文件列表：
+.vscode
+cards.json
+include
+output.txt
+src
+test.exe
+-----------------------------------
+SpellCard ID: 12345
+Name: 火球术
+Cost: 4
+Class: MAGE
+Rarity: COMMON
+Spell School: FIRE
+Effects: Damage(6) 
+Description: 对一个敌人造成6点伤害。
+-----------------------------------
+SpellCard ID: 12346
+Name: 寒冰箭
+Cost: 2
+Class: MAGE
+Rarity: COMMON
+Spell School: FROST
+Effects: Damage(3) Frozen 
+Description: 对一个敌人造成3点伤害并冻结。
+-----------------------------------

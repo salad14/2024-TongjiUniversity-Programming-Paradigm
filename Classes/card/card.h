@@ -6,7 +6,6 @@
 #include "cocos2d.h"
 
 enum cardClass {
-// �޸������ҪHero.h һ���޸�
     MAGE = static_cast<int>(HeroType::MAGE),
     WARRIOR = static_cast<int>(HeroType::WARRIOR),
     DRUID = static_cast<int>(HeroType::DRUID),
@@ -22,7 +21,7 @@ enum cardType {
 };
 
 enum cardRarity {
-    COMMAN,
+    COMMON,
     LEGENDARY,
 };
 
@@ -38,11 +37,9 @@ public:
         type(type),
         rarity(rarity) {}
 
-    // ��ȡ����������
     virtual const std::string& getDescription() const = 0;
     virtual const std::string& getName() const = 0;
 
-    // ��ȡ�����÷���
     int getCost() const { return cost; }
     void setCost(const int vary) {
         if (cost + vary >= 0) {
@@ -56,12 +53,12 @@ public:
     virtual void play() = 0;
 
 public:
-    int dbfId; // ÿ�ſ�ʹ��һ���ض���ID
-    int cost;    // ����
-    cardClass cardClass; // ְҵ
+    int dbfId; 
+    int cost;
+    cardClass cardClass;
     
-    std::string name;  // ����
-    std::string text;  // ����
-    cardType type;     // ��������
-    cardRarity rarity; // ϡ�ж�
+    std::string name;
+    std::string text;
+    cardType type; 
+    cardRarity rarity;
 };
