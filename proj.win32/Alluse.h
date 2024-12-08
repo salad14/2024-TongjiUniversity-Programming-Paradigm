@@ -44,10 +44,17 @@ constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_X = 0;                    // MainScene
 //MatchingScene 匹配场景设置
 constexpr int MATCHING_SCENE_CANCEL_OFFSET_X = 30;      // 匹配场景 取消按钮 X 偏移量
 constexpr int MATCHING_SCENE_CANCEL_OFFSET_Y = -440;      // 匹配场景 取消按钮 Y 偏移量（相对于屏幕中心）
-constexpr float MATCHING_SCENE_DURATION = 1.0f;              // 匹配页面停留时长（测试，非正式）
+constexpr float MATCHING_SCENE_DURATION = 0.5f;              // 匹配页面停留时长（测试，非正式）
 
-// 对战场景设置（预留）
-// 
+// BoardScene牌桌场景设置
+// 卡片区域的起始位置坐标
+constexpr int CARD_REGION_X = 100;
+constexpr int CARD_REGION_Y = 100;
+
+
+
+
+
 // 设置场景设置（预留）
 
 // 商店牌堆设置（预留）

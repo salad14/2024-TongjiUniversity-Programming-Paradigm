@@ -19,8 +19,6 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
-
-
 // 创建场景
 Scene* MatchingScene::createScene()
 {
@@ -64,12 +62,12 @@ bool MatchingScene::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-    // 设置计时器
-    /*this->scheduleOnce([](float dt)
+     //设置计时器
+    this->scheduleOnce([](float dt)
         {
         auto transition = cocos2d::TransitionFade::create(SCENE_TRANSITION_DURATION, BoardScene::createScene(), cocos2d::Color3B::WHITE);
         cocos2d::Director::getInstance()->replaceScene(transition);
-        }, MATCHING_SCENE_DURATION + SCENE_TRANSITION_DURATION, "StartupSceneToInitialScene");*/
+        }, MATCHING_SCENE_DURATION + SCENE_TRANSITION_DURATION, "MatchingSceneToInitialScene");
 
     return true;
 }
