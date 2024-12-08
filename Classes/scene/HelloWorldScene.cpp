@@ -84,6 +84,8 @@ bool HelloWorld::init()
     }
     background->setPosition(Vec2(screenSize.width / 2, screenSize.height / 2));
     this->addChild(background);
+
+    return true;
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
@@ -99,9 +101,98 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 }
 
+
+//最后应修改的版本
+/*
 void HelloWorld::menuReplaceCallback(Ref* pSender)
 {
     // 加载点击音效
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f,MainScene::createScene()));
+
+    // 创建一个用于UI的Layer
+    auto uiLayer = Layer::create();
+    this->addChild(uiLayer);
+
+    // 创建CocosUIListener并初始化日志标签
+    cocosUIListener = new CocosUIListener();
+    cocosUIListener->initializeLogLabel(uiLayer, Vec2(Director::getInstance()->getVisibleSize().width / 2, Director::getInstance()->getVisibleSize().height - 50));
+
+    // 初始化PhotonLib单例
+    PhotonLib::initialize(cocosUIListener);
+    PhotonLib* photonLib = PhotonLib::getInstance();
+    if (!photonLib)
+    {
+        CCLOG("PhotonLib initialization failed!");
+        return;
+    }
+
+    // 设置连接成功后的回调
+    photonLib->setConnectionCallback([=](bool success, const std::wstring& message) {
+        if (success)
+        {
+            CCLOG("Connected to Photon successfully. Switching to MainScene.");
+            // 切换到 MainScene
+            Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MainScene::createScene()));
+        }
+        else
+        {
+            CCLOG("Failed to connect to Photon: %ls", message.c_str());
+            // 可以在这里添加重试逻辑或显示错误信息
+        }
+        });
+
+    // 开始连接到Photon服务器
+    CCLOG("Connecting to Photon from HelloWorldScene...");
+    photonLib->connectToPhoton(); // 开始连接
+
+    // 注意：不立即切换场景，等待连接回调触发
+}
+*/
+
+
+//测试用
+void HelloWorld::menuReplaceCallback(Ref* pSender)
+{
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
+
+    // 创建一个用于UI的Layer
+    auto uiLayer = Layer::create();
+    this->addChild(uiLayer);
+
+    // 创建CocosUIListener并初始化日志标签
+    cocosUIListener = new CocosUIListener();
+    cocosUIListener->initializeLogLabel(uiLayer, Vec2(Director::getInstance()->getVisibleSize().width / 2, Director::getInstance()->getVisibleSize().height - 50));
+
+    // 初始化PhotonLib单例
+    /*
+    PhotonLib::initialize(cocosUIListener);
+    PhotonLib* photonLib = PhotonLib::getInstance();
+    if (!photonLib)
+    {
+        CCLOG("PhotonLib initialization failed!");
+        // 即使初始化失败，也切换到 MainScene
+    }
+    else
+    {
+        // 设置连接成功或失败的回调，仅用于日志记录，不负责场景切换
+        photonLib->setConnectionCallback([=](bool success, const std::wstring& message) {
+            if (success)
+            {
+                CCLOG("Connected to Photon successfully.");
+            }
+            else
+            {
+                CCLOG("Failed to connect to Photon: %ls", message.c_str());
+            }
+            // 场景切换不在这里进行
+            });
+
+        // 开始连接到Photon服务器
+        CCLOG("Connecting to Photon from HelloWorldScene...");
+        photonLib->connectToPhoton(); // 开始连接
+    }*/
+
+    // 无论连接是否成功，立即切换到 MainScene
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MainScene::createScene()));
 }

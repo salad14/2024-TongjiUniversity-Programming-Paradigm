@@ -8,17 +8,50 @@
 class PhotonLib : private ExitGames::LoadBalancing::Listener
 {
 public:
-    PhotonLib(UIListener*);
+    // 获取单例实例
+    static PhotonLib* getInstance();
+
+    // 初始化单例实例
+    static void initialize(UIListener* listener);
+
+    // 更新Photon状态
     void update(void);
+
+    // 获取当前状态的字符串表示
     ExitGames::Common::JString getStateString(void);
 
     // 设置房间加入后的回调
     void setRoomJoinedCallback(const std::function<void()>& callback);
 
+    // 设置玩家数量变化的回调
+    void setPlayerCountChangedCallback(const std::function<void(int)>& callback);
+
+    //设置链接到Photon的回调
+    void setConnectionCallback(const std::function<void(bool, const std::wstring&)>& callback);
+
+    // 加入或创建房间
     void joinOrCreateRoom(const ExitGames::Common::JString& roomName);
 
+    // 获取当前房间的玩家数量
+    int getPlayerCount();
+
+    // 显式连接到Photon服务器
+    void connectToPhoton();
+
+    // 显式断开Photon连接
+    void disconnectFromPhoton();
 
 private:
+    // 私有构造函数
+    PhotonLib(UIListener* listener);
+
+    // 禁止拷贝
+    PhotonLib(const PhotonLib&) = delete;
+    PhotonLib& operator=(const PhotonLib&) = delete;
+
+    // 单例实例指针
+    static PhotonLib* instance;
+
     // Override 虚函数
     virtual void debugReturn(int debugLevel, const ExitGames::Common::JString& string) override;
     virtual void connectionErrorReturn(int errorCode) override;
@@ -73,4 +106,9 @@ private:
 
     // 房间加入后的回调
     std::function<void()> roomJoinedCallback;
+
+    // 玩家数量变化的回调
+    std::function<void(int)> playerCountChangedCallback;
+
+    std::function<void(bool, const std::wstring&)> connectionCallback;
 };

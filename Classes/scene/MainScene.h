@@ -13,6 +13,9 @@ public:
     // 创建场景
     static cocos2d::Scene* createScene();
 
+    // 定期更新Photon
+    void updatePhoton(float dt);
+
     // 初始化场景
     virtual bool init();
 
@@ -20,6 +23,10 @@ public:
     void normalGameCallback(cocos2d::Ref* psender);
     void adventureGameCallback(cocos2d::Ref* psender);
     void collectionCallback(cocos2d::Ref* psender);
+
+    // 构造函数和析构函数
+    MainScene();
+    virtual ~MainScene();
 
     // implement the "static create()" method manually
     CREATE_FUNC(MainScene);
@@ -30,7 +37,4 @@ private:
 
     // CocosUIListener 实例
     CocosUIListener* cocosUIListener;
-
-    // 定时器回调
-    void updatePhoton(float dt);
 };

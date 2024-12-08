@@ -4,6 +4,8 @@
 #include "UIListener.h"
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
+#include <fstream> 
+#include <string>
 
 class CocosUIListener : public UIListener
 {
@@ -22,4 +24,5 @@ public:
 private:
     // 用于显示日志的Label
     cocos2d::Label* logLabel;
+    std::ofstream logFileStream; // 文件输出流
 };

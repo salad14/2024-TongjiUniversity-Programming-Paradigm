@@ -6,6 +6,7 @@
 #include "proj.win32/Alluse.h"
 #include "proj.win32/AudioPlayer.h"
 #include "network/CocosUIListener.h"
+#include "network/Photon_lib.h"
 
 USING_NS_CC;
 
@@ -14,14 +15,38 @@ Scene* MainScene::createScene()
     return MainScene::create();
 }
 
-// Print useful error message instead of segfaulting when files are not there.
+// 构造函数
+MainScene::MainScene()
+    : cocosUIListener(nullptr)
+{
+}
+
+// 析构函数
+MainScene::~MainScene()
+{
+    // 断开回调
+    PhotonLib* photonLib = PhotonLib::getInstance();
+    if (photonLib)
+    {
+        photonLib->setRoomJoinedCallback(nullptr); // 断开回调
+        photonLib->setPlayerCountChangedCallback(nullptr); // 断开玩家数量变化回调
+    }
+
+    if (cocosUIListener)
+    {
+        delete cocosUIListener;
+        cocosUIListener = nullptr;
+    }
+}
+
+// 打印加载错误信息
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in MainScene.cpp\n");
 }
 
-// on "init" you need to initialize your instance
+// 初始化场景
 bool MainScene::init()
 {
     //////////////////////////////
@@ -139,41 +164,67 @@ bool MainScene::init()
     cocosUIListener = new CocosUIListener();
     cocosUIListener->initializeLogLabel(uiLayer, Vec2(visibleSize.width / 2, visibleSize.height - 50));
 
-    // 初始化PhotonLib
-    photonLib = new PhotonLib(cocosUIListener);
+    // 获取 PhotonLib 实例
+    // 测试用
+    PhotonLib::initialize(cocosUIListener);
+    PhotonLib* photonLib = PhotonLib::getInstance();
+    if (!photonLib)
+    {
+        CCLOG("PhotonLib is not initialized!");
+        return false;
+    }
+
+    // 设置房间加入后的回调，切换到 MatchingScene
     photonLib->setRoomJoinedCallback([=]() {
-        // 切换到BoardScene
-        Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardScene::createScene()));
+        CCLOG("Room joined callback triggered. Switching to MatchingScene.");
+        // 切换到 MatchingScene
+        Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
         });
 
-    // 定期调用PhotonLib::update()
+    // 设置玩家数量变化的回调
+    photonLib->setPlayerCountChangedCallback([=](int playerCount) {
+        });
+
+    // 定期调用 PhotonLib::update()
     this->schedule(CC_SCHEDULE_SELECTOR(MainScene::updatePhoton), 0.1f); // 每0.1秒调用一次
 
-    return true;
+    return true; // 确保返回 true
 }
 
+// 定期更新Photon
 void MainScene::updatePhoton(float dt)
 {
+    PhotonLib* photonLib = PhotonLib::getInstance();
     if (photonLib)
     {
         photonLib->update();
     }
-    // 加载点击音效
-    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
 }
 
+// normalGame 按钮的回调
 void MainScene::normalGameCallback(cocos2d::Ref* pSender)
 {
-    // 调用PhotonLib的joinOrCreateRoom方法
-    photonLib->joinOrCreateRoom(ExitGames::Common::JString(L"DefaultRoom")); // 可以自定义房间名
+    // 调用PhotonLib的连接和加入房间方法
+    PhotonLib* photonLib = PhotonLib::getInstance();
+    if (photonLib)
+    {
+        photonLib->connectToPhoton(); // 显式连接
+        photonLib->joinOrCreateRoom(ExitGames::Common::JString(L"DefaultRoom")); // 加入或创建房间
+    }
+    else
+    {
+        CCLOG("PhotonLib is not initialized.");
+    }
 }
 
+
+// adventureGame 按钮的回调
 void MainScene::adventureGameCallback(cocos2d::Ref* pSender)
 {
     // 实现冒险模式的逻辑
 }
 
+// collection 按钮的回调
 void MainScene::collectionCallback(cocos2d::Ref* pSender)
 {
     // 实现收藏模式的逻辑
