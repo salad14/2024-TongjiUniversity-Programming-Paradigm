@@ -42,8 +42,8 @@ constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_Y = 100;                    // MainSce
 constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_X = 0;                    // MainScene adventure 按键 X 偏移量
 
 //MatchingScene 匹配场景设置
-constexpr int MATCHING_SCENE_MATCHING_LABEL_OFFSET_Y = 0; // 匹配场景匹配中标签位置 Y 偏移量（相对于屏幕中心）
-constexpr int MATCHING_SCENE_MATCHING_LABEL_OFFSET_X = 0;    // 匹配场景匹配中标签位置 X 偏移量
+constexpr int MATCHING_SCENE_CANCEL_OFFSET_X = 30;      // 匹配场景 取消按钮 X 偏移量
+constexpr int MATCHING_SCENE_CANCEL_OFFSET_Y = -440;      // 匹配场景 取消按钮 Y 偏移量（相对于屏幕中心）
 constexpr float MATCHING_SCENE_DURATION = 1.0f;              // 匹配页面停留时长（测试，非正式）
 
 // 对战场景设置（预留）

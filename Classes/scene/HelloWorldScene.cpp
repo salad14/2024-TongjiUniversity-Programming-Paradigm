@@ -35,8 +35,8 @@ bool HelloWorld::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
+                                           "../Resources/button/CloseNormal.png",
+                                           "../Resources/button/CloseSelected.png",
                                            CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
 
     if (closeItem == nullptr ||
@@ -53,8 +53,8 @@ bool HelloWorld::init()
     }
 
     auto startGame = MenuItemImage::create(
-                                           "GameStart.png",
-                                           "GameStartSelected.png",
+                                           "../Resources/button/GameStart.png",
+                                           "../Resources/button/GameStartSelected.png",
                                            CC_CALLBACK_1(HelloWorld::menuReplaceCallback, this));
     if (startGame == nullptr ||
         startGame->getContentSize().width <= 0 ||
@@ -68,7 +68,6 @@ bool HelloWorld::init()
         float y = origin.y + startGame->getContentSize().height / 2;
         startGame->setPosition(Vec2(x, y));
     }
-
 
     // create menu, it's an autorelease object
     auto menu = Menu::create(closeItem, startGame, NULL);
@@ -92,11 +91,6 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     //Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();
-
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
-
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
 }
 
 void HelloWorld::menuReplaceCallback(Ref* pSender)

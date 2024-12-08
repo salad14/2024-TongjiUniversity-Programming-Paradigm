@@ -38,15 +38,10 @@ bool MainScene::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
-
-    // add a "close" icon to exit the progress. it's an autorelease object
-
+    // normalgame按钮（跳转到普通模式界面）
     auto normalGame = MenuItemImage::create(
-        "normalgame.png",
-        "normalgame.png",
+        "../Resources/button/normalgame.png",
+        "../Resources/button/normalgame.png",
         CC_CALLBACK_1(MainScene::normalGameCallback, this));
 
     if (normalGame == nullptr ||
@@ -62,10 +57,10 @@ bool MainScene::init()
         normalGame->setPosition(Vec2(x+ MAIN_SCENE_PLAYBUTTON_OFFSET_X, y+ MAIN_SCENE_PLAYBUTTON_OFFSET_Y));
     }
 
-
+    // adventure按钮（跳转到冒险模式界面）
     auto adventureGame = MenuItemImage::create(
-        "adventure.png",
-        "adventure.png",
+        "../Resources/button/adventure.png",
+        "../Resources/button/adventure.png",
         CC_CALLBACK_1(MainScene::adventureGameCallback, this));
 
     if (adventureGame == nullptr ||
@@ -81,9 +76,10 @@ bool MainScene::init()
         adventureGame->setPosition(Vec2(x+ MAIN_SCENE_ADVBUTTON_OFFSET_X, y+ MAIN_SCENE_ADVBUTTON_OFFSET_Y));
     }
 
+    // collection按钮（跳转到自定义卡牌界面）
     auto collection = MenuItemImage::create(
-        "collection.png",
-        "collection.png",
+        "../Resources/button/collection.png",
+        "../Resources/button/collection.png",
         CC_CALLBACK_1(MainScene::collectionCallback, this));
 
     if (collection == nullptr ||
@@ -98,14 +94,13 @@ bool MainScene::init()
         float y = origin.y + collection->getContentSize().height / 2;
         collection->setPosition(Vec2(x, y));
     }
+
     // create menu, it's an autorelease object
     auto menu = Menu::create(normalGame, adventureGame, collection, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-    /////////////////////////////
-    // 3. add your codes below...
-
+    // 菜单界面背景
     auto sprite = Sprite::create("../Resources/Scenes/2MainScene.png");
     if (sprite == nullptr)
     {
@@ -140,10 +135,12 @@ void MainScene::normalGameCallback(Ref* pSender)
 
 void MainScene::adventureGameCallback(Ref* pSender)
 {
-
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
 
 void MainScene::collectionCallback(Ref* pSender)
 {
-
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
