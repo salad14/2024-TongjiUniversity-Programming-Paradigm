@@ -17,7 +17,7 @@ CocosUIListener* CocosUIListener::getInstance()
 CocosUIListener::CocosUIListener()
     : logLabel(nullptr)
 {
-    // 可选：打开日志文件
+    //打开日志文件
     logFileStream.open("game_log.txt", std::ios::app);
     if (!logFileStream.is_open())
     {
@@ -93,7 +93,7 @@ void CocosUIListener::writeString(const ExitGames::Common::JString& str)
             // 更新 logLabel 的文本
             logLabel->setString(utf8Str);
 
-            // 可选：记录日志到文件
+            // 记录日志到文件
             if (logFileStream.is_open())
             {
                 logFileStream << utf8Str << std::endl;
@@ -118,7 +118,7 @@ void CocosUIListener::onLibClosed(void)
     {
         logLabel->setString("Library closed.");
 
-        // 可选：记录日志到文件
+        // 记录日志到文件
         if (logFileStream.is_open())
         {
             logFileStream << "Library closed." << std::endl;

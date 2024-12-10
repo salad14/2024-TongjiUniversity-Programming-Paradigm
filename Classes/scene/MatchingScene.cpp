@@ -9,7 +9,7 @@
 
 USING_NS_CC;
 
-// Print useful error message instead of segfaulting when files are not there.
+// 辅助函数
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
@@ -52,12 +52,16 @@ bool MatchingScene::init()
     background->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
     this->addChild(background);
 
-    // 添加玩家数量标签
-    playerCountLabel = Label::createWithSystemFont("Waitng Player: 1/2", "Arial", 24);
+    // 添加玩家数量标签，修正拼写错误
+    playerCountLabel = Label::createWithSystemFont("Waiting Player: 1/2", "Arial", 24);
     if (playerCountLabel)
     {
         playerCountLabel->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2 - 50));
         this->addChild(playerCountLabel);
+    }
+    else
+    {
+        CCLOG("Failed to create playerCountLabel.");
     }
 
     // 获取 PhotonLib 实例并进行房间加入
@@ -71,20 +75,44 @@ bool MatchingScene::init()
             // 此处可以更新 UI，提示用户已加入房间
             });
 
-        // 设置玩家数量变化的回调
+        // 设置玩家数量变化的回调，并确保在主线程中执行
         photonLib->setPlayerCountChangedCallback([=](int playerCount) {
-            // 更新玩家数量标签
-            this->updatePlayerCount(playerCount);
+            // 将更新操作调度到主线程
+            Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+                CCLOG("PlayerCountChangedCallback triggered with count: %d", playerCount);
+                // 更新玩家数量标签
+                this->updatePlayerCount(playerCount);
 
-            // 如果达到2人，则切换到 BoardScene
-            if (playerCount >= 2)
-            {
-                CCLOG("Player count reached 2. Switching to BoardScene.");
-                cocosUIListener->writeString(L"Player count reached 2. Starting game...");
-                // 切换到 BoardScene
-                auto transition = TransitionFade::create(0.2f, BoardScene::createScene(), Color3B::WHITE);
-                Director::getInstance()->replaceScene(transition);
-            }
+                // 如果达到2人，则切换到 BoardScene
+                if (playerCount >= 2)
+                {
+                    CCLOG("Player count reached 2. Switching to BoardScene.");
+                    cocosUIListener->writeString(L"Player count reached 2. Starting game...");
+
+                    // 确保 BoardScene 被正确创建
+                    auto boardScene = BoardScene::createScene();
+                    if (boardScene == nullptr) {
+                        CCLOG("BoardScene::createScene() returned nullptr.");
+                        return;
+                    }
+                    else {
+                        CCLOG("BoardScene::createScene() succeeded.");
+                    }
+
+                    // 创建场景过渡
+                    auto transition = TransitionFade::create(0.2f, boardScene, Color3B::WHITE);
+                    if (transition == nullptr) {
+                        CCLOG("TransitionFade::create() returned nullptr.");
+                        return;
+                    }
+                    else {
+                        CCLOG("TransitionFade::create() succeeded.");
+                    }
+
+                    // 切换到 BoardScene
+                    Director::getInstance()->replaceScene(transition);
+                }
+                });
             });
 
         // 连接并加入/创建房间

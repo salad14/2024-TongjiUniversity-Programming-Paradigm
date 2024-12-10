@@ -43,8 +43,12 @@ void PhotonLib::initialize(UIListener* listener)
     if (instance == nullptr)
     {
         instance = new PhotonLib(listener);
+        CCLOG("PhotonLib: Initialized singleton instance.");
     }
-    // 如果已经初始化，可以选择更新 listener 或保持不变
+    else
+    {
+        CCLOG("PhotonLib: Singleton instance already initialized.");
+    }
 }
 
 // 私有构造函数
@@ -62,6 +66,7 @@ PhotonLib::PhotonLib(UIListener* listener)
 #pragma warning(pop)
 #endif
 {
+    
     mLoadBalancingClient.setDebugOutputLevel(ExitGames::Common::DebugLevel::INFO);
     mLogger.setListener(*this);
     mLogger.setDebugOutputLevel(ExitGames::Common::DebugLevel::INFO);
@@ -122,14 +127,16 @@ void PhotonLib::sendData(void)
 // 获取玩家数量
 int PhotonLib::getPlayerCount()
 {
-    // 使用 getIsInRoom() 来检查当前是否在房间中
     if (mLoadBalancingClient.getIsInRoom())
     {
-        // 使用 getCountPlayersIngame() 获取当前房间中的玩家数量
-        return mLoadBalancingClient.getCountPlayersIngame();
+        int count = mLoadBalancingClient.getCurrentlyJoinedRoom().getPlayers().getSize();
+        CCLOG("PhotonLib: getPlayerCount() returns %d", count);
+        return count;
     }
+    CCLOG("PhotonLib: getPlayerCount() - not in room.");
     return 0;
 }
+
 
 // Override Listener 虚函数实现
 
@@ -202,6 +209,8 @@ void PhotonLib::serverErrorReturn(int errorCode)
         mpOutputListener->writeString(ExitGames::Common::JString(L"received error ") + intToJString(errorCode) + L" from server");
 }
 
+
+// 触发玩家数量变化回调
 void PhotonLib::joinRoomEventAction(int playerNr, const ExitGames::Common::JVector<int>& /*playernrs*/, const ExitGames::LoadBalancing::Player& player)
 {
     EGLOG(ExitGames::Common::DebugLevel::INFO, L"%ls joined the game", player.getName().cstr());
@@ -220,7 +229,12 @@ void PhotonLib::joinRoomEventAction(int playerNr, const ExitGames::Common::JVect
         CCLOG("PhotonLib: triggering playerCountChangedCallback with count %d", currentPlayerCount);
         playerCountChangedCallback(currentPlayerCount);
     }
+    else
+    {
+        CCLOG("PhotonLib: playerCountChangedCallback is not set.");
+    }
 }
+
 
 void PhotonLib::leaveRoomEventAction(int playerNr, bool isInactive)
 {
@@ -483,14 +497,17 @@ void PhotonLib::joinOrCreateRoom(const ExitGames::Common::JString& roomName)
 }
 
 // 设置房间加入后的回调
-void PhotonLib::setRoomJoinedCallback(const std::function<void()>& callback) {
+void PhotonLib::setRoomJoinedCallback(const std::function<void()>& callback)
+{
     roomJoinedCallback = callback;
+    CCLOG("PhotonLib: roomJoinedCallback has been set.");
 }
 
 // 设置玩家数量变化的回调
 void PhotonLib::setPlayerCountChangedCallback(const std::function<void(int)>& callback)
 {
     playerCountChangedCallback = callback;
+    CCLOG("PhotonLib: playerCountChangedCallback has been set.");
 }
 
 // 设置连接回调

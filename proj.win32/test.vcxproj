@@ -154,10 +154,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\cards\card.cpp" />
     <ClCompile Include="..\Classes\heroes\Hero.cpp" />
-    <ClCompile Include="..\Classes\network\BasicsApplication.cpp" />
     <ClCompile Include="..\Classes\network\CocosUIListener.cpp" />
     <ClCompile Include="..\Classes\network\Photon_lib.cpp" />
-    <ClCompile Include="..\Classes\network\StdIO_UIListener.cpp" />
     <ClCompile Include="..\Classes\scene\BoardScene.cpp" />
     <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\scene\MainScene.cpp" />
@@ -169,10 +167,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\cards\card.h" />
     <ClInclude Include="..\Classes\heroes\Hero.h" />
-    <ClInclude Include="..\Classes\network\BasicsApplication.h" />
     <ClInclude Include="..\Classes\network\CocosUIListener.h" />
     <ClInclude Include="..\Classes\network\Photon_lib.h" />
-    <ClInclude Include="..\Classes\network\StdIO_UIListener.h" />
     <ClInclude Include="..\Classes\network\UIListener.h" />
     <ClInclude Include="..\Classes\scene\BoardScene.h" />
     <ClInclude Include="..\Classes\scene\HelloWorldScene.h" />

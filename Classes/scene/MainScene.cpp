@@ -23,14 +23,6 @@ MainScene::MainScene()
 // 析构函数
 MainScene::~MainScene()
 {
-    // 获取 PhotonLib 实例
-    PhotonLib* photonLib = PhotonLib::getInstance();
-    if (photonLib)
-    {
-        photonLib->setRoomJoinedCallback(nullptr); // 断开回调
-        photonLib->setPlayerCountChangedCallback(nullptr); // 断开玩家数量变化回调
-        // 不设置 Listener 为 nullptr，保持 Singleton
-    }
 }
 
 // 打印加载错误信息
@@ -159,9 +151,6 @@ bool MainScene::init()
 
     // 将 logLabel 附加到当前 Layer 上
     cocosUIListener->attachToLayer(uiLayer, Vec2(visibleSize.width / 2, visibleSize.height - 50));
-
-    // 注意：PhotonLib 的初始化和连接逻辑已移至 menuReplaceCallback
-
     return true;
 }
 
