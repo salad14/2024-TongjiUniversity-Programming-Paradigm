@@ -26,8 +26,8 @@ public:
     }
 
 private:
-    std::vector<Sprite*> dragCards;                // 存储所有卡
-    std::map<Sprite*, Vec2> cardOriginalPositions;  // 存储每张卡的原始位置
+    std::vector<Sprite*> dragCards;                 // 待出牌区域的卡牌
+    std::map<Sprite*, Vec2> cardOriginalPositions;  // 存储待出牌区域每张卡的原始位置
     Sprite* selectedCard;            // 当前选中的精灵
     DrawNode* dropArea;              // 中央区域显示
 
@@ -66,11 +66,11 @@ private:
    // void update(float dt);
 
     // 新增成员变量
-    vector<Sprite*> playedCards;    // 已打出的卡牌
+    vector<Sprite*> playedCards;         // 已打出的卡牌
     Node* deckNode1;                     // 牌堆显示节点1
     Node* deckNode2;                     // 牌堆显示节点2
 
-    void initDecks();                    // 初始化牌堆
+    void initDecks();                    // 根据用户卡组 初始化牌堆
     void drawCard();                     // 抽牌
     void updatePlayedCardsPosition();    // 更新已打出卡牌的位置
 };

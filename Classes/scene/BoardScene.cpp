@@ -195,17 +195,6 @@ void BoardScene::checkDropArea() {
 
 //从出牌区域移除一张卡牌
 void BoardScene::removeCard(Sprite* sprite) {
-    //if (!sprite) return;
-
-    //if (sprite == hoveredCard) {
-    //    hoveredCard = nullptr;
-    //}
-
-
-    
-
-    //CCLOG("Current sprite count: %zu", dragCards.size());
-
     if (!sprite) return;
 
     if (sprite == hoveredCard) {
@@ -370,6 +359,7 @@ void BoardScene::initPlayers()
     player2->setPlayerCards();
 }
 
+// 创建玩家信息UI
 void BoardScene::createPlayerUI() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -388,12 +378,12 @@ void BoardScene::createPlayerUI() {
 
     // 创建对方玩家信息显示
     player2Health = Label::createWithTTF("HP: 30", "fonts/arial.ttf", 24);
-    player2Health->setPosition(Vec2(800, visibleSize.height - 100));
+    player2Health->setPosition(Vec2(800, visibleSize.height - 220));
     this->addChild(player2Health);
     player2Health->enableOutline(Color4B::BLACK, 2);         // 黑色描边，粗细为2
 
     player2Mana = Label::createWithTTF("Mana: 1/1", "fonts/arial.ttf", 24);
-    player2Mana->setPosition(Vec2(800, visibleSize.height - 150));
+    player2Mana->setPosition(Vec2(800, visibleSize.height - 280));
     this->addChild(player2Mana);
     player2Mana->enableOutline(Color4B::BLACK, 2);         // 黑色描边，粗细为2
 
@@ -416,6 +406,7 @@ void BoardScene::createPlayerUI() {
     this->addChild(menu);
 }
 
+// 更新玩家UI
 void BoardScene::updatePlayerUI() {
     // 更新生命值显示
     player1Health->setString("HP: " + std::to_string(player1->health));
@@ -431,6 +422,7 @@ void BoardScene::updatePlayerUI() {
     turnIndicator->setString(isPlayer1Turn ? "Your Turn" : "Opponent's Turn");
 }
 
+// 切换回合
 void BoardScene::switchTurn() 
 {
     isPlayer1Turn = !isPlayer1Turn;
@@ -457,6 +449,7 @@ void BoardScene::switchTurn()
     drawCard();
 }
 
+// 初始化牌堆
 void BoardScene::initDecks() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -482,43 +475,57 @@ void BoardScene::initDecks() {
     }
 }
 
-// 从牌堆中抽一张牌
+// 从卡组牌堆中抽一张牌
 void BoardScene::drawCard() {
     if (isPlayer1Turn && !player1->playerCards.empty()) {
         // 从牌堆抽一张牌
         auto card = player1->playerCards.back();
         player1->playerCards.pop_back();
 
-        // 创建新的可操作卡牌
-        auto newCard = Sprite::create("cardfortest.png");
-        Vec2 originalPos(CARD_REGION_X + dragCards.size() * (newCard->getContentSize().width + 30), CARD_REGION_Y);
-        newCard->setPosition(originalPos);
+        // 创建新的可操作卡牌，复制card的纹理
+        auto texture = card->getTexture();
+        auto newCard = Sprite::createWithTexture(texture);
 
-        // 添加抽牌动画
-        card->runAction(Sequence::create(
+        // 设置新卡牌的初始位置（从牌堆位置开始）
+        newCard->setPosition(Vec2(1950, 500)); // 牌堆位置
+        newCard->setScale(0.5f); // 初始较小的尺寸
+
+        // 计算目标位置
+        Vec2 originalPos(CARD_REGION_X + dragCards.size() * (newCard->getContentSize().width + 30), CARD_REGION_Y);
+
+        // 添加到待出牌区域并记录位置
+        this->addChild(newCard);
+        cardOriginalPositions[newCard] = originalPos;
+        dragCards.push_back(newCard);
+
+        // 抽牌动画序列
+        newCard->runAction(Sequence::create(
+            // 1. 先稍微上浮
+            EaseOut::create(MoveBy::create(0.2f, Vec2(0, 50)), 2.0f),
+            // 2. 移动到目标位置并放大
             Spawn::create(
-                MoveTo::create(0.3f, originalPos),
-                ScaleTo::create(0.3f, 1.0f),
+                EaseInOut::create(MoveTo::create(0.5f, originalPos), 2.0f),
+                EaseInOut::create(ScaleTo::create(0.5f, 1.0f), 2.0f),
+                RotateBy::create(0.5f, 360), // 旋转一圈
                 nullptr
             ),
-            RemoveSelf::create(),
+            // 3. 最后轻微弹跳效果
+            EaseElasticOut::create(ScaleTo::create(0.3f, 1.0f)),
             nullptr
         ));
 
-        // 记录新卡牌
-        cardOriginalPositions[newCard] = originalPos;
-        this->addChild(newCard);
-        dragCards.push_back(newCard);
+        // 播放抽牌音效
+        audioPlayer("Music/drawcard.mp3", false);
 
         // 更新牌堆显示
         deckNode1->removeChild(card);
     }
-    // 对手回合的抽牌逻辑类似
     else if (!player2->playerCards.empty()) {
-        // 由于对手手牌不显示，本处加入对战逻辑即可，不做显示处理
+        // 第二名玩家的抽牌逻辑（待完成）
     }
 }
 
+// 更新场上已打出卡牌的显示
 void BoardScene::updatePlayedCardsPosition() {
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height / 2);
