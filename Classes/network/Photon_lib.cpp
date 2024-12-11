@@ -256,6 +256,7 @@ void PhotonLib::leaveRoomEventAction(int playerNr, bool isInactive)
     }
 }
 
+
 void PhotonLib::customEventAction(int playerNr, nByte eventCode, const ExitGames::Common::Object& eventContentObj)
 {
     ExitGames::Common::Hashtable eventContent = ExitGames::Common::ValueObject<ExitGames::Common::Hashtable>(eventContentObj).getDataCopy();
@@ -374,8 +375,35 @@ void PhotonLib::createRoomReturn(int localPlayerNr, const ExitGames::Common::Has
     }
 }
 
-// 加入或创建房间返回回调
-// Photon_lib.cpp
+// 实现 leaveRoom 方法
+void PhotonLib::leaveRoom()
+{
+    if (mLoadBalancingClient.getIsInRoom())
+    {
+        EGLOG(ExitGames::Common::DebugLevel::INFO, L"Leaving the current room...");
+        if (mpOutputListener)
+            mpOutputListener->writeString(L"Leaving the current room...");
+
+        // 调用 Photon 的离开房间操作
+        mLoadBalancingClient.opLeaveRoom();
+
+        // 更新状态
+        mState = State::LEAVING;
+    }
+    else
+    {
+        EGLOG(ExitGames::Common::DebugLevel::INFO, L"Not currently in a room.");
+        if (mpOutputListener)
+            mpOutputListener->writeString(L"Not currently in a room.");
+    }
+}
+
+// 设置房间离开后的回调
+void PhotonLib::setLeaveRoomCallback(const std::function<void()>& callback)
+{
+    leaveRoomCallback = callback;
+    CCLOG("PhotonLib: leaveRoomCallback has been set.");
+}
 
 void PhotonLib::joinOrCreateRoomReturn(int localPlayerNr, const ExitGames::Common::Hashtable& /*gameProperties*/, const ExitGames::Common::Hashtable& /*playerProperties*/, int errorCode, const ExitGames::Common::JString& errorString)
 {
@@ -455,24 +483,34 @@ void PhotonLib::joinRandomRoomReturn(int localPlayerNr, const ExitGames::Common:
 // 离开房间返回回调
 void PhotonLib::leaveRoomReturn(int errorCode, const ExitGames::Common::JString& errorString)
 {
-    EGLOG(ExitGames::Common::DebugLevel::INFO, L"");
     if (errorCode)
     {
-        EGLOG(ExitGames::Common::DebugLevel::ERRORS, L"%ls", errorString.cstr());
+        EGLOG(ExitGames::Common::DebugLevel::ERRORS, L"Failed to leave room: %ls", errorString.cstr());
         if (mpOutputListener)
-            mpOutputListener->writeString(L"opLeaveRoom() failed: " + ExitGames::Common::JString(errorString));
-        mState = State::DISCONNECTING;
+            mpOutputListener->writeString(L"Failed to leave room: " + ExitGames::Common::JString(errorString));
+        // 离开房间失败，仍然处于CONNECTED状态（已连接但不在房间）
+        mState = State::CONNECTED;
         return;
     }
-    mState = State::LEFT;
+
+    // 离开房间成功后，状态从LEAVING转为CONNECTED（已连接但无房间）
+    mState = State::CONNECTED;
+
     if (mpOutputListener)
     {
         std::wstringstream ss;
-        ss << L"room has been successfully left";
+        ss << L"Successfully left the room.";
         ExitGames::Common::JString message = ExitGames::Common::JString(ss.str().c_str());
         mpOutputListener->writeString(message);
     }
+
+    // 触发离开房间的回调（如有）
+    if (leaveRoomCallback)
+    {
+        leaveRoomCallback();
+    }
 }
+
 
 // 加入大厅返回回调
 void PhotonLib::joinLobbyReturn(void)

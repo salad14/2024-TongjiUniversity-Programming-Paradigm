@@ -137,4 +137,9 @@
       <Filter>resource</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src\network">
+      <UniqueIdentifier>{a71f5480-b1e0-43b1-916e-1d12d4891f92}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
 </Project>

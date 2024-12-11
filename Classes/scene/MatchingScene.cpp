@@ -76,6 +76,14 @@ bool MatchingScene::init()
             // 此处可以更新 UI，提示用户已加入房间
             });
 
+        // 设置房间离开后的回调
+        photonLib->setLeaveRoomCallback([=]() {
+            CCLOG("Successfully left the room.");
+            cocosUIListener->writeString(L"Successfully left the room.");
+            // 如果需要，可以在这里执行更多操作，例如更新 UI 或记录日志
+            });
+
+
         // 设置玩家数量变化的回调，并确保在主线程中执行
         photonLib->setPlayerCountChangedCallback([=](int playerCount) {
             // 将更新操作调度到主线程
@@ -180,9 +188,21 @@ void MatchingScene::cancelCallback(Ref* pSender)
 {
     // 加载点击音效
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MainScene::createScene()));
 
-    //注：此处可添加联机相关的停止处理
+    // 获取 PhotonLib 实例并离开房间
+    PhotonLib* photonLib = PhotonLib::getInstance();
+    if (photonLib)
+    {
+        CCLOG("Cancelling matchmaking. Leaving room...");
+        photonLib->leaveRoom();
+        CocosUIListener::getInstance()->writeString(L"Cancelling matchmaking...");
+    }
+    else
+    {
+        CCLOG("PhotonLib is not initialized!");
+        CocosUIListener::getInstance()->writeString(L"PhotonLib is not initialized!");
+    }
 
-
+    // 切换回主菜单
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MainScene::createScene(), Color3B::WHITE));
 }

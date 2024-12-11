@@ -41,6 +41,11 @@ public:
     // 显式断开Photon连接
     void disconnectFromPhoton();
 
+    void leaveRoom();
+
+    // 设置房间离开后的回调
+    void setLeaveRoomCallback(const std::function<void()>& callback);
+
 private:
     // 私有构造函数
     PhotonLib(UIListener* listener);
@@ -111,4 +116,6 @@ private:
     std::function<void(int)> playerCountChangedCallback;
 
     std::function<void(bool, const std::wstring&)> connectionCallback;
+
+    std::function<void()> leaveRoomCallback;
 };
