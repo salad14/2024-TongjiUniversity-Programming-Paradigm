@@ -1,7 +1,8 @@
 // MatchingScene.cpp
 
-#include "MatchingScene.h" // 本场景
-#include "BoardScene.h"    // 下一场景
+#include "MatchingScene.h"//本场景
+#include "BoardScene.h"   //下一场景
+#include "MainScene.h"
 #include "proj.win32/Alluse.h"
 #include "proj.win32/AudioPlayer.h"
 #include "network/CocosUIListener.h"
@@ -128,6 +129,19 @@ bool MatchingScene::init()
 
     // 定期调用 PhotonLib::update()
     this->schedule(CC_SCHEDULE_SELECTOR(MatchingScene::updatePhoton), 0.1f); // 每0.1秒调用一次
+    // cancel按钮（返回菜单界面界面）
+    auto cancel = MenuItemImage::create("../Resources/button/cancel.png", "../Resources/button/cancelSelected.png", CC_CALLBACK_1(MatchingScene::cancelCallback, this));
+    if (cancel == nullptr || cancel->getContentSize().width <= 0 || cancel->getContentSize().height <= 0)
+    {
+        problemLoading("'cancel.png' and 'cancelSelected.png'");
+    }
+    else
+    {
+        cancel->setPosition(Vec2(visibleSize.width / 2 + MATCHING_SCENE_CANCEL_OFFSET_X, visibleSize.height / 2 + MATCHING_SCENE_CANCEL_OFFSET_Y));
+    }
+    auto menu = Menu::create(cancel, NULL);
+    menu->setPosition(Vec2::ZERO);
+    this->addChild(menu, 1);
 
     return true;
 }
@@ -158,4 +172,17 @@ void MatchingScene::updatePlayerCount(int playerCount)
     {
         CCLOG("playerCountLabel is null.");
     }
+}
+// 取消按钮回调函数 
+//功能：取消匹配，回到主菜单
+
+void MatchingScene::cancelCallback(Ref* pSender)
+{
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MainScene::createScene()));
+
+    //注：此处可添加联机相关的停止处理
+
+
 }

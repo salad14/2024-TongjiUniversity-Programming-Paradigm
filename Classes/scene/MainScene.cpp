@@ -54,8 +54,8 @@ bool MainScene::init()
 
     // 创建 normalGame 按钮
     auto normalGame = MenuItemImage::create(
-        "normalgame.png",
-        "normalgame.png",
+        "../Resources/button/normalgame.png",
+        "../Resources/button/normalgame.png",
         CC_CALLBACK_1(MainScene::normalGameCallback, this));
 
     if (normalGame == nullptr ||
@@ -71,10 +71,10 @@ bool MainScene::init()
         normalGame->setPosition(Vec2(x + MAIN_SCENE_PLAYBUTTON_OFFSET_X, y + MAIN_SCENE_PLAYBUTTON_OFFSET_Y));
     }
 
-    // 创建 adventureGame 按钮
+    // adventure按钮（跳转到冒险模式界面）
     auto adventureGame = MenuItemImage::create(
-        "adventure.png",
-        "adventure.png",
+        "../Resources/button/adventure.png",
+        "../Resources/button/adventure.png",
         CC_CALLBACK_1(MainScene::adventureGameCallback, this));
 
     if (adventureGame == nullptr ||
@@ -90,10 +90,10 @@ bool MainScene::init()
         adventureGame->setPosition(Vec2(x + MAIN_SCENE_ADVBUTTON_OFFSET_X, y + MAIN_SCENE_ADVBUTTON_OFFSET_Y));
     }
 
-    // 创建 collection 按钮
+    // collection按钮（跳转到自定义卡牌界面）
     auto collection = MenuItemImage::create(
-        "collection.png",
-        "collection.png",
+        "../Resources/button/collection.png",
+        "../Resources/button/collection.png",
         CC_CALLBACK_1(MainScene::collectionCallback, this));
 
     if (collection == nullptr ||
@@ -178,10 +178,14 @@ void MainScene::normalGameCallback(cocos2d::Ref* pSender)
 void MainScene::adventureGameCallback(cocos2d::Ref* pSender)
 {
     // 实现冒险模式的逻辑
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
 
 // collection 按钮的回调
 void MainScene::collectionCallback(cocos2d::Ref* pSender)
 {
     // 实现收藏模式的逻辑
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }

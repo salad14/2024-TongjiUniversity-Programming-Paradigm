@@ -40,9 +40,9 @@ bool HelloWorld::init()
 
     // 创建关闭按钮
     auto closeItem = MenuItemImage::create(
-        "CloseNormal.png",
-        "CloseSelected.png",
-        CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+                                           "../Resources/button/CloseNormal.png",
+                                           "../Resources/button/CloseSelected.png",
+                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
 
     if (closeItem == nullptr ||
         closeItem->getContentSize().width <= 0 ||
@@ -59,9 +59,9 @@ bool HelloWorld::init()
 
     // 创建开始游戏按钮
     auto startGame = MenuItemImage::create(
-        "GameStart.png",
-        "GameStartSelected.png",
-        CC_CALLBACK_1(HelloWorld::menuReplaceCallback, this));
+                                           "../Resources/button/GameStart.png",
+                                           "../Resources/button/GameStartSelected.png",
+                                           CC_CALLBACK_1(HelloWorld::menuReplaceCallback, this));
     if (startGame == nullptr ||
         startGame->getContentSize().width <= 0 ||
         startGame->getContentSize().height <= 0)
@@ -75,7 +75,7 @@ bool HelloWorld::init()
         startGame->setPosition(Vec2(x, y));
     }
 
-    // 创建菜单
+    // create menu, it's an autorelease object
     auto menu = Menu::create(closeItem, startGame, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);

@@ -31,5 +31,110 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />
+    <Filter Include="win32">
+      <UniqueIdentifier>{84a8ebd7-7cf0-47f6-b75e-d441df67da40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\scene">
+      <UniqueIdentifier>{3777e464-746d-4fa5-81fa-cf570984ea48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cards">
+      <UniqueIdentifier>{cf5ed931-ef49-4ee4-befa-dd90f96d2744}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\heroes">
+      <UniqueIdentifier>{f373e5ee-796e-4b6b-8b57-e5fe26ff0fc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\players">
+      <UniqueIdentifier>{558e0793-1440-4938-b15f-10e4a6073e10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\battle">
+      <UniqueIdentifier>{bcde80d7-1f9e-4ed4-a9b2-7b10584181d6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\StartScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\MainScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AppDelegate.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\BoardScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\cards\card.cpp">
+      <Filter>src\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\heroes\Hero.cpp">
+      <Filter>src\heroes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\MatchingScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\players\player.cpp">
+      <Filter>src\players</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\battle\battle.cpp">
+      <Filter>src\battle</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\StartScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioPlayer.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="Alluse.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\HelloWorldScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\MainScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AppDelegate.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\BoardScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\cards\card.h">
+      <Filter>src\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\heroes\Hero.h">
+      <Filter>src\heroes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\MatchingScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\players\player.h">
+      <Filter>src\players</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\battle\battle.h">
+      <Filter>src\battle</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
