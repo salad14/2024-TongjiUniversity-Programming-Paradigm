@@ -1,3 +1,4 @@
+// CocosUIListener.cpp
 #include "CocosUIListener.h"
 #include "cocos2d.h"
 #include <codecvt>
@@ -5,32 +6,48 @@
 
 USING_NS_CC;
 
+// 获取 Singleton 实例
+CocosUIListener* CocosUIListener::getInstance()
+{
+    static CocosUIListener instance;
+    return &instance;
+}
+
+// 私有构造函数
 CocosUIListener::CocosUIListener()
     : logLabel(nullptr)
 {
+    //打开日志文件
+    logFileStream.open("game_log.txt", std::ios::app);
+    if (!logFileStream.is_open())
+    {
+        CCLOG("Failed to open log file.");
+    }
 }
 
+// 私有析构函数
 CocosUIListener::~CocosUIListener()
 {
-    // 资源由Cocos2d-x自动管理
+    if (logFileStream.is_open())
+    {
+        logFileStream.close();
+    }
 }
 
-// CocosUIListener.cpp
-
-#include "CocosUIListener.h"
-#include "cocos2d.h"
-
-void CocosUIListener::initializeLogLabel(cocos2d::Layer* layer, const cocos2d::Vec2& position)
+void CocosUIListener::attachToLayer(cocos2d::Layer* layer, const cocos2d::Vec2& position)
 {
-    // 获取可见尺寸以设定标签宽度
-    auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
+    // 如果已有 logLabel，先从之前的 Layer 中移除
+    if (logLabel && logLabel->getParent())
+    {
+        logLabel->removeFromParent();
+    }
 
-    // 创建具有更大字体大小（例如30）的标签，设置固定宽度，自动高度
+    // 创建新的 logLabel
     logLabel = cocos2d::Label::createWithSystemFont(
         "",                  // 初始文本为空
         "Arial",             // 字体
         30,                  // 字体大小
-        cocos2d::Size(visibleSize.width - 40, 0), // 固定宽度，自动高度
+        cocos2d::Size(layer->getContentSize().width - 40, 0), // 固定宽度，自动高度
         cocos2d::TextHAlignment::CENTER,        // 水平居中对齐
         cocos2d::TextVAlignment::TOP            // 垂直顶端对齐
     );
@@ -53,6 +70,12 @@ void CocosUIListener::initializeLogLabel(cocos2d::Layer* layer, const cocos2d::V
 
     // 添加标签到指定的层中，层级为10
     layer->addChild(logLabel, 10);
+
+    // 可选：记录日志到文件
+    if (logFileStream.is_open())
+    {
+        logFileStream << "Log label attached to new layer." << std::endl;
+    }
 }
 
 void CocosUIListener::writeString(const ExitGames::Common::JString& str)
@@ -67,8 +90,19 @@ void CocosUIListener::writeString(const ExitGames::Common::JString& str)
             std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
             std::string utf8Str = converter.to_bytes(wstr);
 
+            // 更新 logLabel 的文本
             logLabel->setString(utf8Str);
+
+            // 记录日志到文件
+            if (logFileStream.is_open())
+            {
+                logFileStream << utf8Str << std::endl;
+            }
             });
+    }
+    else
+    {
+        CCLOG("CocosUIListener::writeString called but logLabel is null.");
     }
 }
 
@@ -83,5 +117,11 @@ void CocosUIListener::onLibClosed(void)
     if (logLabel)
     {
         logLabel->setString("Library closed.");
+
+        // 记录日志到文件
+        if (logFileStream.is_open())
+        {
+            logFileStream << "Library closed." << std::endl;
+        }
     }
 }

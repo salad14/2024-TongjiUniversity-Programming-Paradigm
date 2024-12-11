@@ -29,7 +29,8 @@ float soundEffectVolumn = DEFAULT_MUSIC_VOLUMN;        // 单次音效的音量
 * 音频引擎方法
 * Author: Lee
 * 背景音乐和单个点击音效共用 由参数isLoop控制
- ****************************************************************/void audioPlayer(const std::string& audioPath, bool isLoop)
+ ****************************************************************/
+void audioPlayer(const std::string& audioPath, bool isLoop)
 {
     if (isLoop) {
         // 如果是背景音乐并且之前有背景音乐在播放
@@ -41,9 +42,9 @@ float soundEffectVolumn = DEFAULT_MUSIC_VOLUMN;        // 单次音效的音量
         backgroundMusicSign = cocos2d::experimental::AudioEngine::play2d(audioPath, isLoop);
         cocos2d::experimental::AudioEngine::setVolume(backgroundMusicSign, backgroundMusicVolumn);
     }
-    else {
+    else {// 否则是单个点击音效
         soundEffectSign = cocos2d::experimental::AudioEngine::play2d(audioPath, isLoop);
-        cocos2d::experimental::AudioEngine::setVolume(soundEffectSign, soundEffectVolumn*5);
+        cocos2d::experimental::AudioEngine::setVolume(soundEffectSign, soundEffectVolumn + 5);
     }
 }
 

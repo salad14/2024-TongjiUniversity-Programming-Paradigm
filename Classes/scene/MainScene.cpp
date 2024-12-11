@@ -17,26 +17,12 @@ Scene* MainScene::createScene()
 
 // 构造函数
 MainScene::MainScene()
-    : cocosUIListener(nullptr)
 {
 }
 
 // 析构函数
 MainScene::~MainScene()
 {
-    // 断开回调
-    PhotonLib* photonLib = PhotonLib::getInstance();
-    if (photonLib)
-    {
-        photonLib->setRoomJoinedCallback(nullptr); // 断开回调
-        photonLib->setPlayerCountChangedCallback(nullptr); // 断开玩家数量变化回调
-    }
-
-    if (cocosUIListener)
-    {
-        delete cocosUIListener;
-        cocosUIListener = nullptr;
-    }
 }
 
 // 打印加载错误信息
@@ -68,8 +54,8 @@ bool MainScene::init()
 
     // 创建 normalGame 按钮
     auto normalGame = MenuItemImage::create(
-        "normalgame.png",
-        "normalgame.png",
+        "../Resources/button/normalgame.png",
+        "../Resources/button/normalgame.png",
         CC_CALLBACK_1(MainScene::normalGameCallback, this));
 
     if (normalGame == nullptr ||
@@ -85,10 +71,10 @@ bool MainScene::init()
         normalGame->setPosition(Vec2(x + MAIN_SCENE_PLAYBUTTON_OFFSET_X, y + MAIN_SCENE_PLAYBUTTON_OFFSET_Y));
     }
 
-    // 创建 adventureGame 按钮
+    // adventure按钮（跳转到冒险模式界面）
     auto adventureGame = MenuItemImage::create(
-        "adventure.png",
-        "adventure.png",
+        "../Resources/button/adventure.png",
+        "../Resources/button/adventure.png",
         CC_CALLBACK_1(MainScene::adventureGameCallback, this));
 
     if (adventureGame == nullptr ||
@@ -104,10 +90,10 @@ bool MainScene::init()
         adventureGame->setPosition(Vec2(x + MAIN_SCENE_ADVBUTTON_OFFSET_X, y + MAIN_SCENE_ADVBUTTON_OFFSET_Y));
     }
 
-    // 创建 collection 按钮
+    // collection按钮（跳转到自定义卡牌界面）
     auto collection = MenuItemImage::create(
-        "collection.png",
-        "collection.png",
+        "../Resources/button/collection.png",
+        "../Resources/button/collection.png",
         CC_CALLBACK_1(MainScene::collectionCallback, this));
 
     if (collection == nullptr ||
@@ -154,41 +140,18 @@ bool MainScene::init()
     }
 
     /////////////////////////////
-    // 4. 创建并初始化 CocosUIListener 和 PhotonLib
+    // 4. 初始化 CocosUIListener
+
+    // 获取 Singleton 的 CocosUIListener 实例
+    CocosUIListener* cocosUIListener = CocosUIListener::getInstance();
 
     // 创建一个用于UI的Layer
     auto uiLayer = Layer::create();
     this->addChild(uiLayer);
 
-    // 创建CocosUIListener并初始化日志标签
-    cocosUIListener = new CocosUIListener();
-    cocosUIListener->initializeLogLabel(uiLayer, Vec2(visibleSize.width / 2, visibleSize.height - 50));
-
-    // 获取 PhotonLib 实例
-    // 测试用
-    PhotonLib::initialize(cocosUIListener);
-    PhotonLib* photonLib = PhotonLib::getInstance();
-    if (!photonLib)
-    {
-        CCLOG("PhotonLib is not initialized!");
-        return false;
-    }
-
-    // 设置房间加入后的回调，切换到 MatchingScene
-    photonLib->setRoomJoinedCallback([=]() {
-        CCLOG("Room joined callback triggered. Switching to MatchingScene.");
-        // 切换到 MatchingScene
-        Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
-        });
-
-    // 设置玩家数量变化的回调
-    photonLib->setPlayerCountChangedCallback([=](int playerCount) {
-        });
-
-    // 定期调用 PhotonLib::update()
-    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::updatePhoton), 0.1f); // 每0.1秒调用一次
-
-    return true; // 确保返回 true
+    // 将 logLabel 附加到当前 Layer 上
+    cocosUIListener->attachToLayer(uiLayer, Vec2(visibleSize.width / 2, visibleSize.height - 50));
+    return true;
 }
 
 // 定期更新Photon
@@ -204,28 +167,25 @@ void MainScene::updatePhoton(float dt)
 // normalGame 按钮的回调
 void MainScene::normalGameCallback(cocos2d::Ref* pSender)
 {
-    // 调用PhotonLib的连接和加入房间方法
-    PhotonLib* photonLib = PhotonLib::getInstance();
-    if (photonLib)
-    {
-        photonLib->connectToPhoton(); // 显式连接
-        photonLib->joinOrCreateRoom(ExitGames::Common::JString(L"DefaultRoom")); // 加入或创建房间
-    }
-    else
-    {
-        CCLOG("PhotonLib is not initialized.");
-    }
-}
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 
+    // 切换到 MatchingScene
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
+}
 
 // adventureGame 按钮的回调
 void MainScene::adventureGameCallback(cocos2d::Ref* pSender)
 {
     // 实现冒险模式的逻辑
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
 
 // collection 按钮的回调
 void MainScene::collectionCallback(cocos2d::Ref* pSender)
 {
     // 实现收藏模式的逻辑
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }

@@ -2,13 +2,18 @@
 
 #include "Photon_lib.h"
 #include "UIListener.h"
+#include "CocosUIListener.h"
 #include <iostream>
 #include <sstream>
 #include <codecvt>
 #include <locale>
+#include <chrono>
+
+
+//#define GETTIMEMS() static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
 
 // 替换为您的Photon应用ID
-static const ExitGames::Common::JString appID = L"558bddbb-2dda-4767-ad34-1ea68fdec86e"; // 设置您的应用ID
+static const ExitGames::Common::JString appID = L"558bddbb-2dda-4767-ad34-1ea68fdec86e";
 static const ExitGames::Common::JString appVersion = L"1.0";
 
 static ExitGames::Common::JString gameName = L"Basics";
@@ -38,8 +43,12 @@ void PhotonLib::initialize(UIListener* listener)
     if (instance == nullptr)
     {
         instance = new PhotonLib(listener);
+        CCLOG("PhotonLib: Initialized singleton instance.");
     }
-    // 如果已经初始化，可以选择更新listener或保持不变
+    else
+    {
+        CCLOG("PhotonLib: Singleton instance already initialized.");
+    }
 }
 
 // 私有构造函数
@@ -57,19 +66,21 @@ PhotonLib::PhotonLib(UIListener* listener)
 #pragma warning(pop)
 #endif
 {
-    mLoadBalancingClient.setDebugOutputLevel(DEBUG_RELEASE(ExitGames::Common::DebugLevel::INFO, ExitGames::Common::DebugLevel::WARNINGS));
+    
+    mLoadBalancingClient.setDebugOutputLevel(ExitGames::Common::DebugLevel::INFO);
     mLogger.setListener(*this);
-    mLogger.setDebugOutputLevel(DEBUG_RELEASE(ExitGames::Common::DebugLevel::INFO, ExitGames::Common::DebugLevel::WARNINGS));
+    mLogger.setDebugOutputLevel(ExitGames::Common::DebugLevel::INFO);
     ExitGames::Common::Base::setListener(this);
-    ExitGames::Common::Base::setDebugOutputLevel(DEBUG_RELEASE(ExitGames::Common::DebugLevel::INFO, ExitGames::Common::DebugLevel::WARNINGS));
+    ExitGames::Common::Base::setDebugOutputLevel(ExitGames::Common::DebugLevel::INFO);
 }
 
-// 更新Photon状态，仅调用service()
+// 更新Photon状态，仅调用 service()
 void PhotonLib::update(void)
 {
     mLoadBalancingClient.service();
 }
 
+// 获取当前状态字符串
 ExitGames::Common::JString PhotonLib::getStateString(void)
 {
     switch (mState)
@@ -101,6 +112,7 @@ ExitGames::Common::JString PhotonLib::getStateString(void)
     }
 }
 
+// 发送数据事件
 void PhotonLib::sendData(void)
 {
     ExitGames::Common::Hashtable event;
@@ -112,16 +124,19 @@ void PhotonLib::sendData(void)
         mState = State::SENT_DATA;
 }
 
+// 获取玩家数量
 int PhotonLib::getPlayerCount()
 {
-    // 使用 getIsInRoom() 来检查当前是否在房间中
     if (mLoadBalancingClient.getIsInRoom())
     {
-        // 使用 getCountPlayersIngame() 获取当前房间中的玩家数量
-        return mLoadBalancingClient.getCountPlayersIngame();
+        int count = mLoadBalancingClient.getCurrentlyJoinedRoom().getPlayers().getSize();
+        CCLOG("PhotonLib: getPlayerCount() returns %d", count);
+        return count;
     }
+    CCLOG("PhotonLib: getPlayerCount() - not in room.");
     return 0;
 }
+
 
 // Override Listener 虚函数实现
 
@@ -129,6 +144,7 @@ void PhotonLib::debugReturn(int /*debugLevel*/, const ExitGames::Common::JString
 {
     if (mpOutputListener)
         mpOutputListener->writeString(string);
+    CCLOG("Photon Debug: %ls", string.cstr());
 }
 
 void PhotonLib::connectionErrorReturn(int errorCode)
@@ -142,10 +158,33 @@ void PhotonLib::connectionErrorReturn(int errorCode)
     if (connectionCallback)
     {
         // 创建 std::wstring 错误消息
-        std::wstring errorMsg = L"Connection error: ";
-        errorMsg += intToJString(errorCode).cstr();
+        std::wstring errorMsg = L"Connection error: " + std::to_wstring(errorCode);
+
         // 调用回调函数
         connectionCallback(false, errorMsg);
+    }
+
+    // 重试连接（例如，最多重试3次，每次间隔2秒）
+    static int retryCount = 0;
+    if (retryCount < 3)
+    {
+        retryCount++;
+        EGLOG(ExitGames::Common::DebugLevel::INFO, L"Retrying to connect... Attempt %d", retryCount);
+        if (mpOutputListener)
+            mpOutputListener->writeString(L"Retrying to connect... Attempt " + intToJString(retryCount));
+        mLoadBalancingClient.disconnect(); // 确保之前的连接被断开
+
+        // 延迟重试连接
+        cocos2d::Director::getInstance()->getScheduler()->schedule([this](float dt) {
+            connectToPhoton();
+            }, this, 0.0f, 0, 2.0f, false, "connectToPhotonRetry");
+
+    }
+    else
+    {
+        EGLOG(ExitGames::Common::DebugLevel::ERRORS, L"Max retry attempts reached. Unable to connect to Photon.");
+        if (mpOutputListener)
+            mpOutputListener->writeString(L"Max retry attempts reached. Unable to connect to Photon.");
     }
 }
 
@@ -170,6 +209,8 @@ void PhotonLib::serverErrorReturn(int errorCode)
         mpOutputListener->writeString(ExitGames::Common::JString(L"received error ") + intToJString(errorCode) + L" from server");
 }
 
+
+// 触发玩家数量变化回调
 void PhotonLib::joinRoomEventAction(int playerNr, const ExitGames::Common::JVector<int>& /*playernrs*/, const ExitGames::LoadBalancing::Player& player)
 {
     EGLOG(ExitGames::Common::DebugLevel::INFO, L"%ls joined the game", player.getName().cstr());
@@ -184,9 +225,16 @@ void PhotonLib::joinRoomEventAction(int playerNr, const ExitGames::Common::JVect
     // 触发玩家数量变化回调
     if (playerCountChangedCallback)
     {
-        playerCountChangedCallback(getPlayerCount());
+        int currentPlayerCount = getPlayerCount();
+        CCLOG("PhotonLib: triggering playerCountChangedCallback with count %d", currentPlayerCount);
+        playerCountChangedCallback(currentPlayerCount);
+    }
+    else
+    {
+        CCLOG("PhotonLib: playerCountChangedCallback is not set.");
     }
 }
+
 
 void PhotonLib::leaveRoomEventAction(int playerNr, bool isInactive)
 {
@@ -202,9 +250,12 @@ void PhotonLib::leaveRoomEventAction(int playerNr, bool isInactive)
     // 触发玩家数量变化回调
     if (playerCountChangedCallback)
     {
-        playerCountChangedCallback(getPlayerCount());
+        int currentPlayerCount = getPlayerCount();
+        CCLOG("PhotonLib: triggering playerCountChangedCallback with count %d", currentPlayerCount);
+        playerCountChangedCallback(currentPlayerCount);
     }
 }
+
 
 void PhotonLib::customEventAction(int playerNr, nByte eventCode, const ExitGames::Common::Object& eventContentObj)
 {
@@ -226,6 +277,7 @@ void PhotonLib::customEventAction(int playerNr, nByte eventCode, const ExitGames
     }
 }
 
+// 连接返回回调
 void PhotonLib::connectReturn(int errorCode, const ExitGames::Common::JString& errorString, const ExitGames::Common::JString& region, const ExitGames::Common::JString& cluster)
 {
     EGLOG(ExitGames::Common::DebugLevel::INFO, L"connected to cluster " + cluster + L" of region " + region);
@@ -236,24 +288,51 @@ void PhotonLib::connectReturn(int errorCode, const ExitGames::Common::JString& e
             mpOutputListener->writeString(L"connection error: " + ExitGames::Common::JString(errorString));
         mState = State::DISCONNECTING;
 
-        // 转换 ExitGames::Common::JString 到 std::wstring
-        std::wstring errorMsg = L"Connection error: " + std::wstring(errorString.cstr());
+        // 创建 std::wstring 错误消息
+        std::wstring errorMsg = L"Connection error: " + std::to_wstring(errorCode);
 
         // 触发连接失败回调
         if (connectionCallback)
             connectionCallback(false, errorMsg);
+
+        // 重试连接（例如，最多重试3次，每次间隔2秒）
+        static int retryCount = 0;
+        if (retryCount < 3)
+        {
+            retryCount++;
+            EGLOG(ExitGames::Common::DebugLevel::INFO, L"Retrying to connect... Attempt %d", retryCount);
+            if (mpOutputListener)
+                mpOutputListener->writeString(L"Retrying to connect... Attempt " + intToJString(retryCount));
+            mLoadBalancingClient.disconnect(); // 确保之前的连接被断开
+
+            // 延迟重试连接
+            cocos2d::Director::getInstance()->getScheduler()->schedule([this](float dt) {
+                connectToPhoton();
+                }, this, 0.0f, 0, 2.0f, false, "connectToPhotonRetry");
+
+        }
+        else
+        {
+            EGLOG(ExitGames::Common::DebugLevel::ERRORS, L"Max retry attempts reached. Unable to connect to Photon.");
+            if (mpOutputListener)
+                mpOutputListener->writeString(L"Max retry attempts reached. Unable to connect to Photon.");
+        }
         return;
     }
     if (mpOutputListener)
         mpOutputListener->writeString(L"connected to cluster " + cluster);
     mState = State::CONNECTED;
 
+    // 重置重试计数
+    static int retryCount = 0;
+    retryCount = 0;
+
     // 触发连接成功回调
     if (connectionCallback)
         connectionCallback(true, L"Connected to Photon successfully.");
 }
 
-
+// 断开连接返回回调
 void PhotonLib::disconnectReturn(void)
 {
     EGLOG(ExitGames::Common::DebugLevel::INFO, L"disconnected");
@@ -262,6 +341,7 @@ void PhotonLib::disconnectReturn(void)
     mState = State::DISCONNECTED;
 }
 
+// 创建房间返回回调
 void PhotonLib::createRoomReturn(int localPlayerNr, const ExitGames::Common::Hashtable& /*gameProperties*/, const ExitGames::Common::Hashtable& /*playerProperties*/, int errorCode, const ExitGames::Common::JString& errorString)
 {
     EGLOG(ExitGames::Common::DebugLevel::INFO, L"");
@@ -295,6 +375,36 @@ void PhotonLib::createRoomReturn(int localPlayerNr, const ExitGames::Common::Has
     }
 }
 
+// 实现 leaveRoom 方法
+void PhotonLib::leaveRoom()
+{
+    if (mLoadBalancingClient.getIsInRoom())
+    {
+        EGLOG(ExitGames::Common::DebugLevel::INFO, L"Leaving the current room...");
+        if (mpOutputListener)
+            mpOutputListener->writeString(L"Leaving the current room...");
+
+        // 调用 Photon 的离开房间操作
+        mLoadBalancingClient.opLeaveRoom();
+
+        // 更新状态
+        mState = State::LEAVING;
+    }
+    else
+    {
+        EGLOG(ExitGames::Common::DebugLevel::INFO, L"Not currently in a room.");
+        if (mpOutputListener)
+            mpOutputListener->writeString(L"Not currently in a room.");
+    }
+}
+
+// 设置房间离开后的回调
+void PhotonLib::setLeaveRoomCallback(const std::function<void()>& callback)
+{
+    leaveRoomCallback = callback;
+    CCLOG("PhotonLib: leaveRoomCallback has been set.");
+}
+
 void PhotonLib::joinOrCreateRoomReturn(int localPlayerNr, const ExitGames::Common::Hashtable& /*gameProperties*/, const ExitGames::Common::Hashtable& /*playerProperties*/, int errorCode, const ExitGames::Common::JString& errorString)
 {
     EGLOG(ExitGames::Common::DebugLevel::INFO, L"");
@@ -322,12 +432,21 @@ void PhotonLib::joinOrCreateRoomReturn(int localPlayerNr, const ExitGames::Commo
     }
     mState = State::JOINED;
 
-    // 调用回调
+    // 触发房间加入回调
     if (roomJoinedCallback) {
+        CCLOG("PhotonLib: triggering roomJoinedCallback.");
         roomJoinedCallback();
+    }
+
+    // 触发玩家数量变化回调，初始玩家数
+    if (playerCountChangedCallback) {
+        int currentPlayerCount = getPlayerCount();
+        CCLOG("PhotonLib: triggering playerCountChangedCallback with count %d", currentPlayerCount);
+        playerCountChangedCallback(currentPlayerCount);
     }
 }
 
+// 加入随机房间返回回调
 void PhotonLib::joinRandomRoomReturn(int localPlayerNr, const ExitGames::Common::Hashtable& /*gameProperties*/, const ExitGames::Common::Hashtable& /*playerProperties*/, int errorCode, const ExitGames::Common::JString& errorString)
 {
     EGLOG(ExitGames::Common::DebugLevel::INFO, L"");
@@ -361,55 +480,72 @@ void PhotonLib::joinRandomRoomReturn(int localPlayerNr, const ExitGames::Common:
     }
 }
 
+// 离开房间返回回调
 void PhotonLib::leaveRoomReturn(int errorCode, const ExitGames::Common::JString& errorString)
 {
-    EGLOG(ExitGames::Common::DebugLevel::INFO, L"");
     if (errorCode)
     {
-        EGLOG(ExitGames::Common::DebugLevel::ERRORS, L"%ls", errorString.cstr());
+        EGLOG(ExitGames::Common::DebugLevel::ERRORS, L"Failed to leave room: %ls", errorString.cstr());
         if (mpOutputListener)
-            mpOutputListener->writeString(L"opLeaveRoom() failed: " + ExitGames::Common::JString(errorString));
-        mState = State::DISCONNECTING;
+            mpOutputListener->writeString(L"Failed to leave room: " + ExitGames::Common::JString(errorString));
+        // 离开房间失败，仍然处于CONNECTED状态（已连接但不在房间）
+        mState = State::CONNECTED;
         return;
     }
-    mState = State::LEFT;
+
+    // 离开房间成功后，状态从LEAVING转为CONNECTED（已连接但无房间）
+    mState = State::CONNECTED;
+
     if (mpOutputListener)
     {
         std::wstringstream ss;
-        ss << L"room has been successfully left";
+        ss << L"Successfully left the room.";
         ExitGames::Common::JString message = ExitGames::Common::JString(ss.str().c_str());
         mpOutputListener->writeString(message);
     }
+
+    // 触发离开房间的回调（如有）
+    if (leaveRoomCallback)
+    {
+        leaveRoomCallback();
+    }
 }
 
+
+// 加入大厅返回回调
 void PhotonLib::joinLobbyReturn(void)
 {
-    EGLOG(ExitGames::Common::DebugLevel::INFO, L"");
+    EGLOG(ExitGames::Common::DebugLevel::INFO, L"joined lobby");
     if (mpOutputListener)
         mpOutputListener->writeString(L"joined lobby");
 }
 
+// 离开大厅返回回调
 void PhotonLib::leaveLobbyReturn(void)
 {
-    EGLOG(ExitGames::Common::DebugLevel::INFO, L"");
+    EGLOG(ExitGames::Common::DebugLevel::INFO, L"left lobby");
     if (mpOutputListener)
         mpOutputListener->writeString(L"left lobby");
 }
 
+// 加入或创建房间
 void PhotonLib::joinOrCreateRoom(const ExitGames::Common::JString& roomName)
 {
     mLoadBalancingClient.opJoinOrCreateRoom(roomName);
 }
 
 // 设置房间加入后的回调
-void PhotonLib::setRoomJoinedCallback(const std::function<void()>& callback) {
+void PhotonLib::setRoomJoinedCallback(const std::function<void()>& callback)
+{
     roomJoinedCallback = callback;
+    CCLOG("PhotonLib: roomJoinedCallback has been set.");
 }
 
 // 设置玩家数量变化的回调
 void PhotonLib::setPlayerCountChangedCallback(const std::function<void(int)>& callback)
 {
     playerCountChangedCallback = callback;
+    CCLOG("PhotonLib: playerCountChangedCallback has been set.");
 }
 
 // 设置连接回调
@@ -418,23 +554,24 @@ void PhotonLib::setConnectionCallback(const std::function<void(bool, const std::
     connectionCallback = callback;
 }
 
+// 连接到Photon服务器
 void PhotonLib::connectToPhoton()
 {
     if (mState == State::INITIALIZED || mState == State::DISCONNECTED)
     {
-        mLoadBalancingClient.connect(ExitGames::LoadBalancing::ConnectOptions()
-            .setAuthenticationValues(ExitGames::LoadBalancing::AuthenticationValues().setUserID(ExitGames::Common::JString() + GETTIMEMS()))
-            .setUsername(PLAYER_NAME + GETTIMEMS())
-            .setTryUseDatagramEncryption(true));
+        mLoadBalancingClient.connect(
+            ExitGames::LoadBalancing::ConnectOptions()
+            .setServerAddress(ExitGames::Common::JString(L"ns.photonengine.cn")) // 设置中国区服务器地址
+            .setAuthenticationValues(
+                ExitGames::LoadBalancing::AuthenticationValues()
+                .setUserID(ExitGames::Common::JString() + intToJString(GETTIMEMS())) // 设置唯一的UserID
+            )
+            .setUsername(PLAYER_NAME + intToJString(GETTIMEMS())) // 设置唯一的用户名
+            .setTryUseDatagramEncryption(true)
+        );
         mState = State::CONNECTING;
-    }
-}
-
-void PhotonLib::disconnectFromPhoton()
-{
-    if (mState == State::CONNECTED || mState == State::JOINING || mState == State::JOINED)
-    {
-        mLoadBalancingClient.disconnect();
-        mState = State::DISCONNECTING;
+        EGLOG(ExitGames::Common::DebugLevel::INFO, L"Attempting to connect to Photon...");
+        if (mpOutputListener)
+            mpOutputListener->writeString(L"Attempting to connect to Photon...");
     }
 }
