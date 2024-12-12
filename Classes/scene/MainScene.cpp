@@ -1,7 +1,13 @@
+// MainScene.cpp
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
-#include "scene/BoardScene.h"
+#include "BoardScene.h"
+#include "MatchingScene.h"
 #include "proj.win32/Alluse.h"
+#include "proj.win32/AudioPlayer.h"
+#include "network/CocosUIListener.h"
+#include "network/Photon_lib.h"
+
 USING_NS_CC;
 
 Scene* MainScene::createScene()
@@ -9,14 +15,24 @@ Scene* MainScene::createScene()
     return MainScene::create();
 }
 
-// Print useful error message instead of segfaulting when files are not there.
+// 构造函数
+MainScene::MainScene()
+{
+}
+
+// 析构函数
+MainScene::~MainScene()
+{
+}
+
+// 打印加载错误信息
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
-    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
+    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in MainScene.cpp\n");
 }
 
-// on "init" you need to initialize your instance
+// 初始化场景
 bool MainScene::init()
 {
     //////////////////////////////
@@ -26,6 +42,7 @@ bool MainScene::init()
         return false;
     }
 
+    // 设置背景音乐
     CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.5f); // 设置音量为 50%
     CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("../Resources/Music/MainScene.mp3", true);
 
@@ -33,14 +50,12 @@ bool MainScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
+    // 2. 创建菜单项
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-
+    // 创建 normalGame 按钮
     auto normalGame = MenuItemImage::create(
-        "normalgame.png",
-        "normalgame.png",
+        "../Resources/button/normalgame.png",
+        "../Resources/button/normalgame.png",
         CC_CALLBACK_1(MainScene::normalGameCallback, this));
 
     if (normalGame == nullptr ||
@@ -53,13 +68,13 @@ bool MainScene::init()
     {
         float x = visibleSize.width / 2;
         float y = origin.y + visibleSize.height / 2;
-        normalGame->setPosition(Vec2(x+ MAIN_SCENE_PLAYBUTTON_OFFSET_X, y+ MAIN_SCENE_PLAYBUTTON_OFFSET_Y));
+        normalGame->setPosition(Vec2(x + MAIN_SCENE_PLAYBUTTON_OFFSET_X, y + MAIN_SCENE_PLAYBUTTON_OFFSET_Y));
     }
 
-
+    // adventure按钮（跳转到冒险模式界面）
     auto adventureGame = MenuItemImage::create(
-        "adventure.png",
-        "adventure.png",
+        "../Resources/button/adventure.png",
+        "../Resources/button/adventure.png",
         CC_CALLBACK_1(MainScene::adventureGameCallback, this));
 
     if (adventureGame == nullptr ||
@@ -72,12 +87,13 @@ bool MainScene::init()
     {
         float x = visibleSize.width / 2;
         float y = origin.y + visibleSize.height / 2;
-        adventureGame->setPosition(Vec2(x+ MAIN_SCENE_ADVBUTTON_OFFSET_X, y+ MAIN_SCENE_ADVBUTTON_OFFSET_Y));
+        adventureGame->setPosition(Vec2(x + MAIN_SCENE_ADVBUTTON_OFFSET_X, y + MAIN_SCENE_ADVBUTTON_OFFSET_Y));
     }
 
+    // collection按钮（跳转到自定义卡牌界面）
     auto collection = MenuItemImage::create(
-        "collection.png",
-        "collection.png",
+        "../Resources/button/collection.png",
+        "../Resources/button/collection.png",
         CC_CALLBACK_1(MainScene::collectionCallback, this));
 
     if (collection == nullptr ||
@@ -92,13 +108,14 @@ bool MainScene::init()
         float y = origin.y + collection->getContentSize().height / 2;
         collection->setPosition(Vec2(x, y));
     }
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(normalGame, adventureGame, collection, NULL);
+
+    // 创建菜单
+    auto menu = Menu::create(normalGame, adventureGame, collection, nullptr);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
     /////////////////////////////
-    // 3. add your codes below...
+    // 3. 添加背景精灵
 
     auto sprite = Sprite::create("../Resources/Scenes/2MainScene.png");
     if (sprite == nullptr)
@@ -119,23 +136,56 @@ bool MainScene::init()
         sprite->setScaleY(visibleSize.height / sprite->getContentSize().height);
 
         // 将背景添加到场景中
-        this->addChild(sprite);;
+        this->addChild(sprite);
     }
+
+    /////////////////////////////
+    // 4. 初始化 CocosUIListener
+
+    // 获取 Singleton 的 CocosUIListener 实例
+    CocosUIListener* cocosUIListener = CocosUIListener::getInstance();
+
+    // 创建一个用于UI的Layer
+    auto uiLayer = Layer::create();
+    this->addChild(uiLayer);
+
+    // 将 logLabel 附加到当前 Layer 上
+    cocosUIListener->attachToLayer(uiLayer, Vec2(visibleSize.width / 2, visibleSize.height - 50));
     return true;
 }
 
-
-void MainScene::normalGameCallback(Ref* pSender)
+// 定期更新Photon
+void MainScene::updatePhoton(float dt)
 {
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardScene::createScene()));
+    PhotonLib* photonLib = PhotonLib::getInstance();
+    if (photonLib)
+    {
+        photonLib->update();
+    }
 }
 
-void MainScene::adventureGameCallback(Ref* pSender)
+// normalGame 按钮的回调
+void MainScene::normalGameCallback(cocos2d::Ref* pSender)
 {
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 
+    // 切换到 MatchingScene
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
 }
 
-void MainScene::collectionCallback(Ref* pSender)
+// adventureGame 按钮的回调
+void MainScene::adventureGameCallback(cocos2d::Ref* pSender)
 {
+    // 实现冒险模式的逻辑
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
+}
 
+// collection 按钮的回调
+void MainScene::collectionCallback(cocos2d::Ref* pSender)
+{
+    // 实现收藏模式的逻辑
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }

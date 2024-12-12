@@ -79,7 +79,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(EngineRoot);$(EngineRoot)external;$(EngineRoot)cocos\audio\include;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;%(AdditionalIncludeDirectories);$(_COCOS_HEADER_WIN32_BEGIN);$(_COCOS_HEADER_WIN32_END)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EngineRoot);$(EngineRoot)external;$(EngineRoot)cocos\audio\include;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;%(AdditionalIncludeDirectories);$(_COCOS_HEADER_WIN32_BEGIN);$(_COCOS_HEADER_WIN32_END);$(ProjectDir)\..\Common-cpp\inc;$(ProjectDir)\..\LoadBalancing-cpp\inc;$(ProjectDir)\..\Photon-cpp\inc</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -92,9 +92,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libcurl.lib;%(AdditionalDependencies);$(_COCOS_LIB_WIN32_BEGIN);$(_COCOS_LIB_WIN32_END)</AdditionalDependencies>
+      <AdditionalDependencies>libcurl.lib;%(AdditionalDependencies);$(_COCOS_LIB_WIN32_BEGIN);$(_COCOS_LIB_WIN32_END);Common-cpp_vc16_debug_windows_md_$(Platform).lib;Photon-cpp_vc16_debug_windows_md_$(Platform).lib;LoadBalancing-cpp_vc16_debug_windows_md_$(Platform).lib</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories);$(_COCOS_LIB_PATH_WIN32_BEGIN);$(_COCOS_LIB_PATH_WIN32_END)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories);$(_COCOS_LIB_PATH_WIN32_BEGIN);$(_COCOS_LIB_PATH_WIN32_END);$(ProjectDir)\..\Photon-cpp;$(ProjectDir)\..\Common-cpp;$(ProjectDir)\..\LoadBalancing-cpp;$(ProjectDir)\..\Photon-cpp\lib;$(ProjectDir)\..\Common-cpp\lib;$(ProjectDir)\..\LoadBalancing-cpp\lib</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -163,6 +163,16 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\scene\BoardScene.cpp" />
     <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\scene\MainScene.cpp" />
+    <ClCompile Include="..\Classes\battle\battle.cpp" />
+    <ClCompile Include="..\Classes\cards\card.cpp" />
+    <ClCompile Include="..\Classes\heroes\Hero.cpp" />
+    <ClCompile Include="..\Classes\network\CocosUIListener.cpp" />
+    <ClCompile Include="..\Classes\network\Photon_lib.cpp" />
+    <ClCompile Include="..\Classes\players\player.cpp" />
+    <ClCompile Include="..\Classes\scene\BoardScene.cpp" />
+    <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp" />
+    <ClCompile Include="..\Classes\scene\MainScene.cpp" />
+    <ClCompile Include="..\Classes\scene\MatchingScene.cpp" />
     <ClCompile Include="..\Classes\scene\StartScene.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -190,6 +200,18 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\scene\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\scene\MainScene.h" />
     <ClInclude Include="..\Classes\scene\StartScene.h" />
+    <ClInclude Include="..\Classes\battle\battle.h" />
+    <ClInclude Include="..\Classes\network\CocosUIListener.h" />
+    <ClInclude Include="..\Classes\network\Photon_lib.h" />
+    <ClInclude Include="..\Classes\network\UIListener.h" />
+    <ClInclude Include="..\Classes\players\player.h" />
+    <ClInclude Include="..\Classes\scene\BoardScene.h" />
+    <ClInclude Include="..\Classes\scene\HelloWorldScene.h" />
+    <ClInclude Include="..\Classes\scene\MainScene.h" />
+    <ClInclude Include="..\Classes\scene\MatchingScene.h" />
+    <ClInclude Include="..\Classes\scene\StartScene.h" />
+    <ClInclude Include="Alluse.h" />
+    <ClInclude Include="AudioPlayer.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

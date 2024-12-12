@@ -8,17 +8,21 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "network/CocosUIListener.h"
+#include "network/Photon_lib.h"
 
 class HelloWorld : public cocos2d::Scene
 {
 public:
     static cocos2d::Scene* createScene();
-
     virtual bool init();
-    
-    // a selector callback
+
+    // 点击按钮的回调
     void menuCloseCallback(cocos2d::Ref* pSender);
     void menuReplaceCallback(cocos2d::Ref* pSender);
+
+    // 创建CocosUIListener
+    CocosUIListener* cocosUIListener;
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
