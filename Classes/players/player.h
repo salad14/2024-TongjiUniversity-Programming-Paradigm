@@ -8,10 +8,6 @@
 #include "cocos2d.h"
 USING_NS_CC;
 using namespace std;
-#include "player.h"
-#include "heroes/Hero.h"
-#include "cards/card.h"
-
 
 class Player 
 {

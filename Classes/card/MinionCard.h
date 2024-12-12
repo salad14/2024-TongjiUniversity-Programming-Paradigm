@@ -10,26 +10,6 @@
 
 #include "cocos2d.h"
 
-enum cardClass {
-    // 修改这里，需要Hero.h 一并修改
-    MAGE = static_cast<int>(HeroType::MAGE),
-    WARRIOR = static_cast<int>(HeroType::WARRIOR),
-    ROGUE = static_cast<int>(HeroType::ROGUE),
-    DRUID = static_cast<int>(HeroType::DRUID),
-    NEUTRAL,
-};
-
-enum cardType {
-    SPELL,
-    MINION,
-    WEAPON
-};
-
-enum cardRarity {
-    COMMAN,
-    LEGENDARY,
-};
-
 enum keyWord {
     None = 0,
     Battlecry = 1 << 0,    // 战吼
