@@ -48,7 +48,6 @@ bool BoardScene::init() {
     auto cancel = MenuItemImage::create("button/cancel.png", "button/cancelSelected.png", CC_CALLBACK_1(BoardScene::cancelCallback, this));
     cancel->setPosition(Vec2(1940,20));
     auto menu = Menu::create(cancel, nullptr);
-
     // Ìí¼Ó²Ëµ¥
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu);

@@ -44,7 +44,7 @@ void audioPlayer(const std::string& audioPath, bool isLoop)
     }
     else {// 否则是单个点击音效
         soundEffectSign = cocos2d::experimental::AudioEngine::play2d(audioPath, isLoop);
-        cocos2d::experimental::AudioEngine::setVolume(soundEffectSign, soundEffectVolumn + 5);
+        cocos2d::experimental::AudioEngine::setVolume(soundEffectSign, soundEffectVolumn * 30);
     }
 }
 

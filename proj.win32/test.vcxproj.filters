@@ -60,6 +60,9 @@
     <ClCompile Include="..\Classes\battle\battle.cpp">
       <Filter>src\battle</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\scene\SetScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -100,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\battle\battle.h">
       <Filter>src\battle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\SetScene.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

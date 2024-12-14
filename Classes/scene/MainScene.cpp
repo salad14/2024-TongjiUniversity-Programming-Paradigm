@@ -6,6 +6,7 @@
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
 #include "MatchingScene.h"
+#include "SetScene.h"
 #include "proj.win32/Alluse.h"
 #include "proj.win32/AudioPlayer.h"
 USING_NS_CC;
@@ -90,13 +91,31 @@ bool MainScene::init()
     }
     else
     {
-        float x = origin.x + visibleSize.width - collection->getContentSize().width / 2;
-        float y = origin.y + collection->getContentSize().height / 2;
+        float x = origin.x + getContentSize().width / 2;
+        float y = origin.y + 100;
         collection->setPosition(Vec2(x, y));
     }
 
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(normalGame, adventureGame, collection, NULL);
+    // set按钮（跳转到设置界面）
+    auto set = MenuItemImage::create(
+        "../Resources/button/set.png",
+        "../Resources/button/setSelected.png",
+        CC_CALLBACK_1(MainScene::setCallback, this));
+    if (set == nullptr ||
+        set->getContentSize().width <= 0 ||
+        set->getContentSize().height <= 0)
+    {
+        problemLoading("'set.png' and 'collection.png'");
+    }
+    else
+    {
+        float x = origin.x + visibleSize.width - set->getContentSize().width / 2;
+        float y = origin.y + set->getContentSize().height / 2;
+        set->setPosition(Vec2(x, y));
+    }
+
+    //为上述按钮创建菜单
+    auto menu = Menu::create(normalGame, adventureGame, collection, set, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
@@ -143,4 +162,11 @@ void MainScene::collectionCallback(Ref* pSender)
 {
     // 加载点击音效
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
+}
+
+void MainScene::setCallback(Ref* pSender)
+{
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, SetScene::createScene()));
 }
