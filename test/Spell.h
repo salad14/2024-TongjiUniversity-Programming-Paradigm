@@ -1,50 +1,49 @@
-// classes/entity/Spell.h
+// test/Spell.h
 #pragma once
 
 #include <memory>
 #include <vector>
-#include "card/SpellCard.h"
-
-class Manager;
-class Minion;
+#include "SpellCard.h"
+#include "Manager.h"
+#include "Minion.h"
 
 class Spell {
 public:
     Spell(std::shared_ptr<SpellCard> card)
-        : card(card), currentCost(card->getCost()) {}
+        : card(card), currentCost(card->cost) {}
 
-    // »ñÈ¡Ãû³Æ
-    const std::string& getName() const { return card->getName(); }
+    // è·å–åç§°
+    const std::string& getName() const { return card->name; }
 
-    // »ñÈ¡ÃèÊö
-    const std::string& getDescription() const { return card->getDescription(); }
+    // è·å–æè¿°
+    const std::string& getDescription() const { return card->text; }
 
-    // »ñÈ¡ºÍÉèÖÃ·ÑÓÃ
+    // è·å–å’Œè®¾ç½®è´¹ç”¨
     int getCost() const { return currentCost; }
     void setCost(int newCost) { currentCost = newCost; }
 
-    // Ö´ĞĞ·¨ÊõĞ§¹û
+    // æ‰§è¡Œæ³•æœ¯æ•ˆæœ
     void play(Manager* manager, const std::vector<int>& targetIds, Minion* targetMinion = nullptr) {
         for (const auto& effect : card->getEffects()) {
             switch (effect.type) {
-                case Spell::KeyWord::Damage:
+                case SpellMechanics::KeyWord::Damage:
                     manager->damage(targetIds, effect.amount);
                     break;
-                case Spell::KeyWord::Draw:
+                case SpellMechanics::KeyWord::Draw:
                     manager->draw(effect.amount);
                     break;
-                case Spell::KeyWord::Frozen:
+                case SpellMechanics::KeyWord::Frozen:
                     manager->frozen(targetIds);
                     break;
-                case Spell::KeyWord::Grow:
+                case SpellMechanics::KeyWord::Grow:
                     if (targetMinion != nullptr) {
-                        manager->grow(*targetMinion, effect.amount, effect.amount, 0); // Ê¾Àı
+                        manager->grow(*targetMinion, effect.amount, effect.amount, 0); // ç¤ºä¾‹
                     }
                     break;
-                case Spell::KeyWord::Crystal:
+                case SpellMechanics::KeyWord::Crystal:
                     manager->crystal(0, effect.amount);
                     break;
-                    // ÆäËûĞ§¹ûÀàĞÍ¿ÉÀ©Õ¹
+                // å…¶ä»–æ•ˆæœç±»å‹å¯æ‰©å±•
                 default:
                     break;
             }
@@ -52,6 +51,6 @@ public:
     }
 
 private:
-    std::shared_ptr<SpellCard> card; // Ö¸Ïò SpellCard µÄ¹²ÏíÖ¸Õë
-    int currentCost; // ¶¯Ì¬·ÑÓÃ
+    std::shared_ptr<SpellCard> card; // æŒ‡å‘ SpellCard çš„å…±äº«æŒ‡é’ˆ
+    int currentCost; // åŠ¨æ€è´¹ç”¨
 };

@@ -1,13 +1,10 @@
-// classes/card/SpellCard.h
+// test/SpellCard.h
 #pragma once
 
-#include "card/Card.h"
-#include "entity/Spell.h"
-#include <string>
+#include "Card.h"
 #include <vector>
-#include "cocos2d.h"
 
-namespace Spell {
+namespace SpellMechanics {
     enum class KeyWord {
         Damage = 1 << 0,
         Draw = 1 << 1,
@@ -34,37 +31,33 @@ enum class SpellSchool {
     FIRE,
     FROST,
     ARCANE,
-    // ÆäËû·¨ÊõÀà±ð
+    // å…¶ä»–æ³•æœ¯ç±»åˆ«
 };
 
-// Ç°ÏòÉùÃ÷£¬ÒÔ±ÜÃâ°üº¬ Manager ºÍ Minion µÄÍ·ÎÄ¼þ
-class Manager;
-class Minion;
-
 struct Effect {
-    Spell::KeyWord type;
-    int amount; // ¶ÔÓÚ Damage, Draw, Grow, Crystal µÈÐ§¹ûµÄÊýÖµ
-    // ¸ù¾ÝÐèÒªÌí¼Ó¸ü¶à×Ö¶Î£¬ÀýÈçÄ¿±êÀàÐÍµÈ
+    SpellMechanics::KeyWord type;
+    int amount; // å¯¹äºŽ Damage, Draw, Grow, Crystal ç­‰æ•ˆæžœçš„æ•°å€¼
+    // å¯ä»¥æ ¹æ®éœ€è¦æ·»åŠ æ›´å¤šå­—æ®µï¼Œä¾‹å¦‚ç›®æ ‡ç±»åž‹ç­‰
 };
 
 class SpellCard : public CardBase {
 private:
     SpellSchool spellSchool;
-    Spell::KeyWord mechanics;
+    SpellMechanics::KeyWord mechanics;
     std::vector<Effect> effects;
 
 public:
     SpellCard(int dbfId, const std::string& name, int cost, cardClass cardClassType,
-        const std::string& text, cardRarity rarity, SpellSchool spellSchool)
+              const std::string& text, cardRarity rarity, SpellSchool spellSchool)
         : CardBase(dbfId, cost, cardClassType, name, text, cardType::SPELL, rarity),
-        spellSchool(spellSchool), mechanics(static_cast<Spell::KeyWord>(0)) {}
+          spellSchool(spellSchool), mechanics(static_cast<SpellMechanics::KeyWord>(0)) {}
 
-    void addMechanic(Spell::KeyWord key) {
+    void addMechanic(SpellMechanics::KeyWord key) {
         mechanics |= key;
     }
 
-    bool hasMechanic(Spell::KeyWord mechanic) const {
-        return Spell::hasKeyword(mechanics, mechanic);
+    bool hasMechanic(SpellMechanics::KeyWord mechanic) const {
+        return SpellMechanics::hasKeyword(mechanics, mechanic);
     }
 
     void addEffect(const Effect& effect) {
