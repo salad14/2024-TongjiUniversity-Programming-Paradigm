@@ -59,6 +59,8 @@ constexpr int SETSCENE_BGMSLIDER_Y = 820;                              // 设置场
 constexpr int SETSCENE_EFFSLIDER_Y = 650;                             // 设置场景音效音量滑动条与标签位置 Y 
 constexpr int SETSCENE_RETURN_BUTTON_X = 1900;                        // 设置场景返回菜单按钮位置 X 
 constexpr int SETSCENE_RETURN_BUTTON_Y = 50;                          // 设置场景返回菜单按钮位置 Y 
+constexpr int SETSCENE_CLOSE_BUTTON_X = 850;                        // 设置场景退出游戏按钮位置 X 
+constexpr int SETSCENE_CLOSE_BUTTON_Y = 470;                          // 设置场景退出游戏按钮位置 Y 
 
 // 商店牌堆设置（预留）
 

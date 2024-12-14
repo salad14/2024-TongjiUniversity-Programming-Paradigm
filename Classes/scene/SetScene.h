@@ -18,6 +18,7 @@ public:
     virtual bool init();
 
     void cancelCallback(Ref* pSender);// 取消按钮
+    void SetScene::setCloseCallback(Ref* pSender);//退出游戏按钮
 
     // 实现 SettingsScene 类的 create 方法
     CREATE_FUNC(SetScene);

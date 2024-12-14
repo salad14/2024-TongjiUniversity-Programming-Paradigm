@@ -29,7 +29,7 @@ bool SetScene::init()
     }
 
     // 加载音乐
-    // audioPlayer("../Resources/Music/SettingsScene_Starlight.mp3", true);
+    audioPlayer("../Resources/Music/SetScene.mp3", true);
 
     // 加载背景
     const auto screenSize = cocos2d::Director::getInstance()->getVisibleSize();
@@ -88,8 +88,11 @@ bool SetScene::init()
     // 创建返回按钮
     auto cancel = MenuItemImage::create("button/cancel.png", "button/cancelSelected.png", CC_CALLBACK_1(SetScene::cancelCallback, this));
     cancel->setPosition(Vec2(SETSCENE_RETURN_BUTTON_X, SETSCENE_RETURN_BUTTON_Y));
-    auto menu = Menu::create(cancel, nullptr);
+    // 创建退出游戏按钮
+    auto closeItem = MenuItemImage::create("../Resources/button/CloseNormal.png","Resources / button / CloseSelected.png",CC_CALLBACK_1(SetScene::setCloseCallback, this));
+    closeItem->setPosition(Vec2(SETSCENE_CLOSE_BUTTON_X, SETSCENE_CLOSE_BUTTON_Y));
     // 添加菜单
+    auto menu = Menu::create(cancel, closeItem, nullptr);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu);
 
@@ -101,5 +104,15 @@ void SetScene::cancelCallback(Ref* pSender)
 {
     // 加载点击音效
     audioPlayer("Music/ClickSoundEffect.mp3", false);
+    // 回到主菜单音乐
+    audioPlayer("Music/MainScene.mp3", true);
     Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MainScene::createScene()));
+}
+
+//退出游戏
+void SetScene::setCloseCallback(Ref* pSender)
+{
+    // 加载点击音效
+    audioPlayer("Music/ClickSoundEffect.mp3", false);
+    Director::getInstance()->end();
 }
