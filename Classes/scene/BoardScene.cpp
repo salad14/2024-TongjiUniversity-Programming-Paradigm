@@ -172,26 +172,6 @@ void BoardScene::checkDropArea() {
     }
 }
 
-////添加一张新的卡牌
-//void BoardScene::addNewCard() 
-//{
-//    // 创建新精灵
-//    auto sprite = Sprite::create("cardfortest.png");
-//    
-//    Vec2 originalPos(Vec2(CARD_REGION_X + dragCards.size() * (sprite->getContentSize().width + 30), CARD_REGION_Y));
-//    sprite->setPosition(originalPos);
-//
-//    //加载牌音效
-//    audioPlayer("music/putcard.mp3", false);
-//
-//    // 记录原始位置
-//    cardOriginalPositions[sprite] = originalPos;
-//
-//    // 添加到场景和容器中
-//    this->addChild(sprite);
-//    dragCards.push_back(sprite);
-//    CCLOG("Current sprite count: %zu", dragCards.size());
-//}
 
 //从出牌区域移除一张卡牌
 void BoardScene::removeCard(Sprite* sprite) {
@@ -202,17 +182,37 @@ void BoardScene::removeCard(Sprite* sprite) {
     }
 
     // 从手牌移除
-    auto iter = std::find(dragCards.begin(), dragCards.end(), sprite);
+    auto iter = find(dragCards.begin(), dragCards.end(), sprite);
     if (iter != dragCards.end()) {
+        // 获取被移除卡牌的索引位置
+        size_t removedIndex = distance(dragCards.begin(), iter);
+
         dragCards.erase(iter);
-        // 从位置记录中移除
         cardOriginalPositions.erase(sprite);
-        // 添加到已打出卡牌区域
         playedCards.push_back(sprite);
         updatePlayedCardsPosition();
 
         // 播放音效
         audioPlayer("music/putcard.mp3", false);
+
+        // 更新剩余卡牌的位置
+        for (size_t i = removedIndex; i < dragCards.size(); i++) {
+            Sprite* card = dragCards[i];
+            // 计算新位置
+            Vec2 newPos(CARD_REGION_X + i * (card->getContentSize().width + 30), CARD_REGION_Y);
+
+            // 更新存储的原始位置
+            cardOriginalPositions[card] = newPos;
+
+            // 添加移动动画
+            card->runAction(Sequence::create(
+                EaseInOut::create(MoveTo::create(0.3f, newPos), 2.0f),
+                EaseElasticOut::create(ScaleTo::create(0.2f, 1.0f)),
+                nullptr
+            ));
+        }
+
+        
     }
 }
 
