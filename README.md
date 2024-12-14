@@ -22,3 +22,5 @@ Developed by students from software engineering, Computer Science and Technology
 
 12.08 关于AudioPlayer.h头文件的特别说明：其初值及函数定义在StartScene.cpp文件中，在其他场景中只需引用此头文件，并调用audioPlayer()即可。以便在游戏开始设置音量，避免后续出现重定义错误 及 音量不统一问题
 
+12.14 初步实现了设置界面；设置可由主界面进入，目前可实现实时音量调节、退出游戏，后续可在SetScene.cpp中实现更多设置功能
+
