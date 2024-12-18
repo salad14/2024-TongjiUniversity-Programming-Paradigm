@@ -38,7 +38,7 @@ namespace ExitGames
 			template<> struct ConfirmAllowedKey<int64>
 			{
 				typedef int64 type;
-				static const nByte typeName = TypeCode::LONG;
+				static const nByte typeName = ExitGames::Common::TypeCode::LONG;
 			};
 			template<> struct ConfirmAllowedKey<float>
 			{

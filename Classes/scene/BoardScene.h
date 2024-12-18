@@ -1,76 +1,124 @@
-/****************************************************************
-* 棋盘页面的定义
-* Author: Lee
- ****************************************************************/
+// BoardScene.h
+#ifndef __BOARD_SCENE_H__
+#define __BOARD_SCENE_H__
 
 #include "cocos2d.h"
-USING_NS_CC;
+#include "network/Photon_Lib.h"
+#include "network/CocosUIListener.h" 
+#include "network/CustomEventCodes.h"
 #include "players/player.h"
+#include <cstdint> 
 #include <vector>
 #include <map>
-class BoardScene : public cocos2d::Scene {
+
+class BoardScene : public cocos2d::Scene
+{
 public:
-	static cocos2d::Scene* createScene();
+    // 创建场景的静态方法
+    static cocos2d::Scene* createScene();
 
-	virtual bool init();
+    // 初始化方法
+    virtual bool init();
 
-	//void menuCloseCallback(Ref* pSender);
+    // 事件处理
+    void onPhotonEvent(int eventCode, const ExitGames::Common::Hashtable& parameters);
 
-	CREATE_FUNC(BoardScene);
-
-    virtual ~BoardScene() {
-        cardOriginalPositions.clear();
-        selectedCard = nullptr;
-        hoveredCard = nullptr;
-        dragCards.clear();
-    }
+    // 创建宏
+    CREATE_FUNC(BoardScene);
 
 private:
-    std::vector<Sprite*> dragCards;                 // 待出牌区域的卡牌
-    std::map<Sprite*, Vec2> cardOriginalPositions;  // 存储待出牌区域每张卡的原始位置
-    Sprite* selectedCard;            // 当前选中的精灵
-    DrawNode* dropArea;              // 中央区域显示
+    // Photon 和 UI 相关
+    PhotonLib* photonLib;
+    CocosUIListener* cocosUIListener;
 
-    // 添加鼠标监听相关
-    EventListenerMouse* mouseListener;
-    Sprite* hoveredCard;             // 当前鼠标悬停的精灵
+    // UI 元素
+    cocos2d::DrawNode* dropArea;
 
-    void cancelCallback(Ref* pSender);
-    void createDropArea();              // 创建出牌区域
-    void checkDropArea();               // 检查是否在出牌区域
-    void addNewCard();               //  添加新精灵
-    void removeCard(Sprite* sprite); //  移除卡牌
-    // 鼠标事件处理
-    void onMouseMove(Event* event);
-    void scaleSprite(Sprite* sprite, float scale);// 放大预览某张牌
+    // 玩家相关
+    int localPlayerNumber;
 
-    bool onTouchBegan(Touch* touch, Event* event);
-    void onTouchMoved(Touch* touch, Event* event);
-    void onTouchEnded(Touch* touch, Event* event);
-   
-    Player* player1;    // 己方玩家
-    Player* player2;    // 敌方玩家
-    bool isPlayer1Turn; // 当前回合标志
+    players::Player* player1;
+    players::Player* player2;
 
-    // UI元素
-    Label* player1Health;
-    Label* player1Mana;
-    Label* player2Health;
-    Label* player2Mana;
-    Label* turnIndicator;  // 回合指示器
+    int currentPlayerNumber;
+    bool isLocalPlayerTurn;   // 当前回合是否属于本地玩家
 
-    void initPlayers();    // 初始化玩家
-    void updatePlayerUI(); // 更新玩家信息显示
-    void switchTurn();     // 切换回合
-    void createPlayerUI(); // 创建玩家UI
-   // void update(float dt);
+    bool initialHandsDistributed = false;
+    bool handsInitialized = false;
 
-    // 新增成员变量
-    vector<Sprite*> playedCards;         // 已打出的卡牌
-    Node* deckNode1;                     // 牌堆显示节点1
-    Node* deckNode2;                     // 牌堆显示节点2
+    // 手牌管理
+    std::vector<cocos2d::Sprite*> localPlayerCards; // 手中的卡牌
+    std::map<cocos2d::Sprite*, cocos2d::Vec2> cardOriginalPositions; // 卡牌的原始位置
+    std::vector<cocos2d::Sprite*> playedCards; // 已打出的卡牌
 
-    void initDecks();                    // 根据用户卡组 初始化牌堆
-    void drawCard();                     // 抽牌
-    void updatePlayedCardsPosition();    // 更新已打出卡牌的位置
+    // 当前选中的卡牌
+    cocos2d::Sprite* selectedCard;
+    cocos2d::Sprite* hoveredCard;
+
+    // 玩家信息 UI
+    cocos2d::Label* player1Health;
+    cocos2d::Label* player1Mana;
+    cocos2d::Label* player2Health;
+    cocos2d::Label* player2Mana;
+    cocos2d::Label* turnIndicator;
+
+    // 回合结束按钮
+    cocos2d::MenuItemImage* endTurnButton;
+
+    // 方法声明
+    void cancelCallback(cocos2d::Ref* pSender);
+
+    void createDropArea();
+    void checkDropArea();
+
+    // 事件监听器回调
+    bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
+    void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event);
+    void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
+    void onMouseMove(cocos2d::Event* event);
+
+    // 缩放精灵
+    void scaleSprite(cocos2d::Sprite* sprite, float scale);
+
+    // 玩家管理
+    void initPlayers();
+    void createPlayerUI();
+    void updatePlayerUI();
+    void switchTurn();
+
+    // 卡牌管理
+    void removeCard(cocos2d::Sprite* sprite);
+    void updatePlayedCardsPosition();
+
+    // 事件发送
+    void sendPlayCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
+    void sendTurnStartEvent();
+    void sendDrawCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
+    
+
+    // Photon 事件处理
+    void handlePlayCard(const ExitGames::Common::Hashtable& parameters);
+    void handleEndTurn(const ExitGames::Common::Hashtable& parameters);
+    void handleTurnStart(const ExitGames::Common::Hashtable& parameters);
+    void handleDrawCard(const ExitGames::Common::Hashtable& parameters);
+
+    // 游戏结束
+    void endGame(players::Player* winner);
+
+    // 更新逻辑
+    void update(float dt) override;
+
+    // 分发初始手牌
+    void distributeInitialHands();
+
+    // 获取卡牌的费用
+    int getCardCost(cocos2d::Sprite* card);
+
+    // 辅助方法：根据卡牌ID查找精灵
+    cocos2d::Sprite* findCardByID(int cardID);
+
+    // 析构函数
+    virtual ~BoardScene();
 };
+
+#endif // __BOARD_SCENE_H__

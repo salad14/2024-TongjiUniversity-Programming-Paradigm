@@ -2,8 +2,10 @@
 #pragma once
 
 #include "LoadBalancing-cpp/inc/Client.h"
+#include "Photon-cpp/inc/Enums/ReceiverGroup.h"
 #include "UIListener.h"
 #include <functional>
+#include "network/CustomEventCodes.h"
 
 class PhotonLib : private ExitGames::LoadBalancing::Listener
 {
@@ -26,7 +28,7 @@ public:
     // 设置玩家数量变化的回调
     void setPlayerCountChangedCallback(const std::function<void(int)>& callback);
 
-    //设置链接到Photon的回调
+    // 设置连接到Photon的回调
     void setConnectionCallback(const std::function<void(bool, const std::wstring&)>& callback);
 
     // 加入或创建房间
@@ -46,6 +48,15 @@ public:
     // 设置房间离开后的回调
     void setLeaveRoomCallback(const std::function<void()>& callback);
 
+    // 设置自定义事件回调
+    void setCustomEventCallback(const std::function<void(int, const ExitGames::Common::Hashtable&)>& callback);
+
+    // 发送自定义事件
+    void raiseCustomEvent(const ExitGames::Common::Hashtable& eventContent, int eventCode, nByte receiverGroup);
+
+    // 获取本地玩家编号
+    int getLocalPlayerNumber();
+
 private:
     // 私有构造函数
     PhotonLib(UIListener* listener);
@@ -57,7 +68,7 @@ private:
     // 单例实例指针
     static PhotonLib* instance;
 
-    // Override 虚函数
+    // Override Listener 虚函数
     virtual void debugReturn(int debugLevel, const ExitGames::Common::JString& string) override;
     virtual void connectionErrorReturn(int errorCode) override;
     virtual void clientErrorReturn(int errorCode) override;
@@ -115,7 +126,12 @@ private:
     // 玩家数量变化的回调
     std::function<void(int)> playerCountChangedCallback;
 
+    // 连接回调
     std::function<void(bool, const std::wstring&)> connectionCallback;
 
+    // 离开房间后的回调
     std::function<void()> leaveRoomCallback;
+
+    // 自定义事件回调
+    std::function<void(int, const ExitGames::Common::Hashtable&)> customEventCallback;
 };

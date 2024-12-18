@@ -8,6 +8,7 @@
 
 #include "Common-cpp/inc/Helpers/ConfirmAllowed.h"
 #include "Common-cpp/inc/Object.h"
+#include "Common-cpp/inc/Enums/TypeCode.h"
 
 namespace ExitGames
 {
