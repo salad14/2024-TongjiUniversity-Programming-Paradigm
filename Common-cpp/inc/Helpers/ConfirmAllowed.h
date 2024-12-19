@@ -8,9 +8,11 @@
 
 #include "Common-cpp/inc/CustomType.h"
 #include "Common-cpp/inc/Enums/TypeCode.h"
+#include "Common-cpp/inc/ValueObject.h"
 #include "Common-cpp/inc/Helpers/CompileTimeAssertTrue.h"
 #include "Common-cpp/inc/Helpers/TypeTraits/EnableIf.h"
 #include "Common-cpp/inc/Helpers/TypeTraits/IsDerivedFrom.h"
+
 
 namespace ExitGames
 {
@@ -69,7 +71,7 @@ namespace ExitGames
 				typedef int64 type;
 				typedef int64 scalarType;
 				static const unsigned int dimensions = 0;
-				static const nByte typeName = TypeCode::LONG;
+				static const nByte typeName = ExitGames::Common::TypeCode::LONG; 
 				static const nByte customTypeName = 0;
 			};
 			template<> struct ConfirmAllowed<float>

@@ -1,6 +1,9 @@
 // Photon_lib.cpp
 
 #include "Photon_lib.h"
+#include "Photon-cpp/inc/Enums/ReceiverGroup.h" 
+#include "Common-cpp/inc/ValueObject.h" // 包含 ValueObject
+#include "Common-cpp/inc/defines.h"     // 包含类型定义
 #include "UIListener.h"
 #include "CocosUIListener.h"
 #include <iostream>
@@ -9,10 +12,8 @@
 #include <locale>
 #include <chrono>
 
+using namespace ExitGames::LoadBalancing;
 
-//#define GETTIMEMS() static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
-
-// 替换为您的Photon应用ID
 static const ExitGames::Common::JString appID = L"558bddbb-2dda-4767-ad34-1ea68fdec86e";
 static const ExitGames::Common::JString appVersion = L"1.0";
 
@@ -122,6 +123,31 @@ void PhotonLib::sendData(void)
     mLoadBalancingClient.opRaiseEvent(true, event, 0, ExitGames::LoadBalancing::RaiseEventOptions().setTargetPlayers(&myPlayerNumber, 1));
     if (mSendCount >= MAX_SENDCOUNT)
         mState = State::SENT_DATA;
+}
+
+
+void PhotonLib::raiseCustomEvent(const ExitGames::Common::Hashtable& eventContent, int eventCode, nByte receiverGroup)
+{
+    RaiseEventOptions raiseOptions;
+    raiseOptions.setReceiverGroup(receiverGroup); // 直接设置接收者组
+
+    bool success = mLoadBalancingClient.opRaiseEvent(false, eventContent, eventCode, raiseOptions);
+    if (success)
+    {
+        CCLOG("Sent custom event with eventCode: %d", eventCode);
+        if (mpOutputListener)
+        {
+            mpOutputListener->writeString(ExitGames::Common::JString(L"Sent custom event with eventCode: ") + ExitGames::Common::JString(std::to_wstring(eventCode).c_str()));
+        }
+    }
+    else
+    {
+        CCLOG("Failed to send custom event with eventCode: %d", eventCode);
+        if (mpOutputListener)
+        {
+            mpOutputListener->writeString(ExitGames::Common::JString(L"Failed to send custom event with eventCode: ") + ExitGames::Common::JString(std::to_wstring(eventCode).c_str()));
+        }
+    }
 }
 
 // 获取玩家数量
@@ -257,9 +283,18 @@ void PhotonLib::leaveRoomEventAction(int playerNr, bool isInactive)
 }
 
 
+// 处理自定义事件
 void PhotonLib::customEventAction(int playerNr, nByte eventCode, const ExitGames::Common::Object& eventContentObj)
 {
     ExitGames::Common::Hashtable eventContent = ExitGames::Common::ValueObject<ExitGames::Common::Hashtable>(eventContentObj).getDataCopy();
+
+    // 调用自定义事件回调
+    if (customEventCallback)
+    {
+        customEventCallback(eventCode, eventContent);
+    }
+
+    // 现有处理逻辑（可保留）
     switch (eventCode)
     {
         case 0:
@@ -511,7 +546,6 @@ void PhotonLib::leaveRoomReturn(int errorCode, const ExitGames::Common::JString&
     }
 }
 
-
 // 加入大厅返回回调
 void PhotonLib::joinLobbyReturn(void)
 {
@@ -534,6 +568,13 @@ void PhotonLib::joinOrCreateRoom(const ExitGames::Common::JString& roomName)
     mLoadBalancingClient.opJoinOrCreateRoom(roomName);
 }
 
+// 设置自定义事件回调
+void PhotonLib::setCustomEventCallback(const std::function<void(int, const ExitGames::Common::Hashtable&)>& callback)
+{
+    customEventCallback = callback;
+    CCLOG("PhotonLib: customEventCallback has been set.");
+}
+
 // 设置房间加入后的回调
 void PhotonLib::setRoomJoinedCallback(const std::function<void()>& callback)
 {
@@ -552,6 +593,16 @@ void PhotonLib::setPlayerCountChangedCallback(const std::function<void(int)>& ca
 void PhotonLib::setConnectionCallback(const std::function<void(bool, const std::wstring&)>& callback)
 {
     connectionCallback = callback;
+}
+
+int PhotonLib::getLocalPlayerNumber()
+{
+    if (mLoadBalancingClient.getIsInRoom())
+    {
+        const ExitGames::LoadBalancing::Player& localPlayer = mLoadBalancingClient.getLocalPlayer();
+        return localPlayer.getNumber();
+    }
+    return -1;
 }
 
 // 连接到Photon服务器

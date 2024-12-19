@@ -1,23 +1,176 @@
-/****************************************************************
- * 玩家类的实现
- * Author:  Lee
- * 注：暂时用于ui界面开发测试，待完善
- ****************************************************************/
-#include "player.h"
+// Player.cpp
+#include "Player.h"
+#include "GameData.h"
+#include "cocos2d.h"
 
+namespace players {
 
-// 构造函数
-Player::Player(const string s)
-{
-	nickname = s;
-	return;
-}
+    Player::Player(PlayerNumber number, const std::string& nickname, GameData& gameData)
+        : playerNumber(number), nickname(nickname), health(30), money(0), maxmoney(1), overdrawCount(0), gameData(gameData)
+    {
+        CCLOG("Creating Player %d: %s", playerNumber, nickname.c_str());
+        initializeDeck();
+        if (playerNumber == 1) {
+            cardNumberCounter = 1000; // Player1 的 cardNumber 从1000开始
+        }
+        else if (playerNumber == 2) {
+            cardNumberCounter = 2000; // Player2 的 cardNumber 从2000开始
+        }
+    }
 
-//用户自定义卡组函数（待修改，此处仅引入30张最简单的手牌，仅测试用）
-void Player::setPlayerCards()
-{
-	for (int i = 0; i < 30; ++i) {
-		auto sprite = Sprite::create("cardfortest.png");
-		this->playerCards.push_back(sprite);
-	}
-}
+    // 添加卡牌到手牌
+    void Player::addCardToHand(CardNumber cardNumber)
+    {
+        hand.push_back(cardNumber);
+    }
+
+    // 从手牌中移除卡牌
+    void Player::removeCardFromHand(CardNumber cardNumber)
+    {
+        auto it = std::find(hand.begin(), hand.end(), cardNumber);
+        if (it != hand.end()) {
+            hand.erase(it);
+        }
+    }
+
+    // 获取玩家昵称
+    std::string Player::getNickname() const
+    {
+        return nickname;
+    }
+
+    // 获取和设置生命值
+    int Player::getHealth() const
+    {
+        return health;
+    }
+
+    void Player::setHealth(int hp)
+    {
+        health = hp;
+        CCLOG("Player %d: %s, Health set to: %d", playerNumber, nickname.c_str(), health);
+    }
+
+    // 获取和设置法力值
+    int Player::getMoney() const
+    {
+        return money;
+    }
+
+    void Player::setMoney(int m)
+    {
+        money = m;
+        CCLOG("Player %d: %s, Money set to: %d", playerNumber, nickname.c_str(), money);
+    }
+
+    int Player::getMaxMoney() const
+    {
+        return maxmoney;
+    }
+
+    void Player::setMaxMoney(int maxm)
+    {
+        maxmoney = maxm;
+        CCLOG("Player %d: %s, MaxMoney set to: %d", playerNumber, nickname.c_str(), maxmoney);
+    }
+
+    // 获取玩家携带的卡组
+    std::vector<CardNumber> Player::getPlayerCards() const
+    {
+        return playerCards;
+    }
+
+    // 初始化牌库
+    void Player::initializeDeck() {
+        CCLOG("Initializing deck for player %d: %s", playerNumber, nickname.c_str());
+
+        // 示例手动添加卡牌 (这里假设每个玩家有20张卡牌)
+        for (int i = 0; i < 20; ++i) {
+            CardNumber cardNum = gameData.getUniqueCardNumber(); // 使用传递的 gameData 引用获取唯一卡牌编号
+            playerCards.push_back(cardNum);
+            deck.emplace_back(cardNum);
+            CCLOG("Player %d: Added cardNumber: %d to deck: %s", playerNumber, cardNum, nickname.c_str());
+        }
+
+        // 洗牌
+        shuffleDeck();
+        CCLOG("Player %d: Deck shuffled. Total cards in deck: %zu", playerNumber, deck.size());
+    }
+
+    // 洗牌方法
+    void Player::shuffleDeck() {
+        if (deck.empty()) {
+            CCLOG("Player %d: Cannot shuffle. Deck is empty: %s", playerNumber, nickname.c_str());
+            return;
+        }
+
+        std::random_device rd;
+        std::mt19937 g(rd());
+        std::shuffle(deck.begin(), deck.end(), g);
+        CCLOG("Player %d: Shuffled deck: %s", playerNumber, nickname.c_str());
+    }
+
+    // 从牌库中抽取一张卡牌
+    CardNumber Player::drawCard()
+    {
+        if (deck.empty()) {
+            CCLOG("Player %d: Deck is empty. Attempting to reset deck: %s", playerNumber, nickname.c_str());
+            resetDeck();
+            handleOverdraw();
+
+            if (deck.empty()) {
+                CCLOG("Player %d: Deck is still empty after reset. Cannot draw card: %s", playerNumber, nickname.c_str());
+                return -1; // 返回无效的卡牌编号
+            }
+        }
+
+        CardNumber cardNumber = deck.back();
+        deck.pop_back();
+        CCLOG("Player %d: %s drew cardNumber: %d from deck. Remaining deck size: %zu",
+            playerNumber, nickname.c_str(), cardNumber, deck.size());
+
+        // 添加到手牌
+        addCardToHand(cardNumber);
+
+        return cardNumber;
+    }
+
+    // 检查玩家是否还有卡牌可以抽
+    bool Player::hasCards() const
+    {
+        return !deck.empty();
+    }
+
+    // 重置牌库
+    void Player::resetDeck()
+    {
+        CCLOG("Player %d: Resetting deck: %s", playerNumber, nickname.c_str());
+        // 将所有手牌重新加入到牌库
+        for (auto& cardNum : hand) {
+            deck.emplace_back(cardNum);
+            CCLOG("Player %d: Returned cardNumber: %d to deck: %s", playerNumber, cardNum, nickname.c_str());
+        }
+        hand.clear();
+
+        // 洗牌
+        shuffleDeck();
+        CCLOG("Player %d: Deck reset and shuffled. Total cards in deck: %zu", playerNumber, deck.size());
+    }
+
+    // 处理过度抽牌（扣血）
+    void Player::handleOverdraw()
+    {
+        overdrawCount++;
+        health -= overdrawCount;
+        CCLOG("Player %d: %s has overdrawn. Health reduced by %d. Current health: %d",
+            playerNumber, nickname.c_str(), overdrawCount, health);
+    }
+
+    // 析构函数
+    Player::~Player()
+    {
+        CCLOG("Destroying Player %d: %s", playerNumber, nickname.c_str());
+        hand.clear();
+    }
+
+} // namespace players

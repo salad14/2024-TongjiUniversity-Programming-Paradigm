@@ -1,8 +1,9 @@
 // MatchingScene.cpp
 
-#include "MatchingScene.h"//本场景
-#include "BoardScene.h"   //下一场景
+#include "MatchingScene.h" //本场景
+#include "BoardScene.h"    //下一场景
 #include "MainScene.h"
+#include "players/GameData.h"      // 引入 GameData 头文件
 #include "proj.win32/Alluse.h"
 #include "proj.win32/AudioPlayer.h"
 #include "network/CocosUIListener.h"
@@ -98,6 +99,11 @@ bool MatchingScene::init()
                     CCLOG("Player count reached 2. Switching to BoardScene.");
                     cocosUIListener->writeString(L"Player count reached 2. Starting game...");
 
+                    CCLOG("GameData instance starting");
+                    // 初始化 GameData 单例（这将创建 player1 和 player2）
+                    GameData& gameData = GameData::getInstance();
+                    CCLOG("GameData instance initialized.");
+
                     // 确保 BoardScene 被正确创建
                     auto boardScene = BoardScene::createScene();
                     if (boardScene == nullptr) {
@@ -181,9 +187,9 @@ void MatchingScene::updatePlayerCount(int playerCount)
         CCLOG("playerCountLabel is null.");
     }
 }
-// 取消按钮回调函数 
-//功能：取消匹配，回到主菜单
 
+// 取消按钮回调函数 
+// 功能：取消匹配，回到主菜单
 void MatchingScene::cancelCallback(Ref* pSender)
 {
     // 加载点击音效

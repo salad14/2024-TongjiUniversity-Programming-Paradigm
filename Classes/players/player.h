@@ -1,28 +1,93 @@
-/****************************************************************
- * Íæ¼ÒÀàµÄ¶¨Òå
- * Author:  Lee
- * ×¢£ºÔÝÊ±ÓÃÓÚui½çÃæ¿ª·¢²âÊÔ£¬´ýÍêÉÆ
- ****************************************************************/
+// Player.h
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
-#include "cocos2d.h"
-USING_NS_CC;
-using namespace std;
 
-class Player 
-{
-public:
-    // ¹¹Ôìº¯Êý
-    Player(const string nickname);
-    std::vector<Sprite*> playerCards;  // Íæ¼ÒÐ¯´øµÄ¿¨×é
-    // ×Ô¶¨ÒåÍæ¼ÒÐ¯´øµÄ¿¨×é
-    void setPlayerCards();
-    int health = 30;   // µ±Ç°ÉúÃüÖµ
-    int money = 0;     // µ±Ç°·Ñ
-    int maxmoney = 1;  // ×î´ó·Ñ
-private:
-    string nickname;
-    int maxhealth = 30;// ×î´óÉúÃüÖµ
-    
-};
-#endif // !_PLAYER_H_
+#include <vector>
+#include <string>
+#include <utility>
+
+typedef int PlayerNumber; // ï¿½ï¿½Ò±ï¿½Å£ï¿½ï¿½ï¿½ï¿½ï¿½ 1 ï¿½ï¿½ 2
+typedef int CardNumber;   // ï¿½ï¿½ï¿½Æ±ï¿½Å£ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½Î¨Ò»
+
+class GameData; // Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+namespace players {
+
+    class Player
+    {
+    public:
+        // ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ GameData ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        Player(PlayerNumber number, const std::string& nickname, GameData& gameData);
+
+        // ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½
+        void addCardToHand(CardNumber cardNumber);
+
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½
+        void removeCardFromHand(CardNumber cardNumber);
+
+        // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ç³ï¿½
+        std::string getNickname() const;
+
+        // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+        int getHealth() const;
+        void setHealth(int hp);
+
+        // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½Öµ
+        int getMoney() const;
+        void setMoney(int m);
+        int getMaxMoney() const;
+        void setMaxMoney(int maxm);
+
+        // ï¿½ï¿½ï¿½Ð¯ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½
+        std::vector<CardNumber> getPlayerCards() const;
+
+        // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Æ¿ï¿½
+        void initializeDeck();
+
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        CardNumber drawCard(); // ï¿½ï¿½ï¿½ï¿½ cardNumber
+        bool hasCards() const;
+        void resetDeck();
+
+        // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
+        const std::vector<CardNumber>& getHand() const { return hand; }
+
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È³ï¿½ï¿½ï¿½
+        void handleOverdraw();
+
+        // ï¿½ï¿½È¡ï¿½ï¿½Ç°ï¿½ï¿½ï¿½È³ï¿½ï¿½Æ´ï¿½ï¿½ï¿½
+        int getOverdrawCount() const { return overdrawCount; }
+
+        // ï¿½ï¿½È¡ playerNumber
+        PlayerNumber getPlayerNumber() const { return playerNumber; }
+
+        // Ï´ï¿½Æ·ï¿½ï¿½ï¿½
+        void shuffleDeck();
+
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ~Player();
+
+    private:
+        GameData& gameData; // ï¿½ï¿½ï¿½ï¿½ GameData
+
+        PlayerNumber playerNumber; // ï¿½ï¿½Ò±ï¿½ï¿½
+
+        int cardNumberCounter;
+
+        std::string nickname;
+        int health = 30;   // ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Öµ
+        int money = 0;     // ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Öµ
+        int maxmoney = 1;  // ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+        std::vector<CardNumber> playerCards;  // ï¿½ï¿½ï¿½Ð¯ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½
+
+        // ï¿½Æ¿ï¿½ï¿½ï¿½ï¿½
+        std::vector<CardNumber> deck; // Ã¿ï¿½Å¿ï¿½ï¿½Æµï¿½ cardNumber
+        std::vector<CardNumber> hand; // ï¿½ï¿½ï¿½ï¿½
+
+        // ï¿½ï¿½ï¿½È³ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ï¿½
+        int overdrawCount = 0;
+    };
+
+} // namespace players
+
+#endif // _PLAYER_H_
