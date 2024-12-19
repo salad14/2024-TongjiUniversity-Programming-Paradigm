@@ -23,6 +23,7 @@ public:
     void normalGameCallback(cocos2d::Ref* psender);
     void adventureGameCallback(cocos2d::Ref* psender);
     void collectionCallback(cocos2d::Ref* psender);
+    void setCallback(cocos2d::Ref* psender);
 
     // 构造函数和析构函数
     MainScene();

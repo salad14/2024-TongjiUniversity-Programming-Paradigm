@@ -1,5 +1,10 @@
-// MainScene.cpp
+/****************************************************************
+* 主菜单页面的实现
+* Author: Lee
+ ****************************************************************/
+
 #include "MainScene.h"
+#include "SetScene.h"
 #include "SimpleAudioEngine.h"
 #include "BoardScene.h"
 #include "MatchingScene.h"
@@ -41,18 +46,13 @@ bool MainScene::init()
     {
         return false;
     }
-
-    // 设置背景音乐
-    CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.5f); // 设置音量为 50%
-    CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("../Resources/Music/MainScene.mp3", true);
-
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     /////////////////////////////
     // 2. 创建菜单项
 
-    // 创建 normalGame 按钮
+    // normalgame按钮（跳转到普通模式界面）
     auto normalGame = MenuItemImage::create(
         "../Resources/button/normalgame.png",
         "../Resources/button/normalgame.png",
@@ -104,13 +104,31 @@ bool MainScene::init()
     }
     else
     {
-        float x = origin.x + visibleSize.width - collection->getContentSize().width / 2;
-        float y = origin.y + collection->getContentSize().height / 2;
+        float x = origin.x + getContentSize().width / 2;
+        float y = origin.y + 100;
         collection->setPosition(Vec2(x, y));
     }
 
+    // set按钮（跳转到设置界面）
+    auto set = MenuItemImage::create(
+        "../Resources/button/set.png",
+        "../Resources/button/setSelected.png",
+        CC_CALLBACK_1(MainScene::setCallback, this));
+    if (set == nullptr ||
+        set->getContentSize().width <= 0 ||
+        set->getContentSize().height <= 0)
+    {
+        problemLoading("'set.png' and 'collection.png'");
+    }
+    else
+    {
+        float x = origin.x + visibleSize.width - set->getContentSize().width / 2;
+        float y = origin.y + set->getContentSize().height / 2;
+        set->setPosition(Vec2(x, y));
+    }
+
     // 创建菜单
-    auto menu = Menu::create(normalGame, adventureGame, collection, nullptr);
+    auto menu = Menu::create(normalGame, adventureGame, collection, set, nullptr);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
@@ -154,38 +172,46 @@ bool MainScene::init()
     return true;
 }
 
+//该函数好像没有使用？
 // 定期更新Photon
-void MainScene::updatePhoton(float dt)
-{
-    PhotonLib* photonLib = PhotonLib::getInstance();
-    if (photonLib)
-    {
-        photonLib->update();
-    }
-}
+//void MainScene::updatePhoton(float dt)
+//{
+//    PhotonLib* photonLib = PhotonLib::getInstance();
+//    if (photonLib)
+//    {
+//        photonLib->update();
+//    }
+//}
 
 // normalGame 按钮的回调
-void MainScene::normalGameCallback(cocos2d::Ref* pSender)
+void MainScene::normalGameCallback(Ref* pSender)
 {
     // 加载点击音效
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
-
-    // 切换到 MatchingScene
     Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
 }
 
 // adventureGame 按钮的回调
-void MainScene::adventureGameCallback(cocos2d::Ref* pSender)
+void MainScene::adventureGameCallback(Ref* pSender)
 {
-    // 实现冒险模式的逻辑
     // 加载点击音效
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
 
 // collection 按钮的回调
-void MainScene::collectionCallback(cocos2d::Ref* pSender)
+void MainScene::collectionCallback(Ref* pSender)
 {
-    // 实现收藏模式的逻辑
     // 加载点击音效
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
+}
+
+// set 按钮的回调
+void MainScene::setCallback(Ref* pSender)
+{
+    // 加载点击音效
+    audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
+
+    // 使用 pushScene，保留主菜单场景在场景栈中
+    Director::getInstance()->pushScene(SetScene::create());
+   
 }

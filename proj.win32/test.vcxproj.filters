@@ -19,6 +19,9 @@
     <ClCompile Include="..\Classes\players\GameData.cpp">
       <Filter>src\players</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\scene\SetScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
@@ -46,6 +49,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\players\GameData.h">
       <Filter>src\players</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\SetScene.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
