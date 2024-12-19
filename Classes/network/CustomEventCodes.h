@@ -4,7 +4,6 @@
 
 enum CustomEventCodes {
     PLAY_CARD = 1,
-    DRAW_CARD,
     RESET_DECK,
     TURN_START
 };

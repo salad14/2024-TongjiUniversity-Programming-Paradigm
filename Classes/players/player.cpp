@@ -22,7 +22,6 @@ namespace players {
     void Player::addCardToHand(CardNumber cardNumber)
     {
         hand.push_back(cardNumber);
-        CCLOG("Player %d: Added cardNumber: %d to hand: %s", playerNumber, cardNumber, nickname.c_str());
     }
 
     // ´ÓÊÖÅÆÖĞÒÆ³ı¿¨ÅÆ
@@ -31,7 +30,6 @@ namespace players {
         auto it = std::find(hand.begin(), hand.end(), cardNumber);
         if (it != hand.end()) {
             hand.erase(it);
-            CCLOG("Player %d: Removed cardNumber: %d from hand: %s", playerNumber, cardNumber, nickname.c_str());
         }
     }
 

@@ -93,14 +93,10 @@ private:
     // 事件发送
     void sendPlayCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
     void sendTurnStartEvent();
-    void sendDrawCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
-    
 
     // Photon 事件处理
     void handlePlayCard(const ExitGames::Common::Hashtable& parameters);
-    void handleEndTurn(const ExitGames::Common::Hashtable& parameters);
     void handleTurnStart(const ExitGames::Common::Hashtable& parameters);
-    void handleDrawCard(const ExitGames::Common::Hashtable& parameters);
 
     // 游戏结束
     void endGame(players::Player* winner);
@@ -110,6 +106,7 @@ private:
 
     // 分发初始手牌
     void distributeInitialHands();
+    void addCardToLocalPlayer(CardNumber cardNumber);
 
     // 获取卡牌的费用
     int getCardCost(cocos2d::Sprite* card);
