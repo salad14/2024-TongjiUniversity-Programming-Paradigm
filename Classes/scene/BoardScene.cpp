@@ -2,7 +2,7 @@
 
 #include "BoardScene.h"
 #include "MainScene.h"
-#include "Player.h"
+#include "players/player.h"
 #include "cocos2d.h"
 #include "proj.win32/Alluse.h"
 #include "proj.win32/AudioPlayer.h"
@@ -120,16 +120,16 @@ bool BoardScene::init() {
     this->addChild(menu, 1);
 
     // 创建触摸监听器
-    auto touchListener = EventListenerTouchOneByOne::create();
-    touchListener->setSwallowTouches(true);
-    touchListener->onTouchBegan = CC_CALLBACK_2(BoardScene::onTouchBegan, this);
-    touchListener->onTouchMoved = CC_CALLBACK_2(BoardScene::onTouchMoved, this);
-    touchListener->onTouchEnded = CC_CALLBACK_2(BoardScene::onTouchEnded, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+    auto listener = EventListenerTouchOneByOne::create();
+    listener->setSwallowTouches(true);
+    listener->onTouchBegan = CC_CALLBACK_2(BoardScene::onTouchBegan, this);
+    listener->onTouchMoved = CC_CALLBACK_2(BoardScene::onTouchMoved, this);
+    listener->onTouchEnded = CC_CALLBACK_2(BoardScene::onTouchEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     selectedCard = nullptr;
-
-    // 创建鼠标监听器
+    
+    // 创建移动监听器
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseMove = CC_CALLBACK_1(BoardScene::onMouseMove, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
@@ -139,8 +139,8 @@ bool BoardScene::init() {
     // 创建中央出牌区域
     createDropArea();
 
-    // 添加 update 方法的调用
-    this->scheduleUpdate();
+    // 添加 update 方法的调用（关闭了帧刷新，开启有动画bug）
+    //this->scheduleUpdate();
 
     distributeInitialHands(); // 通过事件分发抽牌
 
@@ -195,9 +195,10 @@ void BoardScene::checkDropArea() {
     if (!selectedCard)
         return;
 
+   
+
     Size visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 center = Vec2(visibleSize.width / 2 + Director::getInstance()->getVisibleOrigin().x,
-        visibleSize.height / 2 + Director::getInstance()->getVisibleOrigin().y);
+    Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height / 2);
     Vec2 spritePos = selectedCard->getPosition();
 
     // 检查是否在投放区域内
@@ -245,6 +246,10 @@ void BoardScene::checkDropArea() {
     }
 }
 
+
+
+
+
 // 鼠标移动检测
 void BoardScene::onMouseMove(Event* event) {
     EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
@@ -253,7 +258,6 @@ void BoardScene::onMouseMove(Event* event) {
     // 检查鼠标是否悬停在某个精灵上
     Sprite* newHoveredSprite = nullptr;
 
-    // 使用 localPlayerCards
     for (auto it = localPlayerCards.rbegin(); it != localPlayerCards.rend(); ++it) {
         Sprite* sprite = *it;
         Vec2 locationInNode = sprite->convertToNodeSpace(mousePos);
@@ -281,22 +285,14 @@ void BoardScene::onMouseMove(Event* event) {
         hoveredCard = newHoveredSprite;
     }
 }
-
-// 平滑缩放精灵
 void BoardScene::scaleSprite(Sprite* sprite, float scale) {
     // 使用动作实现平滑的缩放效果
-    sprite->stopAllActions();
     sprite->runAction(ScaleTo::create(0.1f, scale));
 }
 
-// 触摸开始
+// 鼠标触摸检测
 bool BoardScene::onTouchBegan(Touch* touch, Event* event)
 {
-    // 只有在本地玩家的回合才允许出牌
-    if (!isLocalPlayerTurn) {
-        return false;
-    }
-
     Vec2 touchLocation = touch->getLocation();
 
     // 从后向前检查（使最上层的精灵优先响应）
@@ -317,8 +313,6 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
     selectedCard = nullptr;
     return false;
 }
-
-// 触摸移动
 void BoardScene::onTouchMoved(Touch* touch, Event* event)
 {
     if (selectedCard)
@@ -326,8 +320,6 @@ void BoardScene::onTouchMoved(Touch* touch, Event* event)
         selectedCard->setPosition(selectedCard->getPosition() + touch->getDelta());
     }
 }
-
-// 触摸结束
 void BoardScene::onTouchEnded(Touch* touch, Event* event)
 {
     if (selectedCard)
@@ -344,28 +336,17 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
         selectedCard = nullptr;  // 先清除选中状态
 
         if (inDropArea) {
-            players::Player* currentPlayer = (currentPlayerNumber == 1) ? player1 : player2;
-            PlayerNumber playerNumber = currentPlayerNumber; // 当前回合玩家编号
+            // 在出牌区域内，执行移除
+           // removeCard(cardToHandle);
+            players::Player* currentPlayer = isLocalPlayerTurn ? player1 : player2;
 
-            // 获取卡牌费用的逻辑（假设卡牌费用存储在卡牌的 Tag 或其他属性中）
-            int cardCost = getCardCost(cardToHandle); // 需要实现 getCardCost 方法
+            // 这里需要添加获取卡牌费用的逻辑
+            int cardCost = 1; // 示例费用
 
-            if (currentPlayer->getMoney() >= cardCost) {
-                // 扣除法力值
-                currentPlayer->setMoney(currentPlayer->getMoney() - cardCost);
-
-                // 获取卡牌编号
-                CardNumber cardNumber = cardToHandle->getTag();
-
-                // 发送打牌事件，包含 playerNumber 和 cardNumber
-                sendPlayCardEvent(playerNumber, cardNumber);
-
-                // 移除卡牌并更新 UI
+            if (currentPlayer->money >= cardCost) {
+                currentPlayer->money -= cardCost;
                 removeCard(cardToHandle);
                 updatePlayerUI();
-
-                // 播放打牌音效
-                audioPlayer("Music/playcard.mp3", false);
             }
             else
             {
@@ -793,29 +774,25 @@ void BoardScene::addCardToLocalPlayer(CardNumber cardNumber) {
         newCard->setTag(cardNumber); // 使用 cardNumber 作为 tag
 
         // 设置初始位置基于常量 CARD_REGION_X 和 CARD_REGION_Y
-        Vec2 originalPos = Vec2(
-            CARD_REGION_X + (localPlayer->getHand().size() - 1) * (newCard->getContentSize().width + 30),
-            CARD_REGION_Y
-        );
+        Vec2 originalPos(CARD_REGION_X + localPlayerCards.size() * (newCard->getContentSize().width + 30), CARD_REGION_Y);
 
-        // 添加到场景
+        // 添加到待出牌区域并记录位置
         this->addChild(newCard);
         cardOriginalPositions[newCard] = originalPos;
         localPlayerCards.push_back(newCard);
 
-        // 设置卡牌位置和缩放
-        newCard->setPosition(originalPos);
-        newCard->setScale(1.0f);
-
-        // 运行动画
+        // 抽牌动画序列
         newCard->runAction(Sequence::create(
+            // 1. 先稍微上浮
             EaseOut::create(MoveBy::create(0.2f, Vec2(0, 50)), 2.0f),
+            // 2. 移动到目标位置并放大
             Spawn::create(
                 EaseInOut::create(MoveTo::create(0.5f, originalPos), 2.0f),
                 EaseInOut::create(ScaleTo::create(0.5f, 1.0f), 2.0f),
                 RotateBy::create(0.5f, 360), // 旋转一圈
                 nullptr
             ),
+            // 3. 最后轻微弹跳效果
             EaseElasticOut::create(ScaleTo::create(0.3f, 1.0f)),
             nullptr
         ));

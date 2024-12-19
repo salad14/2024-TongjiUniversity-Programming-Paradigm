@@ -10,7 +10,7 @@
 #include <cstdint> 
 #include <vector>
 #include <map>
-
+USING_NS_CC;
 class BoardScene : public cocos2d::Scene
 {
 public:
@@ -71,11 +71,14 @@ private:
     void createDropArea();
     void checkDropArea();
 
+   
     // 事件监听器回调
     bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
     void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event);
     void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
     void onMouseMove(cocos2d::Event* event);
+    // 返回精灵到原始位置动画实现函数
+    void returnCardToOriginalPosition(Sprite* card);
 
     // 缩放精灵
     void scaleSprite(cocos2d::Sprite* sprite, float scale);

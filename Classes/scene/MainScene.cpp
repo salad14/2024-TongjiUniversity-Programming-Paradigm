@@ -173,15 +173,15 @@ bool MainScene::init()
 }
 
 //该函数好像没有使用？
-// 定期更新Photon
-//void MainScene::updatePhoton(float dt)
-//{
-//    PhotonLib* photonLib = PhotonLib::getInstance();
-//    if (photonLib)
-//    {
-//        photonLib->update();
-//    }
-//}
+ //定期更新Photon
+void MainScene::updatePhoton(float dt)
+{
+    PhotonLib* photonLib = PhotonLib::getInstance();
+    if (photonLib)
+    {
+        photonLib->update();
+    }
+}
 
 // normalGame 按钮的回调
 void MainScene::normalGameCallback(Ref* pSender)
