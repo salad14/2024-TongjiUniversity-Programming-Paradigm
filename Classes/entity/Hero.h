@@ -3,16 +3,15 @@
 #include "cocos2d.h"
 
 enum class HeroType {
+// 如果修改职业，需要card.h cardClass一并修改
     // 法师
-    Mage,
+    MAGE,
     // 战士
-    Warrior,
-    // 牧师
-    Priest,
+    WARRIOR,
     // 潜行者
-    Rogue,
-    // 萨满
-    Shaman,
+    ROGUE,
+    // 德鲁伊
+    DRUID,
 };
 
 class Hero : public cocos2d::Sprite {
@@ -29,22 +28,23 @@ public:
     // 获取职业
     HeroType getCareer() const { return career; }
 private:
-    HeroType career; // 职业名称
+    HeroType career;    // 职业名称
     int maxHealth = 30; // 最大血量
-    int currentHealth; // 当前血量
+    int currentHealth;  // 当前血量
+    int armor;          // 护甲
 };
 
-class Mage : public Hero {
+class MAGE : public Hero {
 };
 
-class Warrior : public Hero {
+class WARRIOR : public Hero {
 };
 
-class Priest : public Hero {
-};
-
-class Rogue : public Hero {
+class ROGUE : public Hero {
 };
 
 class Shaman : public Hero {
+};
+
+class DRUID : public Hero {
 };

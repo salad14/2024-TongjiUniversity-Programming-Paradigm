@@ -5,3 +5,5 @@ Debug.win32/
 release/
 
 build/
+
+out/
