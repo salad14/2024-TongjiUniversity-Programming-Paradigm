@@ -11,10 +11,10 @@
 
 //变量定义及函数具体实现在StartScene.cpp中 即第一个场景
 // 音频引擎设置
-extern int g_backgroundMusicSign;
-extern int g_soundEffectSign;
-extern float g_backgroundMusicVolumn;
-extern float g_soundEffectVolumn;
+extern int backgroundMusicSign;
+extern int soundEffectSign;
+extern float backgroundMusicVolumn;
+extern float soundEffectVolumn;
 
 // 音频引擎方法
 void audioPlayer(const std::string& audioPath, bool isLoop);

@@ -33,6 +33,8 @@
     </ClCompile>
     <ClCompile Include="..\Classes\mechanicsManager\SpellManager.cpp">
       <Filter>src\mechanicsManager</Filter>
+    <ClCompile Include="..\Classes\scene\SetScene.cpp">
+      <Filter>src\scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +99,8 @@
     </ClInclude>
     <ClInclude Include="..\Classes\mechanicsManager\SpellManager.h">
       <Filter>src\mechanicsManager</Filter>
+    <ClInclude Include="..\Classes\scene\SetScene.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

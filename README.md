@@ -24,3 +24,6 @@ Developed by students from software engineering, Computer Science and Technology
 
 12.09 鉴于目前尚未通过Photon中国的开发许可，匹配功能暂时不可用，基本逻辑已经预留，对于对战逻辑的相关代码尚未编写
 
+12.19 在main分支初步实现了设置界面；设置可由主界面进入，目前可实现实时音量调节、退出游戏，后续可在SetScene.cpp中实现更多设置功能
+      担心设置界面跳转会影响棋盘界面的实时联机匹配，因此暂时未将设置按钮添加到BoardScene.cpp中
+

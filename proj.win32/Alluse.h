@@ -53,11 +53,14 @@ constexpr int CARD_REGION_Y = 100;
 constexpr int PUTOUT_CARD_REGION_HALF_X = 700;     // 出牌区域半宽X
 constexpr int PUTOUT_CARD_REGION_HALF_Y = 300;     // 出牌区域半高Y
 
-
-
-
-
-// 设置场景设置（预留）
+// 设置场景设置
+constexpr int SETSCENE_SLIDER_X = 1050;                                // 设置场景音量滑动条与标签位置 X 
+constexpr int SETSCENE_BGMSLIDER_Y = 820;                              // 设置场景背景音乐音量滑动条与标签位置 Y 
+constexpr int SETSCENE_EFFSLIDER_Y = 650;                             // 设置场景音效音量滑动条与标签位置 Y 
+constexpr int SETSCENE_RETURN_BUTTON_X = 1900;                        // 设置场景返回菜单按钮位置 X 
+constexpr int SETSCENE_RETURN_BUTTON_Y = 50;                          // 设置场景返回菜单按钮位置 Y 
+constexpr int SETSCENE_CLOSE_BUTTON_X = 850;                        // 设置场景退出游戏按钮位置 X 
+constexpr int SETSCENE_CLOSE_BUTTON_Y = 470;                          // 设置场景退出游戏按钮位置 Y 
 
 // 商店牌堆设置（预留）
 
