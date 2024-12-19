@@ -37,7 +37,6 @@ enum class SpellSchool {
 struct Effect {
     SpellMechanics::KeyWord type;
     int amount; // 对于 Damage, Draw, Grow, Crystal 等效果的数值
-    // 可以根据需要添加更多字段，例如目标类型等
 };
 
 class SpellCard : public CardBase {

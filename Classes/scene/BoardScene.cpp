@@ -19,36 +19,36 @@
 #include <codecvt>
 #include <sstream>
 
-// Ê¹ï¿½ï¿½ cocos2d ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½
+// Ê¹ÓÃ cocos2d ÃüÃû¿Õ¼ä
 USING_NS_CC;
 
-// Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Photon SDK ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// Ê¹ÓÃÃüÃû¿Õ¼ä±ðÃû¼ò»¯ Photon SDK µÄÀàÐÍÒýÓÃ
 namespace EG = ExitGames::Common;
 
-// ï¿½ï¿½ï¿½ï¿½ cardNumber Îª int
+// ¶¨Òå cardNumber Îª int
 typedef int CardNumber;
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ¶¨ÒåÍæ¼Ò±àºÅÀàÐÍ
 typedef int PlayerNumber;
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ´´½¨³¡¾°
 Scene* BoardScene::createScene() {
     return BoardScene::create();
 }
 
-// ï¿½ï¿½Ó¡ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+// ´òÓ¡¼ÓÔØ´íÎóÐÅÏ¢
 static void problemLoading(const char* filename) {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in BoardScene.cpp\n");
 }
 
-// ï¿½ï¿½Ê¼ï¿½ï¿½
+// ³õÊ¼»¯
 bool BoardScene::init() {
     if (!Scene::init()) {
         return false;
     }
 
-    // ï¿½ï¿½È¡È«ï¿½ï¿½ PhotonLib Êµï¿½ï¿½
+    // »ñÈ¡È«¾Ö PhotonLib ÊµÀý
     photonLib = PhotonLib::getInstance();
     if (!photonLib) {
         CCLOG("Failed to get PhotonLib instance.");
@@ -56,34 +56,34 @@ bool BoardScene::init() {
         return false;
     }
 
-    // ï¿½ï¿½È¡È«ï¿½ï¿½ CocosUIListener Êµï¿½ï¿½
+    // »ñÈ¡È«¾Ö CocosUIListener ÊµÀý
     cocosUIListener = CocosUIListener::getInstance();
     if (!cocosUIListener) {
         CCLOG("Failed to get CocosUIListener instance.");
         return false;
     }
 
-    // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½UIï¿½ï¿½Layerï¿½ï¿½ï¿½ï¿½ï¿½MainSceneï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Ê¡ï¿½Ô£ï¿½
+    // ´´½¨Ò»¸öÓÃÓÚUIµÄLayer£¨Èç¹ûMainSceneÖÐÒÑ¾­ÓÐ£¬¿ÉÒÔÊ¡ÂÔ£©
     auto uiLayer = Layer::create();
-    this->addChild(uiLayer, 100); // È·ï¿½ï¿½UIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï²ï¿½
+    this->addChild(uiLayer, 100); // È·±£UI²ãÔÚ×îÉÏ²ã
 
-    // ï¿½ï¿½ CocosUIListener ï¿½ï¿½ï¿½Óµï¿½ UI Layer ï¿½ï¿½
-    cocosUIListener->attachToLayer(uiLayer, Vec2(100, 100)); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+    // ½« CocosUIListener ¸½¼Óµ½ UI Layer ÉÏ
+    cocosUIListener->attachToLayer(uiLayer, Vec2(100, 100)); // ¸ù¾ÝÐèÒªµ÷ÕûÎ»ÖÃ
 
-    // ï¿½ï¿½ï¿½ï¿½ PhotonLib ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½Øµï¿½
+    // ÉèÖÃ PhotonLib µÄ×Ô¶¨ÒåÊÂ¼þ»Øµ÷
     photonLib->setCustomEventCallback(CC_CALLBACK_2(BoardScene::onPhotonEvent, this));
 
-    // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ³õÊ¼»¯Íæ¼Ò
     initPlayers();
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢UI
+    // ´´½¨Íæ¼ÒÐÅÏ¢UI
     createPlayerUI();
 
-    // ï¿½ï¿½È¡ï¿½ï¿½Ä»ï¿½ß´ï¿½ï¿½Ô­ï¿½ï¿½
+    // »ñÈ¡ÆÁÄ»³ß´çºÍÔ­µã
     const Size visibleSize = Director::getInstance()->getVisibleSize();
     const Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    // ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½Í¼Æ¬
+    // Ìí¼Ó±³¾°Í¼Æ¬
     auto title_sprite = Sprite::create("board.png");
     if (title_sprite == nullptr) {
         problemLoading("board.png");
@@ -91,14 +91,14 @@ bool BoardScene::init() {
         return false;
     }
     else {
-        // ï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½Ä³ß´ï¿½Îªï¿½ï¿½ï¿½ÚµÄ³ß´ï¿½
+        // ÉèÖÃÍ¼Æ¬µÄ³ß´çÎª´°¿ÚµÄ³ß´ç
         title_sprite->setContentSize(visibleSize);
-        // ï¿½ï¿½Í¼Æ¬ï¿½ï¿½Î»ï¿½Ãµï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½
+        // ½«Í¼Æ¬µÄÎ»ÖÃµ÷ÕûÎª´°¿ÚµÄÖÐÐÄ
         title_sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
         this->addChild(title_sprite, 0);
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø°ï¿½Å¥
+    // ´´½¨·µ»Ø°´Å¥
     auto cancel = MenuItemImage::create(
         "button/cancel.png",
         "button/cancelSelected.png",
@@ -110,16 +110,16 @@ bool BoardScene::init() {
     }
     else
     {
-        // Ê¹ï¿½Ãµï¿½Ò»ï¿½ï¿½ï¿½á¹©ï¿½Ä²ï¿½ï¿½ï¿½
-        cancel->setPosition(Vec2(1940, 20)); // ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Êµï¿½ï¿½Ò»ï¿½ï¿½
+        // Ê¹ÓÃµÚÒ»´ÎÌá¹©µÄ²ÎÊý
+        cancel->setPosition(Vec2(1940, 20)); // ÓëµÚÒ»´ÎÊµÏÖÒ»ÖÂ
     }
     auto menu = Menu::create(cancel, nullptr);
 
-    // ï¿½ï¿½ï¿½Ó²Ëµï¿½
+    // Ìí¼Ó²Ëµ¥
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ´´½¨´¥Ãþ¼àÌýÆ÷
     auto touchListener = EventListenerTouchOneByOne::create();
     touchListener->setSwallowTouches(true);
     touchListener->onTouchBegan = CC_CALLBACK_2(BoardScene::onTouchBegan, this);
@@ -129,52 +129,52 @@ bool BoardScene::init() {
 
     selectedCard = nullptr;
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ´´½¨Êó±ê¼àÌýÆ÷
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseMove = CC_CALLBACK_1(BoardScene::onMouseMove, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
     hoveredCard = nullptr;
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ´´½¨ÖÐÑë³öÅÆÇøÓò
     createDropArea();
 
-    // ï¿½ï¿½ï¿½ï¿½ update ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½
+    // Ìí¼Ó update ·½·¨µÄµ÷ÓÃ
     this->scheduleUpdate();
 
-    distributeInitialHands(); // Í¨ï¿½ï¿½ï¿½Â¼ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½
+    distributeInitialHands(); // Í¨¹ýÊÂ¼þ·Ö·¢³éÅÆ
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ÒµÄ»Øºï¿½
+    // Æô¶¯µÚÒ»¸öÍæ¼ÒµÄ»ØºÏ
     if (localPlayerNumber == 1)
     {
-        sendTurnStartEvent(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ÒµÄ»ØºÏ¿ï¿½Ê¼
+        sendTurnStartEvent(); // ´¥·¢µÚÒ»¸öÍæ¼ÒµÄ»ØºÏ¿ªÊ¼
     }
     return true;
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½
+// ·µ»ØÖ÷²Ëµ¥
 void BoardScene::cancelCallback(Ref* pSender)
 {
-    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½Ð§
+    // ¼ÓÔØµã»÷ÒôÐ§
     audioPlayer("Music/ClickSoundEffect.mp3", false);
-    // ï¿½ë¿ªï¿½ï¿½ï¿½ï¿½
+    // Àë¿ª·¿¼ä
     photonLib->leaveRoom();
     cocosUIListener->writeString(EG::JString(L"Leaving room and returning to main menu."));
-    // ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½
+    // ÇÐ»»µ½Ö÷²Ëµ¥
     Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MainScene::createScene(), Color3B::WHITE));
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ´´½¨ÖÐÑë³öÅÆÇøÓò
 void BoardScene::createDropArea()
 {
     dropArea = DrawNode::create();
 
-    // ï¿½ï¿½È¡ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Äµï¿½
+    // »ñÈ¡ÆÁÄ»ÖÐÐÄµã
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     Vec2 center = Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
 
-    // ï¿½ï¿½ï¿½Æ°ï¿½Í¸ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // »æÖÆ°ëÍ¸Ã÷µÄ¾ØÐÎÇøÓò
     Vec2 vertices[] =
     {
         Vec2(center.x - PUTOUT_CARD_REGION_HALF_X, center.y - PUTOUT_CARD_REGION_HALF_Y),
@@ -183,14 +183,14 @@ void BoardScene::createDropArea()
         Vec2(center.x - PUTOUT_CARD_REGION_HALF_X, center.y + PUTOUT_CARD_REGION_HALF_Y)
     };
 
-    Color4F fillColor(0.5f, 0.5f, 0.5f, 0.3f); // ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½É«
-    Color4F borderColor(1.0f, 1.0f, 1.0f, 0.8f); // ï¿½ï¿½É«ï¿½ß¿ï¿½
+    Color4F fillColor(0.5f, 0.5f, 0.5f, 0.3f); // °ëÍ¸Ã÷»ÒÉ«
+    Color4F borderColor(1.0f, 1.0f, 1.0f, 0.8f); // °×É«±ß¿ò
 
     dropArea->drawPolygon(vertices, 4, fillColor, 2, borderColor);
     this->addChild(dropArea, 1);
 }
 
-// ï¿½ï¿½ï¿½ï¿½ checkDropArea ï¿½ï¿½ï¿½ï¿½
+// ¶¨Òå checkDropArea º¯Êý
 void BoardScene::checkDropArea() {
     if (!selectedCard)
         return;
@@ -200,24 +200,24 @@ void BoardScene::checkDropArea() {
         visibleSize.height / 2 + Director::getInstance()->getVisibleOrigin().y);
     Vec2 spritePos = selectedCard->getPosition();
 
-    // ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Í¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ¼ì²éÊÇ·ñÔÚÍ¶·ÅÇøÓòÄÚ
     bool inDropArea =
         abs(spritePos.x - center.x) <= PUTOUT_CARD_REGION_HALF_X &&
         abs(spritePos.y - center.y) <= PUTOUT_CARD_REGION_HALF_Y;
 
     if (inDropArea)
     {
-        // Ö±ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½
-        selectedCard->setColor(Color3B(255, 100, 100));  // Ê¹ï¿½Ã½ï¿½Ç³ï¿½Äºï¿½É«
+        // Ö±½ÓÉèÖÃ¿¨ÅÆÑÕÉ«ºÍÃè±ß
+        selectedCard->setColor(Color3B(255, 100, 100));  // Ê¹ÓÃ½ÏÇ³µÄºìÉ«
 
-        // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
+        // ´´½¨Ò»¸öÃè±ßÐ§¹û
         if (!selectedCard->getChildByName("outline"))
         {
             auto cardSize = selectedCard->getContentSize();
             auto outline = DrawNode::create();
             outline->setName("outline");
 
-            // ï¿½ï¿½ï¿½Æ´Ö±ß¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã±ß¿ï¿½ï¿½ï¿½ï¿½Îª5ï¿½ï¿½ï¿½ï¿½
+            // »æÖÆ´Ö±ß¿ò£¬ÕâÀïÉèÖÃ±ß¿ò¿í¶ÈÎª5ÏñËØ
             Vec2 vertices[] = {
                 Vec2(0, 0),
                 Vec2(cardSize.width, 0),
@@ -226,9 +226,9 @@ void BoardScene::checkDropArea() {
             };
 
             outline->drawPolygon(vertices, 4,
-                Color4F(1, 0, 0, 0.0f),     // ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½
-                5.0f,                        // ï¿½ß¿ï¿½ï¿½ï¿½ï¿½
-                Color4F(1, 0, 0, 1.0f)      // ï¿½ß¿ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½
+                Color4F(1, 0, 0, 0.0f),     // Ìî³äÑÕÉ«£¨Í¸Ã÷£©
+                5.0f,                        // ±ß¿ò¿í¶È
+                Color4F(1, 0, 0, 1.0f)      // ±ß¿òÑÕÉ«£¨ºìÉ«£©
             );
 
             selectedCard->addChild(outline, 1);
@@ -237,7 +237,7 @@ void BoardScene::checkDropArea() {
     else
     {
         selectedCard->setColor(Color3B::WHITE);
-        // ï¿½Æ³ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
+        // ÒÆ³ýÃè±ßÐ§¹û
         auto outline = selectedCard->getChildByName("outline");
         if (outline) {
             outline->removeFromParent();
@@ -245,15 +245,15 @@ void BoardScene::checkDropArea() {
     }
 }
 
-// ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½
+// Êó±êÒÆ¶¯¼ì²â
 void BoardScene::onMouseMove(Event* event) {
     EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
     Vec2 mousePos = Vec2(mouseEvent->getCursorX(), mouseEvent->getCursorY());
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Í£ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ¼ì²éÊó±êÊÇ·ñÐüÍ£ÔÚÄ³¸ö¾«ÁéÉÏ
     Sprite* newHoveredSprite = nullptr;
 
-    // Ê¹ï¿½ï¿½ localPlayerCards
+    // Ê¹ÓÃ localPlayerCards
     for (auto it = localPlayerCards.rbegin(); it != localPlayerCards.rend(); ++it) {
         Sprite* sprite = *it;
         Vec2 locationInNode = sprite->convertToNodeSpace(mousePos);
@@ -266,40 +266,40 @@ void BoardScene::onMouseMove(Event* event) {
         }
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½Ä¾ï¿½ï¿½é·¢ï¿½ï¿½ï¿½ä»¯
+    // Èç¹ûÐüÍ£µÄ¾«Áé·¢Éú±ä»¯
     if (hoveredCard != newHoveredSprite) {
-        // ï¿½Ö¸ï¿½Ö®Ç°ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½Ä´ï¿½Ð¡
+        // »Ö¸´Ö®Ç°ÐüÍ£¾«ÁéµÄ´óÐ¡
         if (hoveredCard && hoveredCard != selectedCard) {
             scaleSprite(hoveredCard, 1.0f);
         }
 
-        // ï¿½Å´ï¿½ï¿½Âµï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½
+        // ·Å´óÐÂµÄÐüÍ£¾«Áé
         if (newHoveredSprite && newHoveredSprite != selectedCard) {
-            scaleSprite(newHoveredSprite, 1.5f); // ï¿½Å´ï¿½1.5ï¿½ï¿½
+            scaleSprite(newHoveredSprite, 1.5f); // ·Å´ó1.5±¶
         }
 
         hoveredCard = newHoveredSprite;
     }
 }
 
-// Æ½ï¿½ï¿½ï¿½ï¿½ï¿½Å¾ï¿½ï¿½ï¿½
+// Æ½»¬Ëõ·Å¾«Áé
 void BoardScene::scaleSprite(Sprite* sprite, float scale) {
-    // Ê¹ï¿½Ã¶ï¿½ï¿½ï¿½Êµï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
+    // Ê¹ÓÃ¶¯×÷ÊµÏÖÆ½»¬µÄËõ·ÅÐ§¹û
     sprite->stopAllActions();
     sprite->runAction(ScaleTo::create(0.1f, scale));
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼
+// ´¥Ãþ¿ªÊ¼
 bool BoardScene::onTouchBegan(Touch* touch, Event* event)
 {
-    // Ö»ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ÒµÄ»ØºÏ²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // Ö»ÓÐÔÚ±¾µØÍæ¼ÒµÄ»ØºÏ²ÅÔÊÐí³öÅÆ
     if (!isLocalPlayerTurn) {
         return false;
     }
 
     Vec2 touchLocation = touch->getLocation();
 
-    // ï¿½Óºï¿½ï¿½ï¿½Ç°ï¿½ï¿½é£¨Ê¹ï¿½ï¿½ï¿½Ï²ï¿½Ä¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½
+    // ´ÓºóÏòÇ°¼ì²é£¨Ê¹×îÉÏ²ãµÄ¾«ÁéÓÅÏÈÏìÓ¦£©
     for (auto it = localPlayerCards.rbegin(); it != localPlayerCards.rend(); ++it) {
         Sprite* sprite = *it;
         Vec2 locationInNode = sprite->convertToNodeSpace(touchLocation);
@@ -308,7 +308,7 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
 
         if (rect.containsPoint(locationInNode)) {
             selectedCard = sprite;
-            // ï¿½ï¿½Ê¼ï¿½Ï¶ï¿½Ê±ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
+            // ¿ªÊ¼ÍÏ¶¯Ê±»Ö¸´Õý³£´óÐ¡
             scaleSprite(sprite, 1.0f);
             return true;
         }
@@ -318,7 +318,7 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
     return false;
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½
+// ´¥ÃþÒÆ¶¯
 void BoardScene::onTouchMoved(Touch* touch, Event* event)
 {
     if (selectedCard)
@@ -327,7 +327,7 @@ void BoardScene::onTouchMoved(Touch* touch, Event* event)
     }
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ´¥Ãþ½áÊø
 void BoardScene::onTouchEnded(Touch* touch, Event* event)
 {
     if (selectedCard)
@@ -341,45 +341,45 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
             abs(finalPos.y - center.y) <= PUTOUT_CARD_REGION_HALF_Y;
 
         Sprite* cardToHandle = selectedCard;
-        selectedCard = nullptr;  // ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½×´Ì¬
+        selectedCard = nullptr;  // ÏÈÇå³ýÑ¡ÖÐ×´Ì¬
 
         if (inDropArea) {
             players::Player* currentPlayer = (currentPlayerNumber == 1) ? player1 : player2;
-            PlayerNumber playerNumber = currentPlayerNumber; // ï¿½ï¿½Ç°ï¿½Øºï¿½ï¿½ï¿½Ò±ï¿½ï¿½
+            PlayerNumber playerNumber = currentPlayerNumber; // µ±Ç°»ØºÏÍæ¼Ò±àºÅ
 
-            // ï¿½ï¿½È¡ï¿½ï¿½ï¿½Æ·ï¿½ï¿½Ãµï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è¿¨ï¿½Æ·ï¿½ï¿½Ã´æ´¢ï¿½Ú¿ï¿½ï¿½Æµï¿½ Tag ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½
-            int cardCost = getCardCost(cardToHandle); // ï¿½ï¿½ÒªÊµï¿½ï¿½ getCardCost ï¿½ï¿½ï¿½ï¿½
+            // »ñÈ¡¿¨ÅÆ·ÑÓÃµÄÂß¼­£¨¼ÙÉè¿¨ÅÆ·ÑÓÃ´æ´¢ÔÚ¿¨ÅÆµÄ Tag »òÆäËûÊôÐÔÖÐ£©
+            int cardCost = getCardCost(cardToHandle); // ÐèÒªÊµÏÖ getCardCost ·½·¨
 
             if (currentPlayer->getMoney() >= cardCost) {
-                // ï¿½Û³ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+                // ¿Û³ý·¨Á¦Öµ
                 currentPlayer->setMoney(currentPlayer->getMoney() - cardCost);
 
-                // ï¿½ï¿½È¡ï¿½ï¿½ï¿½Æ±ï¿½ï¿½
+                // »ñÈ¡¿¨ÅÆ±àºÅ
                 CardNumber cardNumber = cardToHandle->getTag();
 
-                // ï¿½ï¿½ï¿½Í´ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ playerNumber ï¿½ï¿½ cardNumber
+                // ·¢ËÍ´òÅÆÊÂ¼þ£¬°üº¬ playerNumber ºÍ cardNumber
                 sendPlayCardEvent(playerNumber, cardNumber);
 
-                // ï¿½Æ³ï¿½ï¿½ï¿½ï¿½Æ²ï¿½ï¿½ï¿½ï¿½ï¿½ UI
+                // ÒÆ³ý¿¨ÅÆ²¢¸üÐÂ UI
                 removeCard(cardToHandle);
                 updatePlayerUI();
 
-                // ï¿½ï¿½ï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+                // ²¥·Å´òÅÆÒôÐ§
                 audioPlayer("Music/playcard.mp3", false);
             }
             else
             {
-                // ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ã£¬ï¿½Øµï¿½Ô­Î»
+                // ·ÑÓÃ²»×ã£¬»Øµ½Ô­Î»
                 Vec2 originalPos = cardOriginalPositions[cardToHandle];
                 cardToHandle->runAction(EaseBackOut::create(MoveTo::create(0.5f, originalPos)));
             }
         }
         else
         {
-            // ï¿½ï¿½ï¿½Ú³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò£¬»Øµï¿½Ô­Î»
+            // ²»ÔÚ³öÅÆÇøÓò£¬»Øµ½Ô­Î»
             Vec2 originalPos = cardOriginalPositions[cardToHandle];
 
-            // Ê¹ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½Ô­Î»
+            // Ê¹ÓÃ»º¶¯¶¯»­»Øµ½Ô­Î»
             cardToHandle->runAction(Sequence::create(
                 EaseBackOut::create(MoveTo::create(0.5f, originalPos)),
                 CallFunc::create([cardToHandle]() {
@@ -389,7 +389,7 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
                 nullptr
             ));
 
-            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½Ï£ï¿½ï¿½Ö¸ï¿½ï¿½Å´ï¿½Ð§ï¿½ï¿½
+            // Èç¹ûÊó±êÈÔÔÚ¿¨ÅÆÉÏ£¬»Ö¸´·Å´óÐ§¹û
             if (hoveredCard == cardToHandle) {
                 scaleSprite(cardToHandle, 1.5f);
             }
@@ -397,11 +397,11 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
     }
 }
 
-// ï¿½ï¿½È¡ï¿½ï¿½ï¿½Æ·ï¿½ï¿½ÃµÄ·ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Êµï¿½Ö£ï¿½
+// »ñÈ¡¿¨ÅÆ·ÑÓÃµÄ·½·¨£¨Ê¾ÀýÊµÏÖ£©
 int BoardScene::getCardCost(Sprite* card) {
-    // ï¿½ï¿½ï¿½è¿¨ï¿½Æ·ï¿½ï¿½Ã´æ´¢ï¿½ï¿½ Tag ï¿½Ð£ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½È¡
-    // ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ Tag ï¿½ï¿½ÎªÊ¾ï¿½ï¿½
-    return card->getTag(); // ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ¼ÙÉè¿¨ÅÆ·ÑÓÃ´æ´¢ÔÚ Tag ÖÐ£¬»òÍ¨¹ýÆäËû·½Ê½»ñÈ¡
+    // ÕâÀïÊ¹ÓÃ Tag ×÷ÎªÊ¾Àý
+    return card->getTag(); // ÐèÒª¸ù¾ÝÊµ¼ÊÇé¿öµ÷Õû
 }
 
 void BoardScene::initPlayers()
@@ -411,46 +411,46 @@ void BoardScene::initPlayers()
     player1 = GameData::getInstance().getPlayer1();
     player2 = GameData::getInstance().getPlayer2();
 
-    // ï¿½ï¿½ï¿½ï¿½ currentPlayerNumber ï¿½ï¿½ localPlayerNumber ï¿½ï¿½ï¿½ï¿½ isLocalPlayerTurn
+    // ¸ù¾Ý currentPlayerNumber ºÍ localPlayerNumber ÉèÖÃ isLocalPlayerTurn
     isLocalPlayerTurn = (currentPlayerNumber == localPlayerNumber);
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢UI
+// ´´½¨Íæ¼ÒÐÅÏ¢UI
 void BoardScene::createPlayerUI() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê¾
+    // ´´½¨¼º·½Íæ¼ÒÐÅÏ¢ÏÔÊ¾
     player1Health = Label::createWithTTF("HP: 30", "fonts/arial.ttf", 24);
     player1Health->setPosition(Vec2(800, 220));
     this->addChild(player1Health);
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½Í¬Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½Í´ï¿½Ï¸ï¿½ï¿½
-    player1Health->enableOutline(Color4B::BLACK, 2);         // ï¿½ï¿½É«ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ï¸Îª2
+    // ÉèÖÃÃè±ß£¨Í¬Ê±ÉèÖÃÑÕÉ«ºÍ´ÖÏ¸£©
+    player1Health->enableOutline(Color4B::BLACK, 2);         // ºÚÉ«Ãè±ß£¬´ÖÏ¸Îª2
 
     player1Mana = Label::createWithTTF("Mana: 1/1", "fonts/arial.ttf", 24);
     player1Mana->setPosition(Vec2(800, 280));
     this->addChild(player1Mana);
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½Í¬Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½Í´ï¿½Ï¸ï¿½ï¿½
-    player1Mana->enableOutline(Color4B::BLACK, 2);         // ï¿½ï¿½É«ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ï¸Îª2
+    // ÉèÖÃÃè±ß£¨Í¬Ê±ÉèÖÃÑÕÉ«ºÍ´ÖÏ¸£©
+    player1Mana->enableOutline(Color4B::BLACK, 2);         // ºÚÉ«Ãè±ß£¬´ÖÏ¸Îª2
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê¾
+    // ´´½¨¶Ô·½Íæ¼ÒÐÅÏ¢ÏÔÊ¾
     player2Health = Label::createWithTTF("HP: 30", "fonts/arial.ttf", 24);
     player2Health->setPosition(Vec2(800, visibleSize.height - 220));
     this->addChild(player2Health);
-    player2Health->enableOutline(Color4B::BLACK, 2);         // ï¿½ï¿½É«ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ï¸Îª2
+    player2Health->enableOutline(Color4B::BLACK, 2);         // ºÚÉ«Ãè±ß£¬´ÖÏ¸Îª2
 
     player2Mana = Label::createWithTTF("Mana: 1/1", "fonts/arial.ttf", 24);
     player2Mana->setPosition(Vec2(800, visibleSize.height - 280));
     this->addChild(player2Mana);
-    player2Mana->enableOutline(Color4B::BLACK, 2);         // ï¿½ï¿½É«ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ï¸Îª2
+    player2Mana->enableOutline(Color4B::BLACK, 2);         // ºÚÉ«Ãè±ß£¬´ÖÏ¸Îª2
 
-    // ï¿½Øºï¿½Ö¸Ê¾ï¿½ï¿½
+    // »ØºÏÖ¸Ê¾Æ÷
     turnIndicator = Label::createWithTTF("Your Turn", "fonts/arial.ttf", 32);
-    turnIndicator->setPosition(Vec2(1880, 600)); // ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Êµï¿½ï¿½Ò»ï¿½ï¿½
+    turnIndicator->setPosition(Vec2(1880, 600)); // ÓëµÚÒ»´ÎÊµÏÖÒ»ÖÂ
     this->addChild(turnIndicator);
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½Í¬Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½Í´ï¿½Ï¸ï¿½ï¿½
-    turnIndicator->enableOutline(Color4B::BLACK, 2);         // ï¿½ï¿½É«ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ï¸Îª2
+    // ÉèÖÃÃè±ß£¨Í¬Ê±ÉèÖÃÑÕÉ«ºÍ´ÖÏ¸£©
+    turnIndicator->enableOutline(Color4B::BLACK, 2);         // ºÚÉ«Ãè±ß£¬´ÖÏ¸Îª2
 
-    // ï¿½ï¿½ï¿½Ó»ØºÏ½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¿ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½
+    // Ìí¼Ó»ØºÏ½áÊø°´Å¥£¨½ö±¾µØÍæ¼Ò¿ÉÒÔ¿´µ½£©
     auto endTurnBtn = MenuItemImage::create(
         "button/endturn.png",
         "button/endturnSelected.png",
@@ -458,25 +458,25 @@ void BoardScene::createPlayerUI() {
             this->switchTurn();
         }
     );
-    endTurnBtn->setPosition(Vec2(1880, 700)); // ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Êµï¿½ï¿½Ò»ï¿½ï¿½
+    endTurnBtn->setPosition(Vec2(1880, 700)); // ÓëµÚÒ»´ÎÊµÏÖÒ»ÖÂ
     auto menu = Menu::create(endTurnBtn, nullptr);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu);
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½UI
+// ¸üÐÂÍæ¼ÒUI
 void BoardScene::updatePlayerUI() {
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Ê¾
+    // ¸üÐÂÉúÃüÖµÏÔÊ¾
     player1Health->setString("HP: " + std::to_string(player1->getHealth()));
     player2Health->setString("HP: " + std::to_string(player2->getHealth()));
 
-    // ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½Öµï¿½ï¿½Ê¾
+    // ¸üÐÂ·¨Á¦ÖµÏÔÊ¾
     player1Mana->setString("Mana: " + std::to_string(player1->getMoney()) + "/" +
         std::to_string(player1->getMaxMoney()));
     player2Mana->setString("Mana: " + std::to_string(player2->getMoney()) + "/" +
         std::to_string(player2->getMaxMoney()));
 
-    // ï¿½ï¿½ï¿½Â»Øºï¿½Ö¸Ê¾
+    // ¸üÐÂ»ØºÏÖ¸Ê¾
     if (isLocalPlayerTurn) {
         turnIndicator->setString("Your Turn");
     }
@@ -485,7 +485,7 @@ void BoardScene::updatePlayerUI() {
     }
 }
 
-// ï¿½Ð»ï¿½ï¿½Øºï¿½
+// ÇÐ»»»ØºÏ
 void BoardScene::switchTurn()
 {
     if (!isLocalPlayerTurn) {
@@ -494,29 +494,29 @@ void BoardScene::switchTurn()
         return;
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ò±ï¿½Å£ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½Ï·ï¿½Ð£ï¿½ï¿½ï¿½Ò±ï¿½ï¿½Îª1ï¿½ï¿½2ï¿½ï¿½
+    // ¼ÆËãÏÂÒ»¸öÍæ¼Ò±àºÅ£¨ÔÚ2ÈËÓÎÏ·ÖÐ£¬Íæ¼Ò±àºÅÎª1»ò2£©
     int nextPlayerNumber = (currentPlayerNumber == 1) ? 2 : 1;
 
-    // ï¿½ï¿½ï¿½Âµï¿½Ç°ï¿½ï¿½Ò±ï¿½ï¿½
+    // ¸üÐÂµ±Ç°Íæ¼Ò±àºÅ
     currentPlayerNumber = nextPlayerNumber;
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÒµÄ»Øºï¿½
+    // ¸üÐÂÊÇ·ñÎª±¾µØÍæ¼ÒµÄ»ØºÏ
     isLocalPlayerTurn = (currentPlayerNumber == localPlayerNumber);
 
-    // ï¿½ï¿½ï¿½ï¿½ TURN_START ï¿½Â¼ï¿½
+    // ·¢ËÍ TURN_START ÊÂ¼þ
     sendTurnStartEvent();
 
-    // ï¿½ï¿½ï¿½ï¿½ UI
+    // ¸üÐÂ UI
     updatePlayerUI();
 
     CCLOG("Switched turn to playerNumber: %d", currentPlayerNumber);
     cocosUIListener->writeString(EG::JString(L"Switched turn."));
 }
 
-// ï¿½ï¿½ï¿½Í»ØºÏ¿ï¿½Ê¼ï¿½Â¼ï¿½
+// ·¢ËÍ»ØºÏ¿ªÊ¼ÊÂ¼þ
 void BoardScene::sendTurnStartEvent() {
     EG::Hashtable eventContent;
-    // ï¿½ï¿½ï¿½Ýµï¿½Ç°ï¿½ï¿½Ò±ï¿½ï¿½
+    // ´«µÝµ±Ç°Íæ¼Ò±àºÅ
     PlayerNumber currentPlayerNum = currentPlayerNumber;
     eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(currentPlayerNum));
 
@@ -525,7 +525,7 @@ void BoardScene::sendTurnStartEvent() {
     cocosUIListener->writeString(EG::JString(L"Sent TURN_START event."));
 }
 
-// ï¿½Ó¿ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½Õ½ï¿½ï¿½
+// ´Ó¿¨ÅÆÒÆ³ý²¢Ìí¼Óµ½Õ½³¡
 void BoardScene::removeCard(Sprite* sprite) {
     if (!sprite) return;
 
@@ -533,10 +533,10 @@ void BoardScene::removeCard(Sprite* sprite) {
         hoveredCard = nullptr;
     }
 
-    // ï¿½ï¿½ localPlayerCards ï¿½Æ³ï¿½
+    // ´Ó localPlayerCards ÒÆ³ý
     auto iter = std::find(localPlayerCards.begin(), localPlayerCards.end(), sprite);
     if (iter != localPlayerCards.end()) {
-        // ï¿½ï¿½È¡ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+        // »ñÈ¡±»ÒÆ³ý¿¨ÅÆµÄË÷ÒýÎ»ÖÃ
         size_t removedIndex = std::distance(localPlayerCards.begin(), iter);
 
         localPlayerCards.erase(iter);
@@ -544,24 +544,24 @@ void BoardScene::removeCard(Sprite* sprite) {
         playedCards.push_back(sprite);
         updatePlayedCardsPosition();
 
-        // ï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½Æ±ï¿½ï¿½
+        // ´ÓÍæ¼ÒµÄÊÖÅÆÖÐÒÆ³ý¿¨ÅÆ±àºÅ
         CardNumber cardNumber = sprite->getTag();
         players::Player* currentPlayer = (currentPlayerNumber == 1) ? player1 : player2;
         currentPlayer->removeCardFromHand(cardNumber);
 
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+        // ²¥·ÅÒôÐ§
         audioPlayer("Music/putcard.mp3", false);
 
-        // ï¿½ï¿½ï¿½ï¿½Ê£ï¿½à¿¨ï¿½Æµï¿½Î»ï¿½ï¿½
+        // ¸üÐÂÊ£Óà¿¨ÅÆµÄÎ»ÖÃ
         for (size_t i = removedIndex; i < localPlayerCards.size(); i++) {
             Sprite* card = localPlayerCards[i];
-            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+            // ¼ÆËãÐÂÎ»ÖÃ
             Vec2 newPos(CARD_REGION_X + i * (card->getContentSize().width + 30), CARD_REGION_Y);
 
-            // ï¿½ï¿½ï¿½Â´æ´¢ï¿½ï¿½Ô­Ê¼Î»ï¿½ï¿½
+            // ¸üÐÂ´æ´¢µÄÔ­Ê¼Î»ÖÃ
             cardOriginalPositions[card] = newPos;
 
-            // ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Ìí¼ÓÒÆ¶¯¶¯»­
             card->runAction(Sequence::create(
                 EaseInOut::create(MoveTo::create(0.3f, newPos), 2.0f),
                 EaseElasticOut::create(ScaleTo::create(0.2f, 1.0f)),
@@ -571,30 +571,30 @@ void BoardScene::removeCard(Sprite* sprite) {
     }
 }
 
-// ï¿½ï¿½ï¿½Â³ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½Ê¾
+// ¸üÐÂ³¡ÉÏÒÑ´ò³ö¿¨ÅÆµÄÏÔÊ¾
 void BoardScene::updatePlayedCardsPosition() {
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height / 2);
-    float cardWidth = 100;  // ï¿½ï¿½ï¿½è¿¨ï¿½Æ¿ï¿½ï¿½ï¿½Îª100
-    float spacing = 20;     // ï¿½ï¿½ï¿½Æ¼ï¿½ï¿½
+    float cardWidth = 100;  // ¼ÙÉè¿¨ÅÆ¿í¶ÈÎª100
+    float spacing = 20;     // ¿¨ÅÆ¼ä¾à
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼Î»ï¿½Ã£ï¿½Ê¹ï¿½ï¿½ï¿½Æ¾ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½
+    // ¼ÆËãÆðÊ¼Î»ÖÃ£¨Ê¹¿¨ÅÆ¾ÓÖÐÏÔÊ¾£©
     float startX = center.x - (playedCards.size() * (cardWidth + spacing) - spacing) / 2;
 
-    // ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½Î»ï¿½ï¿½
+    // ¸üÐÂÃ¿ÕÅÒÑ´ò³ö¿¨ÅÆµÄÎ»ÖÃ
     for (size_t i = 0; i < playedCards.size(); i++) {
         Sprite* card = playedCards[i];
         Vec2 targetPos = Vec2(startX + i * (cardWidth + spacing), center.y);
 
-        // Ê¹ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Î»ï¿½ï¿½
+        // Ê¹ÓÃ¶¯»­ÒÆ¶¯µ½Ä¿±êÎ»ÖÃ
         card->runAction(EaseBackOut::create(MoveTo::create(0.3f, targetPos)));
     }
 }
 
-// ï¿½ï¿½ï¿½Í´ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+// ·¢ËÍ´òÅÆÊÂ¼þ
 void BoardScene::sendPlayCardEvent(PlayerNumber playerNumber, CardNumber cardNumber) {
     EG::Hashtable eventContent;
-    // Ê¹ï¿½Ã²ï¿½Í¬ï¿½ï¿½ key ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ playerNumber ï¿½ï¿½ cardNumber
+    // Ê¹ÓÃ²»Í¬µÄ key À´Çø·Ö playerNumber ºÍ cardNumber
     eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(playerNumber));
     eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(cardNumber));
 
@@ -606,7 +606,7 @@ void BoardScene::sendPlayCardEvent(PlayerNumber playerNumber, CardNumber cardNum
         EG::JString(std::to_wstring(cardNumber).c_str()));
 }
 
-// ï¿½ï¿½ï¿½ï¿½ Photon ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+// ´¦Àí Photon ×Ô¶¨ÒåÊÂ¼þ
 void BoardScene::onPhotonEvent(int eventCode, const EG::Hashtable& parameters) {
     switch (eventCode) {
         case PLAY_CARD:
@@ -623,12 +623,12 @@ void BoardScene::onPhotonEvent(int eventCode, const EG::Hashtable& parameters) {
     }
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+// ´¦Àí´òÅÆÊÂ¼þ
 void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
     int playerNumber = 0;
     int cardNumber = 0;
 
-    // ï¿½ï¿½È¡ playerNumber
+    // »ñÈ¡ playerNumber
     const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
     if (objPlayerNumber) {
         const EG::ValueObject<int>* voPlayerNumber = dynamic_cast<const EG::ValueObject<int>*>(objPlayerNumber);
@@ -648,7 +648,7 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
         return;
     }
 
-    // ï¿½ï¿½È¡ cardNumber
+    // »ñÈ¡ cardNumber
     const EG::Object* objCardNumber = parameters.getValue(static_cast<unsigned char>(1));
     if (objCardNumber) {
         const EG::ValueObject<int>* voCardNumber = dynamic_cast<const EG::ValueObject<int>*>(objCardNumber);
@@ -668,7 +668,7 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
         return;
     }
 
-    // È·ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½
+    // È·¶¨Ä¿±êÍæ¼Ò
     players::Player* targetPlayer = nullptr;
     if (playerNumber == 1) {
         targetPlayer = player1;
@@ -681,31 +681,31 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
         return;
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÒµÄ´ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+    // ½ö´¦Àí±¾µØÍæ¼ÒµÄ´òÅÆÊÂ¼þ
     if ((playerNumber == 1 && localPlayerNumber == 1) ||
         (playerNumber == 2 && localPlayerNumber == 2)) {
-        // ï¿½Òµï¿½ï¿½ï¿½Ó¦ï¿½Ä¿ï¿½ï¿½ï¿½
+        // ÕÒµ½¶ÔÓ¦µÄ¿¨ÅÆ
         Sprite* card = findCardByID(cardNumber);
 
         if (card) {
-            // ï¿½ï¿½ï¿½ï¿½ï¿½Æ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½Õ½ï¿½ï¿½
+            // ½«¿¨ÅÆ´ÓÊÖÅÆÒÆ³ý²¢Ìí¼Óµ½Õ½³¡
             removeCard(card);
             updatePlayerUI();
         }
     }
     else {
-        // ï¿½ï¿½ï¿½ï¿½Ç¶ï¿½ï¿½ï¿½ï¿½ï¿½ÒµÄ´ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¶ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ÎºÎ¾ï¿½ï¿½ï¿½
+        // Èç¹ûÊÇ¶ÔÊÖÍæ¼ÒµÄ´òÅÆÊÂ¼þ£¬¸üÐÂ¶ÔÊÖÍæ¼ÒµÄ×´Ì¬µ«²»´´½¨»òÐÞ¸ÄÈÎºÎ¾«Áé
         CCLOG("Opponent player %d played cardNumber: %d. No sprite to handle.", playerNumber, cardNumber);
         cocosUIListener->writeString(EG::JString(L"Opponent played a card."));
         targetPlayer->removeCardFromHand(cardNumber);
     }
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ØºÏ¿ï¿½Ê¼ï¿½Â¼ï¿½
+// ´¦Àí»ØºÏ¿ªÊ¼ÊÂ¼þ
 void BoardScene::handleTurnStart(const EG::Hashtable& parameters) {
     int receivedPlayerNumber = 0;
 
-    // ï¿½ï¿½È¡ receivedPlayerNumber
+    // »ñÈ¡ receivedPlayerNumber
     const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
     if (objPlayerNumber && objPlayerNumber->getType() == EG::TypeCode::INTEGER) {
         const EG::ValueObject<int>* voPlayerNumber = static_cast<const EG::ValueObject<int>*>(objPlayerNumber);
@@ -725,18 +725,18 @@ void BoardScene::handleTurnStart(const EG::Hashtable& parameters) {
         return;
     }
     
-    // ï¿½ï¿½ï¿½Âµï¿½Ç°ï¿½ï¿½Ò±ï¿½ÅºÍ±ï¿½ï¿½Ø»Øºï¿½×´Ì¬
+    // ¸üÐÂµ±Ç°Íæ¼Ò±àºÅºÍ±¾µØ»ØºÏ×´Ì¬
     currentPlayerNumber = receivedPlayerNumber;
     isLocalPlayerTurn = (currentPlayerNumber == localPlayerNumber);
 
-    // ï¿½ï¿½ï¿½ï¿½UI
+    // ¸üÐÂUI
     updatePlayerUI();
 
-    // ï¿½ï¿½ï¿½ï¿½Ç±ï¿½ï¿½ï¿½ï¿½ï¿½ÒµÄ»ØºÏ£ï¿½ï¿½ï¿½Ò»ï¿½Å¿ï¿½ï¿½ï¿½
+    // Èç¹ûÊÇ±¾µØÍæ¼ÒµÄ»ØºÏ£¬³éÒ»ÕÅ¿¨ÅÆ
     if (isLocalPlayerTurn) {
         players::Player* currentPlayer = (currentPlayerNumber == 1) ? player1 : player2;
         if (currentPlayer->hasCards()) {
-            CardNumber cardNumber = currentPlayer->drawCard(); // ï¿½ï¿½È¡Ò»ï¿½Å¿ï¿½ï¿½ï¿½
+            CardNumber cardNumber = currentPlayer->drawCard(); // ³éÈ¡Ò»ÕÅ¿¨ÅÆ
             if (cardNumber != -1) {
                 addCardToLocalPlayer(cardNumber);
             }
@@ -749,16 +749,16 @@ void BoardScene::handleTurnStart(const EG::Hashtable& parameters) {
     cocosUIListener->writeString(EG::JString(L"Handled TURN_START event. Switched turn."));
 }
 
-// ï¿½Ö·ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
+// ·Ö·¢³õÊ¼ÊÖÅÆ
 void BoardScene::distributeInitialHands()
 {
-    // È·ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò±ï¿½ï¿½
+    // È·¶¨³õÊ¼ÊÖÅÆÊýÁ¿»ùÓÚÍæ¼Ò±àºÅ
     int initialHandSize = 0;
     if (localPlayerNumber == 1) {
-        initialHandSize = 4; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò³ï¿½È¡4ï¿½ï¿½ï¿½ï¿½
+        initialHandSize = 4; // ÏÈÊÖÍæ¼Ò³éÈ¡4ÕÅÅÆ
     }
     else if (localPlayerNumber == 2) {
-        initialHandSize = 3; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò³ï¿½È¡3ï¿½ï¿½ï¿½ï¿½
+        initialHandSize = 3; // ºóÊÖÍæ¼Ò³éÈ¡3ÕÅÅÆ
     }
     else {
         CCLOG("Invalid localPlayerNumber: %d", localPlayerNumber);
@@ -766,7 +766,7 @@ void BoardScene::distributeInitialHands()
         return;
     }
 
-    // Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò³ï¿½È¡ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
+    // Îª±¾µØÍæ¼Ò³éÈ¡³õÊ¼ÊÖÅÆ
     for (int i = 0; i < initialHandSize; ++i) {
         players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
         CardNumber cardNumber = localPlayer->drawCard();
@@ -782,51 +782,51 @@ void BoardScene::distributeInitialHands()
     }
 }
 
-// ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½
+// Ìí¼Ó¿¨ÅÆµ½±¾µØÍæ¼Ò£¨½ö±¾µØÏÔÊ¾£©
 void BoardScene::addCardToLocalPlayer(CardNumber cardNumber) {
     players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
     localPlayer->addCardToHand(cardNumber);
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¾ï¿½ï¿½ï¿½
-    auto newCard = Sprite::create("cardfortest.png"); // Ê¹ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ´´½¨¿¨ÅÆ¾«Áé
+    auto newCard = Sprite::create("cardfortest.png"); // Ê¹ÓÃ¿¨ÅÆÕýÃæÎÆÀí
     if (newCard) {
-        newCard->setTag(cardNumber); // Ê¹ï¿½ï¿½ cardNumber ï¿½ï¿½Îª tag
+        newCard->setTag(cardNumber); // Ê¹ÓÃ cardNumber ×÷Îª tag
 
-        // ï¿½ï¿½ï¿½Ã³ï¿½Ê¼Î»ï¿½Ã»ï¿½ï¿½Ú³ï¿½ï¿½ï¿½ CARD_REGION_X ï¿½ï¿½ CARD_REGION_Y
+        // ÉèÖÃ³õÊ¼Î»ÖÃ»ùÓÚ³£Á¿ CARD_REGION_X ºÍ CARD_REGION_Y
         Vec2 originalPos = Vec2(
             CARD_REGION_X + (localPlayer->getHand().size() - 1) * (newCard->getContentSize().width + 30),
             CARD_REGION_Y
         );
 
-        // ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½
+        // Ìí¼Óµ½³¡¾°
         this->addChild(newCard);
         cardOriginalPositions[newCard] = originalPos;
         localPlayerCards.push_back(newCard);
 
-        // ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½Î»ï¿½Ãºï¿½ï¿½ï¿½ï¿½ï¿½
+        // ÉèÖÃ¿¨ÅÆÎ»ÖÃºÍËõ·Å
         newCard->setPosition(originalPos);
         newCard->setScale(1.0f);
 
-        // ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½
+        // ÔËÐÐ¶¯»­
         newCard->runAction(Sequence::create(
             EaseOut::create(MoveBy::create(0.2f, Vec2(0, 50)), 2.0f),
             Spawn::create(
                 EaseInOut::create(MoveTo::create(0.5f, originalPos), 2.0f),
                 EaseInOut::create(ScaleTo::create(0.5f, 1.0f), 2.0f),
-                RotateBy::create(0.5f, 360), // ï¿½ï¿½×ªÒ»È¦
+                RotateBy::create(0.5f, 360), // Ðý×ªÒ»È¦
                 nullptr
             ),
             EaseElasticOut::create(ScaleTo::create(0.3f, 1.0f)),
             nullptr
         ));
 
-        // ï¿½ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+        // ²¥·Å³éÅÆÒôÐ§
         audioPlayer("Music/drawcard.mp3", false);
 
-        // ï¿½ï¿½ï¿½ï¿½UI
+        // ¸üÐÂUI
         updatePlayerUI();
 
-        // ï¿½ï¿½Ö¾
+        // ÈÕÖ¾
         cocosUIListener->writeString(EG::JString(L"Added initial card locally."));
     }
     else {
@@ -837,7 +837,7 @@ void BoardScene::addCardToLocalPlayer(CardNumber cardNumber) {
 }
 
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½Ò¾ï¿½ï¿½ï¿½
+// ¸¨Öú·½·¨£º¸ù¾Ý¿¨ÅÆID²éÕÒ¾«Áé
 Sprite* BoardScene::findCardByID(int cardNumber) {
     for (auto& cardSprite : localPlayerCards) {
         if (cardSprite->getTag() == cardNumber) {
@@ -850,32 +850,32 @@ Sprite* BoardScene::findCardByID(int cardNumber) {
 }
 
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½
+// ´¦ÀíÓÎÏ·½áÊø
 void BoardScene::endGame(players::Player* winner) {
-    // ï¿½ï¿½Ê¾ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ÏÔÊ¾ÓÎÏ·½áÊø½çÃæ
     std::string result = winner->getNickname() + " Wins!";
     auto resultLabel = Label::createWithTTF(result, "fonts/arial.ttf", 48);
     resultLabel->setPosition(Director::getInstance()->getVisibleSize() / 2);
     this->addChild(resultLabel, 10);
 
-    // Í£Ö¹ï¿½ï¿½Ï·ï¿½Ðµï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½
-    // ï¿½ï¿½ï¿½ç£¬ï¿½ï¿½ï¿½Ã°ï¿½Å¥ï¿½ï¿½Í£Ö¹ï¿½ï¿½Ê±ï¿½ï¿½
+    // Í£Ö¹ÓÎÏ·ÖÐµÄËùÓÐ²Ù×÷
+    // ÀýÈç£¬½ûÓÃ°´Å¥£¬Í£Ö¹¼ÆÊ±µÈ
     cocosUIListener->writeString(EG::JString(L"Game Over: ") +
         EG::JString(result.c_str()));
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
+// ¸üÐÂÂß¼­
 void BoardScene::update(float dt) {
-    // ï¿½ï¿½ï¿½ï¿½PhotonLib
+    // ¸üÐÂPhotonLib
     if (photonLib) {
         photonLib->update();
     }
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// Îö¹¹º¯Êý
 BoardScene::~BoardScene()
 {
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¾ï¿½ï¿½ï¿½
+    // ÇåÀí¿¨ÅÆ¾«Áé
     for (auto& card : localPlayerCards) {
         if (card) {
             card->removeFromParent();
@@ -890,7 +890,7 @@ BoardScene::~BoardScene()
     }
     playedCards.clear();
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã¼ï¿½Â¼
+    // ÇåÀí¿¨ÅÆÎ»ÖÃ¼ÇÂ¼
     cardOriginalPositions.clear();
 
     player1 = nullptr;

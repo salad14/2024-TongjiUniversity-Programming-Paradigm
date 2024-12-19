@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="..\Classes\cards\card.cpp" />
-    <ClCompile Include="..\Classes\heroes\Hero.cpp" />
-    <ClCompile Include="..\Classes\scene\BoardScene.cpp" />
     <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\scene\MainScene.cpp" />
     <ClCompile Include="..\Classes\scene\MatchingScene.cpp" />
@@ -19,12 +16,27 @@
     <ClCompile Include="..\Classes\players\GameData.cpp">
       <Filter>src\players</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\card\card.cpp">
+      <Filter>src\card</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\card\SpellCard.cpp">
+      <Filter>src\card</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\deckstring\Base64\base64.cpp">
+      <Filter>src\deckstring\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\entity\Minion.cpp">
+      <Filter>src\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\entity\Spell.cpp">
+      <Filter>src\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\mechanicsManager\SpellManager.cpp">
+      <Filter>src\mechanicsManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\Classes\cards\card.h" />
-    <ClInclude Include="..\Classes\heroes\Hero.h" />
-    <ClInclude Include="..\Classes\scene\BoardScene.h" />
     <ClInclude Include="..\Classes\scene\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\scene\MainScene.h" />
     <ClInclude Include="..\Classes\scene\MatchingScene.h" />
@@ -46,6 +58,45 @@
     </ClInclude>
     <ClInclude Include="..\Classes\players\GameData.h">
       <Filter>src\players</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\card\card.h">
+      <Filter>src\card</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\card\HeroCard.h">
+      <Filter>src\card</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\card\MinionCard.h">
+      <Filter>src\card</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\card\SpellCard.h">
+      <Filter>src\card</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\deckstring\buffer.h">
+      <Filter>src\deckstring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\deckstring\deckstring.h">
+      <Filter>src\deckstring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\deckstring\Base64\base64.h">
+      <Filter>src\deckstring\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\entity\Hero.h">
+      <Filter>src\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\entity\Minion.h">
+      <Filter>src\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\entity\Spell.h">
+      <Filter>src\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mechanicsManager\Spelleffects.h">
+      <Filter>src\mechanicsManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mechanicsManager\Manager.h">
+      <Filter>src\mechanicsManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mechanicsManager\SpellManager.h">
+      <Filter>src\mechanicsManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -132,9 +183,6 @@
     <ClInclude Include="..\Classes\cards\card.h">
       <Filter>src\cards</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\heroes\Hero.h">
-      <Filter>src\heroes</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\scene\MatchingScene.h">
       <Filter>src\scene</Filter>
     </ClInclude>
@@ -156,6 +204,18 @@
     </Filter>
     <Filter Include="src\deckstring">
       <UniqueIdentifier>{c2fa5e78-5c62-40a4-8f78-f39e3d7d9652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\card">
+      <UniqueIdentifier>{5d01ef04-0768-4d30-ac53-7c7f6bed2222}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deckstring\base">
+      <UniqueIdentifier>{6d367623-a857-4df8-9ef7-2a741ad46c00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\entity">
+      <UniqueIdentifier>{24f2ae84-3e9e-465a-84a7-18e6969ab155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mechanicsManager">
+      <UniqueIdentifier>{887f388b-7eda-41bb-99ae-4fcdcc21c7a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

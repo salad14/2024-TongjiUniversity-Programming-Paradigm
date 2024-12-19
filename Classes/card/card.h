@@ -1,15 +1,22 @@
 #pragma once
 #include <string>
 #include <functional>
-#include "entity/Hero.h"
-
 #include "cocos2d.h"
 
+namespace HerokeyWord {
+    enum class HeroType {
+        MAGE,
+        WARRIOR,
+        ROGUE,
+        DRUID,
+    };
+}
+
 enum cardClass {
-    MAGE = static_cast<int>(HeroType::MAGE),
-    WARRIOR = static_cast<int>(HeroType::WARRIOR),
-    DRUID = static_cast<int>(HeroType::DRUID),
-    ROGUE = static_cast<int>(HeroType::ROGUE),
+    MAGE = static_cast<int>(HerokeyWord::HeroType::MAGE),
+    WARRIOR = static_cast<int>(HerokeyWord::HeroType::WARRIOR),
+    DRUID = static_cast<int>(HerokeyWord::HeroType::DRUID),
+    ROGUE = static_cast<int>(HerokeyWord::HeroType::ROGUE),
     NEUTRAL,
 };
 

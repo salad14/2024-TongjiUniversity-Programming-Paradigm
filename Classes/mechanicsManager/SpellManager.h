@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "card/SpellCard.h"
+#include "../card/SpellCard.h"
 #include "external/json/json.hpp"
 
 class SpellManager {
@@ -15,7 +15,7 @@ public:
 
     bool loadSpellsFromFile(const std::string& filepath);
     std::shared_ptr<SpellCard> getSpellCardById(int dbfId) const;
-
+    //shared_ptrÊÇÖÇÄÜÖ¸Õë¹þ
 private:
     std::unordered_map<int, std::shared_ptr<SpellCard>> spellCards;
 };

@@ -36,25 +36,25 @@ bool SpellManager::loadSpellsFromFile(const std::string& filepath) {
         std::string spellSchoolStr = cardJson.value("spellSchool", "FIRE");
 
         // 解析 cardClass
-        cardClass cClass = NEUTRAL;
-        if (cardClassStr == "MAGE") cClass = MAGE;
-        else if (cardClassStr == "WARRIOR") cClass = WARRIOR;
-        else if (cardClassStr == "DRUID") cClass = DRUID;
-        else if (cardClassStr == "ROGUE") cClass = ROGUE;
+        cardClass cClass = cardClass::NEUTRAL;
+        if (cardClassStr == "MAGE") cClass = cardClass::MAGE;
+        else if (cardClassStr == "WARRIOR") cClass = cardClass::WARRIOR;
+        else if (cardClassStr == "DRUID") cClass = cardClass::DRUID;
+        else if (cardClassStr == "ROGUE") cClass = cardClass::ROGUE;
         // 默认 NEUTRAL
 
         // 解析 rarity
-        cardRarity rarity = COMMON;
-        if (rarityStr == "COMMON") rarity = COMMON;
-        else if (rarityStr == "LEGENDARY") rarity = LEGENDARY;
-        // 其他 rarity 可扩展
+        cardRarity rarity = cardRarity::COMMON;
+        if (rarityStr == "COMMON") rarity = cardRarity::COMMON;
+        else if (rarityStr == "LEGENDARY") rarity = cardRarity::LEGENDARY;
+
 
         // 解析 spellSchool
         SpellSchool school = SpellSchool::FIRE;
         if (spellSchoolStr == "FIRE") school = SpellSchool::FIRE;
         else if (spellSchoolStr == "FROST") school = SpellSchool::FROST;
         else if (spellSchoolStr == "ARCANE") school = SpellSchool::ARCANE;
-        // 其他 spellSchool 可扩展
+
 
         // 创建 SpellCard 对象
         auto spellCard = std::make_shared<SpellCard>(dbfId, name, cost, cClass, text, rarity, school);
@@ -65,31 +65,30 @@ bool SpellManager::loadSpellsFromFile(const std::string& filepath) {
                 std::string type = effectJson.value("type", "");
                 Effect effect;
                 if (type == "Damage") {
-                    effect.type = Spell::KeyWord::Damage;
+                    effect.type = SpellMechanics::KeyWord::Damage;
                     effect.amount = effectJson.value("amount", 0);
-                    spellCard->addMechanic(Spell::KeyWord::Damage);
+                    spellCard->addMechanic(SpellMechanics::KeyWord::Damage);
                 }
                 else if (type == "Draw") {
-                    effect.type = Spell::KeyWord::Draw;
+                    effect.type = SpellMechanics::KeyWord::Draw;
                     effect.amount = effectJson.value("amount", 0);
-                    spellCard->addMechanic(Spell::KeyWord::Draw);
+                    spellCard->addMechanic(SpellMechanics::KeyWord::Draw);
                 }
                 else if (type == "Frozen") {
-                    effect.type = Spell::KeyWord::Frozen;
+                    effect.type = SpellMechanics::KeyWord::Frozen;
                     effect.amount = 0;
-                    spellCard->addMechanic(Spell::KeyWord::Frozen);
+                    spellCard->addMechanic(SpellMechanics::KeyWord::Frozen);
                 }
                 else if (type == "Grow") {
-                    effect.type = Spell::KeyWord::Grow;
+                    effect.type = SpellMechanics::KeyWord::Grow;
                     effect.amount = effectJson.value("amount", 0);
-                    spellCard->addMechanic(Spell::KeyWord::Grow);
+                    spellCard->addMechanic(SpellMechanics::KeyWord::Grow);
                 }
                 else if (type == "Crystal") {
-                    effect.type = Spell::KeyWord::Crystal;
+                    effect.type = SpellMechanics::KeyWord::Crystal;
                     effect.amount = effectJson.value("amount", 0);
-                    spellCard->addMechanic(Spell::KeyWord::Crystal);
+                    spellCard->addMechanic(SpellMechanics::KeyWord::Crystal);
                 }
-                // 其他 effect 类型可扩展
 
                 spellCard->addEffect(effect);
             }
