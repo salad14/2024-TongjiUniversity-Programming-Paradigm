@@ -2,19 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp" />
-    <ClCompile Include="..\Classes\scene\MainScene.cpp" />
-    <ClCompile Include="..\Classes\scene\MatchingScene.cpp" />
-    <ClCompile Include="..\Classes\scene\StartScene.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\Classes\network\CocosUIListener.cpp">
-      <Filter>src\network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\network\Photon_lib.cpp">
-      <Filter>src\network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\players\GameData.cpp">
-      <Filter>src\players</Filter>
+    <ClCompile Include="..\Classes\battle\battle.cpp">
+      <Filter>src\battle</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\card\card.cpp">
       <Filter>src\card</Filter>
@@ -23,7 +13,10 @@
       <Filter>src\card</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\deckstring\Base64\base64.cpp">
-      <Filter>src\deckstring\base</Filter>
+      <Filter>src\deckstring\Base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\entity\Hero.cpp">
+      <Filter>src\entity</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\entity\Minion.cpp">
       <Filter>src\entity</Filter>
@@ -33,33 +26,45 @@
     </ClCompile>
     <ClCompile Include="..\Classes\mechanicsManager\SpellManager.cpp">
       <Filter>src\mechanicsManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\network\CocosUIListener.cpp">
+      <Filter>src\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\network\Photon_lib.cpp">
+      <Filter>src\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\players\GameData.cpp">
+      <Filter>src\players</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\players\player.cpp">
+      <Filter>src\players</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\BoardScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\MainScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\MatchingScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
     <ClCompile Include="..\Classes\scene\SetScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\StartScene.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\Classes\scene\HelloWorldScene.h" />
-    <ClInclude Include="..\Classes\scene\MainScene.h" />
-    <ClInclude Include="..\Classes\scene\MatchingScene.h" />
-    <ClInclude Include="..\Classes\scene\StartScene.h" />
     <ClInclude Include="Alluse.h" />
     <ClInclude Include="AudioPlayer.h" />
     <ClInclude Include="main.h" />
-    <ClInclude Include="..\Classes\network\CocosUIListener.h">
-      <Filter>src\network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\network\Photon_lib.h">
-      <Filter>src\network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\network\UIListener.h">
-      <Filter>src\network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\network\CustomEventCodes.h">
-      <Filter>src\network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\players\GameData.h">
-      <Filter>src\players</Filter>
+    <ClInclude Include="..\Classes\battle\battle.h">
+      <Filter>src\battle</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\card\card.h">
       <Filter>src\card</Filter>
@@ -80,7 +85,7 @@
       <Filter>src\deckstring</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\deckstring\Base64\base64.h">
-      <Filter>src\deckstring\base</Filter>
+      <Filter>src\deckstring\Base64</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\entity\Hero.h">
       <Filter>src\entity</Filter>
@@ -91,86 +96,35 @@
     <ClInclude Include="..\Classes\entity\Spell.h">
       <Filter>src\entity</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\mechanicsManager\SpellManager.h">
+      <Filter>src\mechanicsManager</Filter>
+    </ClInclude>
     <ClInclude Include="..\Classes\mechanicsManager\Spelleffects.h">
       <Filter>src\mechanicsManager</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\mechanicsManager\Manager.h">
       <Filter>src\mechanicsManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\mechanicsManager\SpellManager.h">
-      <Filter>src\mechanicsManager</Filter>
-    <ClInclude Include="..\Classes\scene\SetScene.h">
-      <Filter>src\scene</Filter>
+    <ClInclude Include="..\Classes\network\CocosUIListener.h">
+      <Filter>src\network</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="game.rc" />
-    <Filter Include="win32">
-      <UniqueIdentifier>{84a8ebd7-7cf0-47f6-b75e-d441df67da40}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resource">
-      <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src">
-      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\scene">
-      <UniqueIdentifier>{3777e464-746d-4fa5-81fa-cf570984ea48}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\players">
-      <UniqueIdentifier>{558e0793-1440-4938-b15f-10e4a6073e10}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\battle">
-      <UniqueIdentifier>{bcde80d7-1f9e-4ed4-a9b2-7b10584181d6}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\scene\StartScene.cpp">
-      <Filter>src\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp">
-      <Filter>src\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\scene\MainScene.cpp">
-      <Filter>src\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\AppDelegate.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\scene\BoardScene.cpp">
-      <Filter>src\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\cards\card.cpp">
-      <Filter>src\cards</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\heroes\Hero.cpp">
-      <Filter>src\heroes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\scene\MatchingScene.cpp">
-      <Filter>src\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\players\player.cpp">
+    <ClInclude Include="..\Classes\network\CustomEventCodes.h">
+      <Filter>src\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\network\Photon_lib.h">
+      <Filter>src\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\network\UIListener.h">
+      <Filter>src\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\players\GameData.h">
       <Filter>src\players</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\battle\battle.cpp">
-      <Filter>src\battle</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="main.h">
-      <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\scene\StartScene.h">
+    <ClInclude Include="..\Classes\players\player.h">
+      <Filter>src\players</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\BoardScene.h">
       <Filter>src\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioPlayer.h">
-      <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="Alluse.h">
-      <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\scene\HelloWorldScene.h">
       <Filter>src\scene</Filter>
@@ -178,48 +132,49 @@
     <ClInclude Include="..\Classes\scene\MainScene.h">
       <Filter>src\scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\scene\BoardScene.h">
-      <Filter>src\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\cards\card.h">
-      <Filter>src\cards</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\scene\MatchingScene.h">
       <Filter>src\scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\players\player.h">
-      <Filter>src\players</Filter>
+    <ClInclude Include="..\Classes\scene\SetScene.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\battle\battle.h">
-      <Filter>src\battle</Filter>
+    <ClInclude Include="..\Classes\scene\StartScene.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="game.rc">
-      <Filter>resource</Filter>
-    </ResourceCompile>
+    <ResourceCompile Include="game.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="src\network">
-      <UniqueIdentifier>{a71f5480-b1e0-43b1-916e-1d12d4891f92}</UniqueIdentifier>
+    <Filter Include="src">
+      <UniqueIdentifier>{8a8b5049-9b73-43d8-9cc2-b46f334e9def}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\deckstring">
-      <UniqueIdentifier>{c2fa5e78-5c62-40a4-8f78-f39e3d7d9652}</UniqueIdentifier>
+    <Filter Include="src\battle">
+      <UniqueIdentifier>{11d4767d-3cad-4795-a6a6-7bb8f2e962f5}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\card">
-      <UniqueIdentifier>{5d01ef04-0768-4d30-ac53-7c7f6bed2222}</UniqueIdentifier>
+      <UniqueIdentifier>{47c3616c-6a4f-46d9-a553-3db0e876b280}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\deckstring\base">
-      <UniqueIdentifier>{6d367623-a857-4df8-9ef7-2a741ad46c00}</UniqueIdentifier>
+    <Filter Include="src\deckstring">
+      <UniqueIdentifier>{2a4e1aff-9cef-436b-a65c-6fbf8a75029e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deckstring\Base64">
+      <UniqueIdentifier>{b4236680-21bf-46d9-8869-c522465bb654}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\entity">
-      <UniqueIdentifier>{24f2ae84-3e9e-465a-84a7-18e6969ab155}</UniqueIdentifier>
+      <UniqueIdentifier>{6009e2c1-984c-4110-a2a1-51a3ee6df993}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\mechanicsManager">
-      <UniqueIdentifier>{887f388b-7eda-41bb-99ae-4fcdcc21c7a6}</UniqueIdentifier>
+      <UniqueIdentifier>{4d6d9a09-174f-437b-a505-dd9e5e425ec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\network">
+      <UniqueIdentifier>{8635c655-030c-4b84-a5a0-efb8f8b00687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\players">
+      <UniqueIdentifier>{1548db64-f164-467d-992d-a5eb49c09673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\scene">
+      <UniqueIdentifier>{fd991c27-295e-4772-80a1-8f83e848f2d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -159,6 +159,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\card\card.cpp" />
     <ClCompile Include="..\Classes\card\SpellCard.cpp" />
     <ClCompile Include="..\Classes\deckstring\Base64\base64.cpp" />
+    <ClCompile Include="..\Classes\entity\Hero.cpp" />
     <ClCompile Include="..\Classes\entity\Minion.cpp" />
     <ClCompile Include="..\Classes\entity\Spell.cpp" />
     <ClCompile Include="..\Classes\mechanicsManager\SpellManager.cpp" />

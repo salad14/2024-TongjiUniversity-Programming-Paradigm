@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <vector>
-#include "card/SpellCard.h"
+#include "../card/SpellCard.h"
 
 class Manager;
 class Minion;
