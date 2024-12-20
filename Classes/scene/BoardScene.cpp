@@ -73,12 +73,6 @@ bool BoardScene::init() {
     // 设置 PhotonLib 的自定义事件回调
     photonLib->setCustomEventCallback(CC_CALLBACK_2(BoardScene::onPhotonEvent, this));
 
-    // 初始化玩家
-    initPlayers();
-
-    // 创建玩家信息UI
-    createPlayerUI();
-
     // 获取屏幕尺寸和原点
     const Size visibleSize = Director::getInstance()->getVisibleSize();
     const Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -138,6 +132,12 @@ bool BoardScene::init() {
 
     // 创建中央出牌区域
     createDropArea();
+
+    // 初始化玩家
+    initPlayers();
+
+    // 创建玩家信息UI
+    createPlayerUI();
 
     // 添加 update 方法的调用（关闭了帧刷新，开启有动画bug）
     //this->scheduleUpdate();
@@ -247,9 +247,6 @@ void BoardScene::checkDropArea() {
 }
 
 
-
-
-
 // 鼠标移动检测
 void BoardScene::onMouseMove(Event* event) {
     EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
@@ -341,12 +338,19 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
             players::Player* currentPlayer = isLocalPlayerTurn ? player1 : player2;
 
             // 这里需要添加获取卡牌费用的逻辑
-            int cardCost = 1; // 示例费用
+            int cardCost = getCardCost(cardToHandle);
 
             if (currentPlayer->money >= cardCost) {
                 currentPlayer->money -= cardCost;
                 removeCard(cardToHandle);
                 updatePlayerUI();
+
+                // 发送 PLAY_CARD 事件
+                int cardNumber = cardToHandle->getTag();
+                sendPlayCardEvent(currentPlayerNumber, cardNumber);
+
+                // 播放出牌动画
+                //playCardAnimation(cardToHandle);
             }
             else
             {
@@ -705,7 +709,7 @@ void BoardScene::handleTurnStart(const EG::Hashtable& parameters) {
         cocosUIListener->writeString(EG::JString(L"playerNumber not found or incorrect TypeCode in TURN_START event."));
         return;
     }
-    
+
     // 更新当前玩家编号和本地回合状态
     currentPlayerNumber = receivedPlayerNumber;
     isLocalPlayerTurn = (currentPlayerNumber == localPlayerNumber);
@@ -715,7 +719,7 @@ void BoardScene::handleTurnStart(const EG::Hashtable& parameters) {
 
     // 如果是本地玩家的回合，抽一张卡牌
     if (isLocalPlayerTurn) {
-        players::Player* currentPlayer = (currentPlayerNumber == 1) ? player1 : player2;
+        players::Player* currentPlayer = (localPlayerNumber == 1) ? player1 : player2;
         if (currentPlayer->hasCards()) {
             CardNumber cardNumber = currentPlayer->drawCard(); // 抽取一张卡牌
             if (cardNumber != -1) {
