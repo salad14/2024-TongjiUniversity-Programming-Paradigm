@@ -1,5 +1,5 @@
 /****************************************************************
-* Ö÷²Ëµ¥Ò³ÃæµÄ¶¨Òå
+* ï¿½ï¿½ï¿½Ëµï¿½Ò³ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½
 * Author: Lee
  ****************************************************************/
 
@@ -10,22 +10,22 @@
 class MainScene : public cocos2d::Scene
 {
 public:
-    // ´´½¨³¡¾°
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     static cocos2d::Scene* createScene();
 
-    // ¶¨ÆÚ¸üÐÂPhoton
+    // ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½Photon
     void updatePhoton(float dt);
 
-    // ³õÊ¼»¯³¡¾°
+    // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     virtual bool init();
 
-    // °´Å¥»Øµ÷º¯Êý
+    // ï¿½ï¿½Å¥ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
     void normalGameCallback(cocos2d::Ref* psender);
     void adventureGameCallback(cocos2d::Ref* psender);
     void collectionCallback(cocos2d::Ref* psender);
     void setCallback(cocos2d::Ref* psender);
 
-    // ¹¹Ôìº¯ÊýºÍÎö¹¹º¯Êý
+    // ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     MainScene();
     virtual ~MainScene();
 
@@ -33,9 +33,9 @@ public:
     CREATE_FUNC(MainScene);
 
 private:
-    // PhotonLib ÊµÀý
+    // PhotonLib Êµï¿½ï¿½
     PhotonLib* photonLib;
 
-    // CocosUIListener ÊµÀý
+    // CocosUIListener Êµï¿½ï¿½
     CocosUIListener* cocosUIListener;
 };
