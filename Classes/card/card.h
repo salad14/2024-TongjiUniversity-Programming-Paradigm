@@ -44,8 +44,10 @@ public:
         type(type),
         rarity(rarity) {}
 
-    virtual const std::string& getDescription() const = 0;
-    virtual const std::string& getName() const = 0;
+    CardBase() = default;
+
+    const std::string& getDescription() const;
+    const std::string& getName() const;
 
     int getCost() const { return cost; }
     void setCost(const int vary) {
@@ -60,7 +62,7 @@ public:
     virtual void play() = 0;
 
 public:
-    int dbfId; 
+    int dbfId;
     int cost;
     cardClass cardClass;
     

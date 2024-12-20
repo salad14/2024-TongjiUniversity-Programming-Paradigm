@@ -22,6 +22,7 @@ static cocos2d::Size designResolutionSize = cocos2d::Size(2048, 1280);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
+static cocos2d::Size testSize = cocos2d::Size(1600, 900);
 
 AppDelegate::AppDelegate()
 {
@@ -59,7 +60,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto glview = director->getOpenGLView();
     if (!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-        glview = GLViewImpl::createWithRect(APPLICATION_TITLE, cocos2d::Rect(0, 0, mediumResolutionSize.width, mediumResolutionSize.height));
+        glview = GLViewImpl::createWithRect(APPLICATION_TITLE, cocos2d::Rect(100, 200, testSize.width, testSize.height));
 #else
         glview = GLViewImpl::create(APPLICATION_TITLE);
 #endif
@@ -75,6 +76,18 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // Set the design resolution
     glview->setDesignResolutionSize(mediumResolutionSize.width, mediumResolutionSize.height, ResolutionPolicy::EXACT_FIT);
+
+
+#if 1
+    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);
+    // set the scale factor
+    const auto frameSize = glview->getFrameSize();
+    float scaleX = frameSize.width / designResolutionSize.width;
+    float scaleY = frameSize.height / designResolutionSize.height;
+    float scale = MIN(scaleX, scaleY);
+
+    director->setContentScaleFactor(scale);
+#endif
 
 #if 0
     auto frameSize = glview->getFrameSize();

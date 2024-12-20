@@ -68,13 +68,13 @@ public:
         return effects;
     }
 
-    const std::string& getDescription() const override {
-        return text;
-    }
+    //const std::string& getDescription() const override {
+    //    return text;
+    //}
 
-    const std::string& getName() const override {
-        return name;
-    }
+    //const std::string& getName() const override {
+    //    return name;
+    //}
 
     SpellSchool getSpellSchool() const { return spellSchool; }
 

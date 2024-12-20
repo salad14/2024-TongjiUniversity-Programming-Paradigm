@@ -44,6 +44,6 @@ public:
     }
 };
 
-keyWordManager manager;
+static keyWordManager manager;
 
 #endif
