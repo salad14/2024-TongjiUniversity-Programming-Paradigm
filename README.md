@@ -27,3 +27,5 @@ Developed by students from software engineering, Computer Science and Technology
 12.19 在main分支初步实现了设置界面；设置可由主界面进入，目前可实现实时音量调节、退出游戏，后续可在SetScene.cpp中实现更多设置功能
       担心设置界面跳转会影响棋盘界面的实时联机匹配，因此暂时未将设置按钮添加到BoardScene.cpp中
 
+12.20 初步实现了卡组选择界面（假设有6套初始卡组可选）
+      注：目前的卡组选择界面暂时放在collection按钮下，与匹配界面衔接待完善
