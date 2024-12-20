@@ -48,13 +48,11 @@ bool SpellManager::loadSpellsFromFile(const std::string& filepath) {
         if (rarityStr == "COMMON") rarity = cardRarity::COMMON;
         else if (rarityStr == "LEGENDARY") rarity = cardRarity::LEGENDARY;
 
-
         // 解析 spellSchool
         SpellSchool school = SpellSchool::FIRE;
         if (spellSchoolStr == "FIRE") school = SpellSchool::FIRE;
         else if (spellSchoolStr == "FROST") school = SpellSchool::FROST;
         else if (spellSchoolStr == "ARCANE") school = SpellSchool::ARCANE;
-
 
         // 创建 SpellCard 对象
         auto spellCard = std::make_shared<SpellCard>(dbfId, name, cost, cClass, text, rarity, school);

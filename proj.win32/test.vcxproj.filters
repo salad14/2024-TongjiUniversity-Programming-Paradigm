@@ -141,6 +141,9 @@
     <ClInclude Include="..\Classes\scene\StartScene.h">
       <Filter>src\scene</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\mechanicsManager\JSONManager.h">
+      <Filter>src\mechanicsManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />

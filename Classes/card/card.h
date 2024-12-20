@@ -2,6 +2,8 @@
 #include <string>
 #include <functional>
 #include "cocos2d.h"
+#include "external/json/json.hpp"
+using json = nlohmann::json;
 
 namespace HerokeyWord {
     enum class HeroType {
@@ -46,6 +48,8 @@ public:
 
     CardBase() = default;
 
+    virtual void from_json(const json& j) = 0;
+
     const std::string& getDescription() const;
     const std::string& getName() const;
 
@@ -64,10 +68,9 @@ public:
 public:
     int dbfId;
     int cost;
-    cardClass cardClass;
-    
     std::string name;
-    std::string text;
+    std::string text;  // json¿Ô√Ê «flavor
+    cardClass cardClass;
     cardType type; 
     cardRarity rarity;
 };

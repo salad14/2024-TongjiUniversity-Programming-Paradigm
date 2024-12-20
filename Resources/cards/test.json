@@ -1,0 +1,142 @@
+[
+    {
+        "artist": "Warren Mahy",
+        "cardClass": "MAGE",
+        "collectible": true,
+        "cost": 1,
+        "dbfId": 564,
+        "flavor": "既然你想要做一个超级厉害的法师，就必须得把奥术飞弹控制得好一些。",
+        "id": "EX1_277",
+        "mechanics": [
+            "ImmuneToSpellpower"
+        ],
+        "name": "奥术飞弹",
+        "rarity": "FREE",
+        "set": "LEGACY",
+        "spellSchool": "ARCANE",
+        "text": "造成$3点伤害，随机分配到所有敌人身上。",
+        "type": "SPELL"
+    },
+    {
+        "artist": "Jim Nelson",
+        "cardClass": "MAGE",
+        "collectible": true,
+        "cost": 1,
+        "dbfId": 68325,
+        "flavor": "哦，嘿，这是个镜像！！像镜个是这，嘿，哦",
+        "id": "VAN_CS2_027",
+        "name": "镜像",
+        "rarity": "FREE",
+        "referencedTags": [
+            "TAUNT"
+        ],
+        "set": "VANILLA",
+        "text": "召唤两个0/2，并具有<b>嘲讽</b>的随从。",
+        "type": "SPELL"
+    },
+    {
+        "artist": "Steve Ellis",
+        "cardClass": "MAGE",
+        "collectible": true,
+        "cost": 2,
+        "dbfId": 111365,
+        "flavor": "在你用这张牌的时候，你可以随意喊出一些咒语，比如“冻住！”“冻结！”或者“结冰，结冰吧，宝贝儿！”",
+        "howToEarn": "与法师职业一同解锁。",
+        "howToEarnGolden": "使用法师赢得50场对战后解锁。",
+        "id": "CORE_CS2_024",
+        "mechanics": [
+            "FREEZE"
+        ],
+        "name": "寒冰箭",
+        "rarity": "COMMON",
+        "set": "CORE",
+        "spellSchool": "FROST",
+        "text": "对一个角色造成$3点伤害，并使其<b>冻结</b>。",
+        "type": "SPELL"
+    },
+    {
+        "artist": "Howard Lyon",
+        "cardClass": "MAGE",
+        "collectible": true,
+        "cost": 2,
+        "dbfId": 447,
+        "flavor": "魔爆术曾是让法师们区别于艾泽拉斯其他职业的技能之一。",
+        "id": "CS2_025",
+        "name": "魔爆术",
+        "rarity": "FREE",
+        "set": "LEGACY",
+        "spellSchool": "ARCANE",
+        "text": "对所有敌方随从造成$1点伤害。",
+        "type": "SPELL"
+    },
+    {
+        "artist": "Josh Tallman",
+        "cardClass": "MAGE",
+        "collectible": true,
+        "cost": 3,
+        "dbfId": 587,
+        "flavor": "嘿，伙计，这会冻死你的。我是说真的。",
+        "id": "CS2_026",
+        "mechanics": [
+            "FREEZE"
+        ],
+        "name": "冰霜新星",
+        "rarity": "FREE",
+        "set": "LEGACY",
+        "spellSchool": "FROST",
+        "text": "<b>冻结</b>所有敌方随从。",
+        "type": "SPELL"
+    },
+    {
+        "artist": "Dave Berggren",
+        "cardClass": "MAGE",
+        "collectible": true,
+        "cost": 3,
+        "dbfId": 68321,
+        "flavor": "使用这张牌能让你变得更聪明。面对现实吧：变聪明些对我们大家来说都是好事。",
+        "id": "VAN_CS2_023",
+        "name": "奥术智慧",
+        "rarity": "FREE",
+        "set": "VANILLA",
+        "text": "抽两张牌。",
+        "type": "SPELL"
+    },
+    {
+        "artist": "Vance Kovacs",
+        "cardClass": "MAGE",
+        "collectible": true,
+        "cost": 4,
+        "dbfId": 77,
+        "flavor": "你能想象一个嗜血的兽人发出咩咩的叫声吗？",
+        "id": "CS2_022",
+        "name": "变形术",
+        "rarity": "FREE",
+        "set": "LEGACY",
+        "spellSchool": "ARCANE",
+        "text": "使一个随从变形成为1/1的绵羊。",
+        "type": "SPELL"
+    },
+    {
+        "artist": "John Avon",
+        "attack": 3,
+        "cardClass": "MAGE",
+        "collectible": true,
+        "cost": 4,
+        "dbfId": 395,
+        "flavor": "千万别在晚会上召唤水元素。它会把一切都搞砸的。",
+        "health": 6,
+        "id": "CS2_033",
+        "mechanics": [
+            "FREEZE"
+        ],
+        "name": "水元素",
+        "race": "ELEMENTAL",
+        "races": [
+            "ELEMENTAL"
+        ],
+        "rarity": "FREE",
+        "set": "LEGACY",
+        "text": "<b>冻结</b>任何受到本随从伤害的角色。",
+        "type": "MINION"
+    }
+]

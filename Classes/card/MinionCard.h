@@ -38,18 +38,62 @@ class MinionCard : public CardBase {
 public:
 
     int attack;
-    int health;   // ### 这里 health 是最大生命值，当初始化为前端Sprite时，需要增加 currentHealth
+    int health; 
+    int maxhealth;
     MinionkeyWord::keyWord keyword;  // 关键词
     // 随从牌的一些触发型条件 比如 “每当抽牌时” 使用了  TRIGGER_VISUAL 关键词
     // 全局的功能更使用 AURA 关键词
 
 public: // 辅助函数
-    /*
-    仅供测试使用
-    MinionCard(int dbfId, std::string name, int cost, int attack, int health)
-        : CardBase(dbfId, name, cost), attack(attack), health(health) {}
-    */ 
     MinionCard() = default;
+
+    std::map<std::string, ::cardClass> cardClassMap = {
+        {"MAGE", cardClass::MAGE},
+        {"WARRIOR", cardClass::WARRIOR},
+        {"DRUID", cardClass::DRUID},
+        {"ROGUE", cardClass::ROGUE},
+        {"NEUTRAL", cardClass::NEUTRAL}
+    };
+
+    std::map<std::string, ::cardType> cardTypeMap = {
+        {"SPELL", cardType::SPELL},
+        {"MINION", cardType::MINION},
+        {"WEAPON", cardType::WEAPON},
+        {"HERO", cardType::HERO}
+    };
+
+    std::map<std::string, ::cardRarity> cardRarityMap = {
+        {"FREE", cardRarity::COMMON},
+        {"COMMON", cardRarity::COMMON},
+        {"RARE", cardRarity::COMMON},
+        {"EPIC", cardRarity::COMMON},
+        {"LEGENDARY", cardRarity::LEGENDARY}
+    };
+
+    void from_json(const json& j) override {
+        attack = j["attack"].get<int>();
+        health = j.at("health").get<int>();
+        maxhealth = j.at("health").get<int>();
+
+        // cardBase
+        dbfId = j.at("dbfId").get<int>();
+        cost = j.at("cost").get<int>();
+        name = j.at("name").get<std::string>();
+        text = j.at("flavor").get<std::string>();
+
+        // for enum
+        std::string cardClassStr = j.at("cardClass").get<std::string>();
+        cardClass = cardClassMap.at(cardClassStr);
+        std::string typeStr = j.at("type").get<std::string>();
+        type = cardTypeMap.at(typeStr);
+        std::string cardRarityStr = j.at("rarity").get<std::string>();
+        auto it = cardRarityMap.find(cardRarityStr);
+        if (it != cardRarityMap.end()) {
+            rarity = it->second;
+        } else {
+            rarity = cardRarity::COMMON; // 默认为 COMMON
+        }
+    }
 
     // 判断是否包含某个关键词
     inline bool has_keyWord(MinionkeyWord::keyWord keyWord) const {

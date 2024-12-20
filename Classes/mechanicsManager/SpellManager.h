@@ -16,6 +16,7 @@ public:
     bool loadSpellsFromFile(const std::string& filepath);
     std::shared_ptr<SpellCard> getSpellCardById(int dbfId) const;
     //shared_ptrÊÇÖÇÄÜÖ¸Õë¹ş
+
 private:
     std::unordered_map<int, std::shared_ptr<SpellCard>> spellCards;
 };

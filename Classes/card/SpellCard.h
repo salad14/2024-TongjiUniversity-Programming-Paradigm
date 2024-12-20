@@ -47,6 +47,8 @@ private:
     std::vector<Effect> effects;
 
 public:
+    SpellCard() = default;
+
     SpellCard(int dbfId, const std::string& name, int cost, ::cardClass cardClassType,
         const std::string& text, cardRarity rarity, SpellSchool spellSchool)
         : CardBase(dbfId, cost, cardClassType, name, text, cardType::SPELL, rarity),
@@ -79,4 +81,9 @@ public:
     SpellSchool getSpellSchool() const { return spellSchool; }
 
     void play() override {}
+
+public:
+    void from_json(const json& j) override {
+        // to be handled
+    }
 };
