@@ -48,9 +48,9 @@ bool MatchingScene::init()
     cocosUIListener->attachToLayer(uiLayer, Vec2(visibleSize.width / 2, visibleSize.height - 50));
 
     // 加载背景
-    const auto background = Sprite::create("../Resources/Scenes/3MatchingScene.png");
+    const auto background = Sprite::create("../Resources/Scenes/4MatchingScene.png");
     if (background == nullptr) {
-        problemLoading("../Resources/Scenes/3MatchingScene.png");
+        problemLoading("../Resources/Scenes/4MatchingScene.png");
         return false;
     }
     background->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
@@ -97,6 +97,7 @@ bool MatchingScene::init()
 
                 // 如果达到2人，则切换到 BoardScene
                 if (playerCount == 2 && !boardSceneCreated.exchange(true)) // 使用 exchange(true) 保证线程安全
+                //if (true && !boardSceneCreated.exchange(true)) // 使用 exchange(true) 保证线程安全
                 {
                     CCLOG("Player count reached 2. Switching to BoardScene.");
                     cocosUIListener->writeString(L"Player count reached 2. Starting game...");

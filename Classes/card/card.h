@@ -65,6 +65,17 @@ public:
 
     virtual void play() = 0;
 
+    // ∂®“Â == ‘ÀÀ„∑˚
+    bool operator==(const CardBase& other) const {
+        return dbfId == other.dbfId &&
+            cost == other.cost &&
+            cardClass == other.cardClass &&
+            name == other.name &&
+            text == other.text &&
+            type == other.type &&
+            rarity == other.rarity;
+    }
+
 public:
     int dbfId;
     int cost;

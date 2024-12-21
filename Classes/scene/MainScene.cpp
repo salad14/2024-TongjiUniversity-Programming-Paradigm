@@ -1,8 +1,10 @@
 #include "MainScene.h"
 #include "SetScene.h"
+#include "EditGroupScene.h"
 #include "SimpleAudioEngine.h"
 #include "BoardScene.h"
 #include "MatchingScene.h"
+#include "SelectionScene.h"
 #include "proj.win32/Alluse.h"
 #include "proj.win32/AudioPlayer.h"
 #include "network/CocosUIListener.h"
@@ -183,7 +185,12 @@ void MainScene::normalGameCallback(Ref* pSender)
 {
     // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
+    
+    // Ê¹ÓÃ pushScene£¬±£ÁôÖ÷²Ëµ¥³¡¾°ÔÚ³¡¾°Õ»ÖÐ
+    Director::getInstance()->pushScene(SelectionScene::create());
+    //Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
+    //Director::getInstance()->replaceScene(TransitionFade::create(0.2f, SelectionScene::createScene()));
+
 }
 
 // adventureGame ï¿½ï¿½Å¥ï¿½Ä»Øµï¿½
@@ -198,6 +205,9 @@ void MainScene::collectionCallback(Ref* pSender)
 {
     // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
+    // Ê¹ÓÃ pushScene£¬±£ÁôÖ÷²Ëµ¥³¡¾°ÔÚ³¡¾°Õ»ÖÐ
+    //Director::getInstance()->pushScene(SelectionScene::create());
+    //Director::getInstance()->pushScene(EditGroupScene::create());
 }
 
 // set ï¿½ï¿½Å¥ï¿½Ä»Øµï¿½

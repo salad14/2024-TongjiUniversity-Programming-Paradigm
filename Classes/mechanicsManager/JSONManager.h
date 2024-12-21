@@ -72,6 +72,16 @@ public:
         return nullptr;
     }
 
+    int getCardCost(int dbfId) const{
+        for (const auto& card : cards) {
+            if (card->dbfId == dbfId) {
+                return card->cost;
+            }
+        }
+        throw std::runtime_error("Failed to get card cost");
+        return -1;
+    }
+
     // 按 cardClass 查找卡片 暂时没有使用
     std::vector<std::shared_ptr<CardBase>> find_by_cardClass(const cardClass cardClass) const {
         std::vector<std::shared_ptr<CardBase>> result;

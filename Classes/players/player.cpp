@@ -19,17 +19,18 @@ namespace players {
     }
 
     // 添加卡牌到手牌
-    void Player::addCardToHand(CardNumber cardNumber)
-    {
-        hand.push_back(cardNumber);
-    }
+    //void Player::addCardToHand(std::shared_ptr<CardBase> card)
+    //{
+    //    
+    //}
 
     // 从手牌中移除卡牌
     void Player::removeCardFromHand(CardNumber cardNumber)
     {
-        auto it = std::find(hand.begin(), hand.end(), cardNumber);
-        if (it != hand.end()) {
-            hand.erase(it);
+        for (auto it = hand.begin(); it != hand.end(); ++it) {
+            if (it->get()->dbfId == cardNumber) {
+                hand.erase(it);
+            }
         }
     }
 
@@ -89,80 +90,88 @@ namespace players {
 
     // 初始化牌库
     void Player::initializeDeck() {
+        JSONManager manager("cards/json/cards.json");
+        manager.getdeck(newdeck);
+
         CCLOG("Initializing deck for player %d: %s", playerNumber, nickname.c_str());
 
-        // 示例手动添加卡牌 (这里假设每个玩家有20张卡牌)
-        for (int i = 0; i < 20; ++i) {
-            CardNumber cardNum = gameData.getUniqueCardNumber(); // 使用传递的 gameData 引用获取唯一卡牌编号
-            playerCards.push_back(cardNum);
-            deck.emplace_back(cardNum);
-            CCLOG("Player %d: Added cardNumber: %d to deck: %s", playerNumber, cardNum, nickname.c_str());
-        }
+        //// 示例手动添加卡牌 (这里假设每个玩家有20张卡牌)
+        //for (int i = 0; i < 20; ++i) {
+        //    CardNumber cardNum = gameData.getUniqueCardNumber(); // 使用传递的 gameData 引用获取唯一卡牌编号
+        //    playerCards.push_back(cardNum);
+        //    deck.emplace_back(cardNum);
+        //    CCLOG("Player %d: Added cardNumber: %d to deck: %s", playerNumber, cardNum, nickname.c_str());
+        //}
 
         // 洗牌
         shuffleDeck();
-        CCLOG("Player %d: Deck shuffled. Total cards in deck: %zu", playerNumber, deck.size());
+        // CCLOG("Player %d: Deck shuffled. Total cards in deck: %zu", playerNumber, deck.size());
     }
 
     // 洗牌方法
     void Player::shuffleDeck() {
-        if (deck.empty()) {
-            CCLOG("Player %d: Cannot shuffle. Deck is empty: %s", playerNumber, nickname.c_str());
-            return;
-        }
+        //if (deck.empty()) {
+        //    CCLOG("Player %d: Cannot shuffle. Deck is empty: %s", playerNumber, nickname.c_str());
+        //    return;
+        //}
+
+        //std::random_device rd;
+        //std::mt19937 g(rd());
+        //std::shuffle(deck.begin(), deck.end(), g);
+        //CCLOG("Player %d: Shuffled deck: %s", playerNumber, nickname.c_str());
 
         std::random_device rd;
         std::mt19937 g(rd());
-        std::shuffle(deck.begin(), deck.end(), g);
-        CCLOG("Player %d: Shuffled deck: %s", playerNumber, nickname.c_str());
+
+        std::shuffle(newdeck.begin(), newdeck.end(), g);
     }
 
     // 从牌库中抽取一张卡牌
-    CardNumber Player::drawCard()
+    std::shared_ptr<CardBase> Player::drawCard()
     {
-        if (deck.empty()) {
+        if (newdeck.empty()) {
             CCLOG("Player %d: Deck is empty. Attempting to reset deck: %s", playerNumber, nickname.c_str());
-            resetDeck();
+            //resetDeck();
             handleOverdraw();
 
-            if (deck.empty()) {
-                CCLOG("Player %d: Deck is still empty after reset. Cannot draw card: %s", playerNumber, nickname.c_str());
-                return -1; // 返回无效的卡牌编号
-            }
+            return NULL;
         }
-
-        CardNumber cardNumber = deck.back();
-        deck.pop_back();
-        CCLOG("Player %d: %s drew cardNumber: %d from deck. Remaining deck size: %zu",
-            playerNumber, nickname.c_str(), cardNumber, deck.size());
+        
+        //CardNumber cardNumber = newdeck.back();
+        //newdeck.pop_back();
+        //CCLOG("Player %d: %s drew cardNumber: %d from deck. Remaining deck size: %zu",
+        //    playerNumber, nickname.c_str(), cardNumber, deck.size());
 
         // 添加到手牌
-        addCardToHand(cardNumber);
+        std::shared_ptr<CardBase> card = newdeck.back();
+        // addCardToHand(card);
+        hand.push_back(card);
+        newdeck.pop_back();
 
-        return cardNumber;
+        return card;
     }
 
     // 检查玩家是否还有卡牌可以抽
     bool Player::hasCards() const
     {
-        return !deck.empty();
+        return !newdeck.empty();
     }
 
     // 重置牌库
-    void Player::resetDeck()
-    {
-        CCLOG("Player %d: Resetting deck: %s", playerNumber, nickname.c_str());
-        // 将所有手牌重新加入到牌库
-        for (auto& cardNum : hand) {
-            deck.emplace_back(cardNum);
-            CCLOG("Player %d: Returned cardNumber: %d to deck: %s", playerNumber, cardNum, nickname.c_str());
-        }
-        hand.clear();
+    //void Player::resetDeck()
+    //{
+    //    CCLOG("Player %d: Resetting deck: %s", playerNumber, nickname.c_str());
+    //    // 将所有手牌重新加入到牌库
+    //    for (auto& cardNum : hand) {
+    //        deck.emplace_back(cardNum);
+    //        CCLOG("Player %d: Returned cardNumber: %d to deck: %s", playerNumber, cardNum, nickname.c_str());
+    //    }
+    //    hand.clear();
 
-        // 洗牌
-        shuffleDeck();
-        CCLOG("Player %d: Deck reset and shuffled. Total cards in deck: %zu", playerNumber, deck.size());
-    }
+    //    // 洗牌
+    //    shuffleDeck();
+    //    CCLOG("Player %d: Deck reset and shuffled. Total cards in deck: %zu", playerNumber, deck.size());
+    //}
 
     // 处理过度抽牌（扣血）
     void Player::handleOverdraw()

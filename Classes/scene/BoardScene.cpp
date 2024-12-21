@@ -108,7 +108,7 @@ bool BoardScene::init() {
     else
     {
         // 使用第一次提供的参数
-        cancel->setPosition(Vec2(1940, 20)); // 与第一次实现一致
+        cancel->setPosition(Vec2(1940, 80)); // 与第一次实现一致
     }
     auto menu = Menu::create(cancel, nullptr);
 
@@ -245,17 +245,16 @@ void BoardScene::checkDropArea() {
     }
 }
 
-
 // 鼠标移动检测
 void BoardScene::onMouseMove(Event* event) {
     EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
     Vec2 mousePos = Vec2(mouseEvent->getCursorX(), mouseEvent->getCursorY());
 
     // 检查鼠标是否悬停在某个精灵上
-    Sprite* newHoveredSprite = nullptr;
+    cardSprite* newHoveredSprite = nullptr;
 
     for (auto it = localPlayerCards.rbegin(); it != localPlayerCards.rend(); ++it) {
-        Sprite* sprite = *it;
+        cardSprite* sprite = *it;
         Vec2 locationInNode = sprite->convertToNodeSpace(mousePos);
         Size s = sprite->getContentSize();
         Rect rect = Rect(0, 0, s.width, s.height);
@@ -272,7 +271,6 @@ void BoardScene::onMouseMove(Event* event) {
         if (hoveredCard && hoveredCard != selectedCard) {
             scaleSprite(hoveredCard, 1.0f);
         }
-
         // 放大新的悬停精灵
         if (newHoveredSprite && newHoveredSprite != selectedCard) {
             scaleSprite(newHoveredSprite, 1.5f); // 放大1.5倍
@@ -281,7 +279,7 @@ void BoardScene::onMouseMove(Event* event) {
         hoveredCard = newHoveredSprite;
     }
 }
-void BoardScene::scaleSprite(Sprite* sprite, float scale) {
+void BoardScene::scaleSprite(cardSprite* sprite, float scale) {
     // 使用动作实现平滑的缩放效果
     sprite->runAction(ScaleTo::create(0.1f, scale));
 }
@@ -297,7 +295,7 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
 
     // 从后向前检查（使最上层的精灵优先响应）
     for (auto it = localPlayerCards.rbegin(); it != localPlayerCards.rend(); ++it) {
-        Sprite* sprite = *it;
+        cardSprite* sprite = *it;
         Vec2 locationInNode = sprite->convertToNodeSpace(touchLocation);
         Size s = sprite->getContentSize();
         Rect rect = Rect(0, 0, s.width, s.height);
@@ -332,7 +330,7 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
             abs(finalPos.x - center.x) <= PUTOUT_CARD_REGION_HALF_X &&
             abs(finalPos.y - center.y) <= PUTOUT_CARD_REGION_HALF_Y;
 
-        Sprite* cardToHandle = selectedCard;
+        cardSprite* cardToHandle = selectedCard;
         selectedCard = nullptr;  // 先清除选中状态
 
         if (inDropArea) {
@@ -340,8 +338,8 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
             players::Player* currentPlayer = (currentPlayerNumber == 1) ? player1 : player2;
             if (currentPlayer) {
                 // 获取卡牌费用
-                int cardNumber = cardToHandle->getTag();
-                int cardCost = getCardCost(cardNumber);
+                // int cardNumber = cardToHandle->getTag();
+                int cardCost = getCardCost(cardToHandle->card);
                 if (currentPlayer->getMoney() >= cardCost) { // 使用 getter 方法
                     // 扣除法力值
                     currentPlayer->setMoney(currentPlayer->getMoney() - cardCost);
@@ -351,10 +349,12 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
                     updatePlayerUI();
 
                     // 发送 PLAY_CARD 事件
-                    sendPlayCardEvent(localPlayerNumber, cardNumber);
+                    /////////////////// need to be editted!!!
+                    sendPlayCardEvent(localPlayerNumber, cardToHandle->card->dbfId);
 
                     // 显示卡牌在战场上
-                    addCardToBattlefield(localPlayerNumber, cardNumber);
+                    /////////////////// need to be editted!!!
+                    addCardToBattlefield(localPlayerNumber, cardToHandle->card->dbfId);
 
                     // 从手牌中移除卡牌
                     removeCard(cardToHandle);
@@ -390,27 +390,21 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
     }
 }
 
-// 获取卡牌费用的方法（示例实现）
-int BoardScene::getCardCost(int cardNumber) {
-    // 根据 cardNumber 返回对应的费用
-    // 这里使用 switch-case 作为示例，你可以根据实际需求从数据库或配置文件中获取费用
-    switch (cardNumber) {
-        case 1:
-            return 1;
-        case 2:
-            return 2;
-        case 3:
-            return 3;
-            // 添加更多卡牌编号和对应费用
-        default:
-            return 1; // 默认费用
-    }
+// 获取卡牌费用
+int BoardScene::getCardCost(std::shared_ptr<CardBase> card) {
+    return card->cost;
 }
 
+int BoardScene::getCardCost(int dbfId) {
+    JSONManager manager("cards/json/cards.json");
+
+    return manager.getCardCost(dbfId); 
+}
 
 void BoardScene::initPlayers()
 {
     localPlayerNumber = photonLib->getLocalPlayerNumber();
+    // localPlayerNumber = 1;
     currentPlayerNumber = 1;
     player1 = GameData::getInstance().getPlayer1();
     player2 = GameData::getInstance().getPlayer2();
@@ -524,7 +518,6 @@ void BoardScene::updatePlayerUI() {
     }
 }
 
-
 // 切换回合
 void BoardScene::switchTurn()
 {
@@ -566,7 +559,7 @@ void BoardScene::sendTurnStartEvent() {
 }
 
 // 从卡牌移除并添加到战场
-void BoardScene::removeCard(Sprite* sprite) {
+void BoardScene::removeCard(cardSprite* sprite) {
     if (!sprite) return;
 
     if (sprite == hoveredCard) {
@@ -590,7 +583,7 @@ void BoardScene::removeCard(Sprite* sprite) {
         // 更新剩余卡牌的位置
         Size visibleSize = Director::getInstance()->getVisibleSize();
         for (size_t i = removedIndex; i < localPlayerCards.size(); i++) {
-            Sprite* card = localPlayerCards[i];
+            cardSprite* card = localPlayerCards[i];
             // 计算新位置
             Vec2 newPos;
             if (localPlayerNumber == 1) {
@@ -643,6 +636,7 @@ void BoardScene::updatePlayedCardsPosition() {
 
 
 // 发送打牌事件
+///////////////// to be editted
 void BoardScene::sendPlayCardEvent(PlayerNumber playerNumber, CardNumber cardNumber) {
     EG::Hashtable eventContent;
     // 使用不同的 key 来区分 playerNumber 和 cardNumber
@@ -745,7 +739,7 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
 
     // 如果是本地玩家打出的卡牌，则从手牌中移除
     if (playerNumber == localPlayerNumber) {
-        Sprite* card = findCardByID(cardNumber);
+        cardSprite* card = findCardByID(cardNumber);
         if (card) {
             removeCard(card);
         }
@@ -754,8 +748,10 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
 
 // 添加卡牌到战场
 void BoardScene::addCardToBattlefield(int playerNumber, int cardNumber) {
+    JSONManager manager("cards/json/cards.json");
+
     // 创建卡牌精灵
-    auto battlefieldCard = Sprite::create("cardfortest.png"); // 使用卡牌正面纹理
+    auto battlefieldCard = cardSprite::create(manager.find_by_dbfId(cardNumber)); // 使用卡牌正面纹理
     if (battlefieldCard) {
         battlefieldCard->setTag(cardNumber); // 使用 cardNumber 作为 tag
 
@@ -848,10 +844,10 @@ void BoardScene::handleTurnStart(const EG::Hashtable& parameters) {
     // 如果是本地玩家的回合，抽一张卡牌
     if (isLocalPlayerTurn) {
         if (currentPlayer->hasCards()) {
-            CardNumber cardNumber = currentPlayer->drawCard(); // 抽取一张卡牌
-            if (cardNumber != -1) {
-                addCardToLocalPlayer(cardNumber);
-                CCLOG("Player %d drew cardNumber: %d", currentPlayerNumber, cardNumber);
+            std::shared_ptr<CardBase> card = currentPlayer->drawCard(); // 抽取一张卡牌
+            if (card) {
+                addCardToLocalPlayer(card);
+                CCLOG("Player %d drew cardNumber: %d", currentPlayerNumber, card->dbfId);
                 cocosUIListener->writeString(EG::JString(L"Player drew a card."));
             }
         }
@@ -871,10 +867,9 @@ void BoardScene::distributeInitialHands()
     // 为本地玩家抽取初始手牌
     for (int i = 0; i < 3; ++i) {
         players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
-        CardNumber cardNumber = localPlayer->drawCard();
-        if (cardNumber != -1) {
-            addCardToLocalPlayer(cardNumber);
-            CCLOG("Player %d drew initial cardNumber: %d", localPlayer->getPlayerNumber(), cardNumber);
+        std::shared_ptr<CardBase> card = localPlayer->drawCard();
+        if (card) {
+            addCardToLocalPlayer(card);
             cocosUIListener->writeString(EG::JString(L"Player drew initial card."));
         }
         else {
@@ -885,14 +880,18 @@ void BoardScene::distributeInitialHands()
 }
 
 // 添加卡牌到本地玩家（仅本地显示）
-void BoardScene::addCardToLocalPlayer(CardNumber cardNumber) {
+void BoardScene::addCardToLocalPlayer(std::shared_ptr<CardBase> card) {
     players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
-    localPlayer->addCardToHand(cardNumber);
+    // localPlayer->addCardToHand(card);
 
     // 创建卡牌精灵
-    auto newCard = Sprite::create("cardfortest.png"); // 使用卡牌正面纹理
+    std::string str = "cards/" + card->dbfId;
+    str += ".png";
+    cardSprite* newCard = cardSprite::create(card); // 使用卡牌正面纹理
+    //auto newCard = Sprite::create(str); // 使用卡牌正面纹理
+
     if (newCard) {
-        newCard->setTag(cardNumber); // 使用 cardNumber 作为 tag
+        newCard->setTag(card->dbfId); // 使用 cardNumber 作为 tag
 
         // 设置初始位置基于常量 CARD_REGION_X 和 CARD_REGION_Y
         Vec2 originalPos(CARD_REGION_X + localPlayerCards.size() * (newCard->getContentSize().width + 30), CARD_REGION_Y);
@@ -928,15 +927,15 @@ void BoardScene::addCardToLocalPlayer(CardNumber cardNumber) {
         cocosUIListener->writeString(EG::JString(L"Added initial card locally."));
     }
     else {
-        CCLOG("Failed to create card sprite for cardNumber: %d", cardNumber);
+        CCLOG("Failed to create card sprite for cardNumber: %d", card->dbfId);
         cocosUIListener->writeString(EG::JString(L"Failed to create card sprite for cardNumber: ") +
-            EG::JString(std::to_wstring(cardNumber).c_str()));
+            EG::JString(std::to_wstring(card->dbfId).c_str()));
     }
 }
 
 
 // 辅助方法：根据卡牌ID查找精灵
-Sprite* BoardScene::findCardByID(int cardNumber) {
+cardSprite* BoardScene::findCardByID(int cardNumber) {
     for (auto& cardSprite : localPlayerCards) {
         if (cardSprite->getTag() == cardNumber) {
             return cardSprite;
