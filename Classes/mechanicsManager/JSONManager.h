@@ -24,6 +24,8 @@ public:
         file >> j;
         cards.clear();
         for (const auto& item : j) {
+            // 每张卡放两次
+            cards.push_back(create_card_from_json(item));
             cards.push_back(create_card_from_json(item));
         }
     }
@@ -52,6 +54,13 @@ public:
     }
 
 public:
+    void getdeck(std::vector<std::shared_ptr<CardBase>>& newdeck) {
+        std::vector<std::shared_ptr<CardBase>> selectedCards;
+        for (auto i : cards) {
+            newdeck.push_back(i);  // 直接复制 shared_ptr
+        }
+    }
+
     // 对外接口
     // 按 dbfId 查找卡片
     std::shared_ptr<CardBase> find_by_dbfId(int dbfId) const {
@@ -62,7 +71,6 @@ public:
         }
         return nullptr;
     }
-
 
     // 按 cardClass 查找卡片 暂时没有使用
     std::vector<std::shared_ptr<CardBase>> find_by_cardClass(const cardClass cardClass) const {
