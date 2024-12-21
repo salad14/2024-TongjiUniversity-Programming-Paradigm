@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "GameData.h"
 #include "cocos2d.h"
+#include "proj.win32/Alluse.h"
 
 namespace players {
 
@@ -90,9 +91,15 @@ namespace players {
 
     // 初始化牌库
     void Player::initializeDeck() {
-        JSONManager manager("cards/json/cards.json");
-        manager.getdeck(newdeck);
-
+        if (SELECT_CARDS == 1) {
+            JSONManager manager("cards/json/cards1.json");
+            manager.getdeck(newdeck);
+        }
+        else if (SELECT_CARDS == 2) {
+            JSONManager manager("cards/json/cards2.json");
+            manager.getdeck(newdeck);
+        }
+        
         CCLOG("Initializing deck for player %d: %s", playerNumber, nickname.c_str());
 
         //// 示例手动添加卡牌 (这里假设每个玩家有20张卡牌)

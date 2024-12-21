@@ -58,8 +58,8 @@ constexpr int SELECT_ICON_SPACING = 350;  // 图标间距
 constexpr int SELECT_START_X = 300;    // 第一个图标的X坐标
 constexpr int SELECT_START_Y = 800;    // 第一行图标的Y坐标
 constexpr int SELECT_ICONS_PER_ROW = 3;     // 每行图标数
-
-
+extern  int SELECT_CARDS;  // 选择的对应牌库
+ 
 //MatchingScene 匹配场景设置
 constexpr int MATCHING_SCENE_CANCEL_OFFSET_X = 30;      // 匹配场景 取消按钮 X 偏移量
 constexpr int MATCHING_SCENE_CANCEL_OFFSET_Y = -440;      // 匹配场景 取消按钮 Y 偏移量（相对于屏幕中心）
