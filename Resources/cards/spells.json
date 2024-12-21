@@ -1,0 +1,107 @@
+{
+  "cards": [
+    {
+      "dbfId": 12345,
+      "name": "火球术",
+      "cost": 4,
+      "cardClass": "MAGE",
+      "text": "造成6点伤害。",
+      "type": "SPELL",
+      "rarity": "COMMON",
+      "spellSchool": "FIRE",
+      "effects": [
+        {
+          "type": "Damage",
+          "amount": 6
+        }
+      ]
+    },
+    {
+      "dbfId": 12346,
+      "name": "寒冰箭",
+      "cost": 2,
+      "cardClass": "MAGE",
+      "text": "对一个角色造成3点伤害并使其冻结。",
+      "type": "SPELL",
+      "rarity": "COMMON",
+      "spellSchool": "FROST",
+      "effects": [
+        {
+          "type": "Damage",
+          "amount": 3
+        },
+        {
+          "type": "Frozen"
+        }
+      ]
+    },
+    {
+      "dbfId": 12347,
+      "name": "秘法智力",
+      "cost": 3,
+      "cardClass": "MAGE",
+      "text": "抽2张牌。",
+      "type": "SPELL",
+      "rarity": "COMMON",
+      "spellSchool": "ARCANE",
+      "effects": [
+        {
+          "type": "Draw",
+          "amount": 2
+        }
+      ]
+    },
+    {
+      "dbfId": 12348,
+      "name": "毒袭",
+      "cost": 2,
+      "cardClass": "ROGUE",
+      "text": "造成1点伤害。抽一张牌。",
+      "type": "SPELL",
+      "rarity": "COMMON",
+      "spellSchool": null,
+      "effects": [
+        {
+          "type": "Damage",
+          "amount": 1
+        },
+        {
+          "type": "Draw",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "dbfId": 12349,
+      "name": "疾跑",
+      "cost": 7,
+      "cardClass": "ROGUE",
+      "text": "抽4张牌。",
+      "type": "SPELL",
+      "rarity": "COMMON",
+      "spellSchool": null,
+      "effects": [
+        {
+          "type": "Draw",
+          "amount": 4
+        }
+      ]
+    },
+    {
+      "dbfId": 12350,
+      "name": "秘法射击",
+      "cost": 1,
+      "cardClass": "ROGUE",
+      "text": "造成2点伤害。",
+      "type": "SPELL",
+      "rarity": "COMMON",
+      "spellSchool": "ARCANE",
+      "effects": [
+        {
+          "type": "Damage",
+          "amount": 2
+        }
+      ]
+    }
+  ]
+}

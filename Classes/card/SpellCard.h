@@ -78,7 +78,12 @@ public:
     //    return name;
     //}
 
+    int getDbfId() const { return dbfId; }
+    std::string getName() const { return name; }
+    std::string getText() const { return text; }
+    int getCost() const { return cost; }
     SpellSchool getSpellSchool() const { return spellSchool; }
+
 
     void play() override {}
 

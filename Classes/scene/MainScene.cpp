@@ -1,8 +1,3 @@
-/****************************************************************
-* ���˵�ҳ���ʵ��
-* Author: Lee
- ****************************************************************/
-
 #include "MainScene.h"
 #include "SetScene.h"
 #include "SimpleAudioEngine.h"
@@ -145,6 +140,12 @@ bool MainScene::init()
         // ��ȡ��Ļ�Ĵ�С
         auto visibleSize = Director::getInstance()->getVisibleSize();
         auto origin = Director::getInstance()->getVisibleOrigin();
+
+        CCLOG("Sprite Content Size: %f, %f", sprite->getContentSize().width, sprite->getContentSize().height);
+        CCLOG("Visible Size: %f, %f", visibleSize.width, visibleSize.height);
+        CCLOG("Origin: %f, %f", origin.x, origin.y);
+
+
 
         // ���ñ�����λ�ã�ʹ�������ʾ
         sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));

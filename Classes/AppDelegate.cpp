@@ -1,8 +1,7 @@
-#include "AppDelegate.h"
+ï»¿#include "AppDelegate.h"
 #include "Scene/StartScene.h"
 #include "proj.win32/Alluse.h"
 #include "network/CocosUIListener.h"
-#include "mechanicsManager/JSONManager.h"
 
 #if USE_AUDIO_ENGINE && USE_SIMPLE_AUDIO_ENGINE
 #error "Don't use AudioEngine and SimpleAudioEngine at the same time. Please just select one in your game!"
@@ -18,18 +17,17 @@ using namespace CocosDenshion;
 
 USING_NS_CC;
 
-//´°¿Ú´óÐ¡¼°·Ö±æÂÊÉèÖÃ
+//ï¿½ï¿½ï¿½Ú´ï¿½Ð¡ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 static cocos2d::Size designResolutionSize = cocos2d::Size(2048, 1280);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
-static cocos2d::Size testSize = cocos2d::Size(1600, 900);
 
 AppDelegate::AppDelegate()
 {
 }
 
-AppDelegate::~AppDelegate() 
+AppDelegate::~AppDelegate()
 {
 #if USE_AUDIO_ENGINE
     AudioEngine::end();
@@ -43,7 +41,7 @@ AppDelegate::~AppDelegate()
 void AppDelegate::initGLContextAttrs()
 {
     // set OpenGL context attributes: red,green,blue,alpha,depth,stencil,multisamplesCount
-    GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8, 0};
+    GLContextAttrs glContextAttrs = { 8, 8, 8, 8, 24, 8, 0 };
 
     GLView::setGLContextAttrs(glContextAttrs);
 }
@@ -61,14 +59,14 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto glview = director->getOpenGLView();
     if (!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-        glview = GLViewImpl::createWithRect(APPLICATION_TITLE, cocos2d::Rect(100, 200, testSize.width, testSize.height));
+        glview = GLViewImpl::createWithRect(APPLICATION_TITLE, cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 #else
         glview = GLViewImpl::create(APPLICATION_TITLE);
 #endif
         director->setOpenGLView(glview);
     }
 
-    //ÏÔÊ¾Ö¡ÂÊµÈ²ÎÊý£¬ÕûÌåÍê³Éºó¿ÉÉ¾³ý
+    //ï¿½ï¿½Ê¾Ö¡ï¿½ÊµÈ²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Éºï¿½ï¿½É¾ï¿½ï¿½
     // turn on display FPS
     director->setDisplayStats(true);
 
@@ -76,36 +74,24 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0f / 60);
 
     // Set the design resolution
-    glview->setDesignResolutionSize(mediumResolutionSize.width, mediumResolutionSize.height, ResolutionPolicy::EXACT_FIT);
-
-
-#if 1
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);
-    // set the scale factor
-    const auto frameSize = glview->getFrameSize();
-    float scaleX = frameSize.width / designResolutionSize.width;
-    float scaleY = frameSize.height / designResolutionSize.height;
-    float scale = MIN(scaleX, scaleY);
-
-    director->setContentScaleFactor(scale);
-#endif
 
 #if 0
     auto frameSize = glview->getFrameSize();
     // if the frame's height is larger than the height of medium size.
     if (frameSize.height > mediumResolutionSize.height)
-    {        
-        director->setContentScaleFactor(MIN(largeResolutionSize.height/designResolutionSize.height, largeResolutionSize.width/designResolutionSize.width));
+    {
+        director->setContentScaleFactor(MIN(largeResolutionSize.height / designResolutionSize.height, largeResolutionSize.width / designResolutionSize.width));
     }
     // if the frame's height is larger than the height of small size.
     else if (frameSize.height > smallResolutionSize.height)
-    {        
-        director->setContentScaleFactor(MIN(mediumResolutionSize.height/designResolutionSize.height, mediumResolutionSize.width/designResolutionSize.width));
+    {
+        director->setContentScaleFactor(MIN(mediumResolutionSize.height / designResolutionSize.height, mediumResolutionSize.width / designResolutionSize.width));
     }
     // if the frame's height is smaller than the height of medium size.
     else
-    {        
-        director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
+    {
+        director->setContentScaleFactor(MIN(smallResolutionSize.height / designResolutionSize.height, smallResolutionSize.width / designResolutionSize.width));
     }
 
 #endif
