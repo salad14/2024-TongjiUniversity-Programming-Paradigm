@@ -65,6 +65,8 @@ public:
 
     virtual void play() = 0;
 
+    //virtual void playSpell(SpellEffects* effects, Minion* minion) = 0;
+
     // ¶¨Òå == ÔËËã·û
     bool operator==(const CardBase& other) const {
         return dbfId == other.dbfId &&

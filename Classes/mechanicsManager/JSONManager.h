@@ -43,6 +43,30 @@ public:
         else if (cardType == "SPELL") {
             auto card = std::make_unique<SpellCard>();
             card->from_json(j);
+            // effects
+            if (j.contains("effects") && j["effects"].is_array()) {
+                for (const auto& effectJson : j["effects"]) {
+                    std::string type = effectJson.value("type", "");
+                    Effect effect;
+                    if (type == "Damage") {
+                        effect.type = SpellMechanics::KeyWord::Damage;
+                        effect.amount = effectJson.value("amount", 0);
+                        card->addMechanic(SpellMechanics::KeyWord::Damage);
+                    }
+                    else if (type == "Draw") {
+                        effect.type = SpellMechanics::KeyWord::Draw;
+                        effect.amount = effectJson.value("amount", 0);
+                        card->addMechanic(SpellMechanics::KeyWord::Draw);
+                    }
+                    else if (type == "Frozen") {
+                        effect.type = SpellMechanics::KeyWord::Frozen;
+                        effect.amount = 0;
+                        card->addMechanic(SpellMechanics::KeyWord::Frozen);
+                    }
+
+                    card->addEffect(effect);
+                }
+            }
             return card;
         }
         else if (cardType == "WEAPON") {}
