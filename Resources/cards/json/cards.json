@@ -12,7 +12,9 @@
     "howToEarn": "完成教学后解锁。",
     "howToEarnGolden": "总计赢得500场对战后解锁。",
     "id": "CORE_CS2_189",
-    "mechanics": ["BATTLECRY"],
+    "mechanics": [
+      "BATTLECRY"
+    ],
     "name": "精灵弓箭手",
     "rarity": "COMMON",
     "set": "CORE",
@@ -32,7 +34,9 @@
     "id": "CS2_120",
     "name": "淡水鳄",
     "race": "BEAST",
-    "races": ["BEAST"],
+    "races": [
+      "BEAST"
+    ],
     "rarity": "FREE",
     "set": "LEGACY",
     "type": "MINION"
@@ -48,10 +52,14 @@
     "flavor": "尽管他表现得像个领导者，但实际上银背母猩猩才是真正管事的人。",
     "health": 4,
     "id": "CS2_127",
-    "mechanics": ["TAUNT"],
+    "mechanics": [
+      "TAUNT"
+    ],
     "name": "银背族长",
     "race": "BEAST",
-    "races": ["BEAST"],
+    "races": [
+      "BEAST"
+    ],
     "rarity": "FREE",
     "set": "LEGACY",
     "text": "<b>嘲讽</b>",
@@ -68,7 +76,9 @@
     "flavor": "她从来不知道她想发明的是什么，她只知道要发明很棒的东西！",
     "health": 4,
     "id": "CS2_147",
-    "mechanics": ["BATTLECRY"],
+    "mechanics": [
+      "BATTLECRY"
+    ],
     "name": "侏儒发明家",
     "rarity": "FREE",
     "set": "LEGACY",
@@ -86,7 +96,9 @@
     "flavor": "如果你喜欢巨魔和沙尘的话，森金村还是个不错的地方。",
     "health": 5,
     "id": "CS2_179",
-    "mechanics": ["TAUNT"],
+    "mechanics": [
+      "TAUNT"
+    ],
     "name": "森金持盾卫士",
     "rarity": "FREE",
     "set": "LEGACY",
@@ -120,13 +132,15 @@
     "id": "CS2_201",
     "name": "熔火恶犬",
     "race": "BEAST",
-    "races": ["BEAST"],
+    "races": [
+      "BEAST"
+    ],
     "rarity": "FREE",
     "set": "LEGACY",
     "type": "MINION"
   },
   {
-    "dbfId": 12345,
+    "dbfId": 69501,
     "name": "火球术",
     "cost": 4,
     "cardClass": "MAGE",
@@ -142,7 +156,7 @@
     ]
   },
   {
-    "dbfId": 12346,
+    "dbfId": 111365,
     "name": "寒冰箭",
     "cost": 2,
     "cardClass": "MAGE",
@@ -161,8 +175,8 @@
     ]
   },
   {
-    "dbfId": 12347,
-    "name": "秘法智力",
+    "dbfId": 68321,
+    "name": "奥术智慧",
     "cost": 3,
     "cardClass": "MAGE",
     "text": "抽2张牌。",
@@ -177,8 +191,8 @@
     ]
   },
   {
-    "dbfId": 12348,
-    "name": "毒袭",
+    "dbfId": 68458,
+    "name": "毒刃",
     "cost": 2,
     "cardClass": "ROGUE",
     "text": "造成1点伤害。抽一张牌。",
@@ -197,7 +211,7 @@
     ]
   },
   {
-    "dbfId": 12349,
+    "dbfId": 68353,
     "name": "疾跑",
     "cost": 7,
     "cardClass": "ROGUE",
@@ -213,8 +227,8 @@
     ]
   },
   {
-    "dbfId": 12350,
-    "name": "秘法射击",
+    "dbfId": 68434,
+    "name": "奥术射击",
     "cost": 1,
     "cardClass": "ROGUE",
     "text": "造成2点伤害。",
