@@ -168,10 +168,12 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\players\player.cpp" />
     <ClCompile Include="..\Classes\players\GameData.cpp" />
     <ClCompile Include="..\Classes\scene\BoardScene.cpp" />
+    <ClCompile Include="..\Classes\scene\EditGroupScene.cpp" />
     <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\scene\MainScene.cpp" />
     <ClCompile Include="..\Classes\battle\battle.cpp" />
     <ClCompile Include="..\Classes\scene\MatchingScene.cpp" />
+    <ClCompile Include="..\Classes\scene\SelectionScene.cpp" />
     <ClCompile Include="..\Classes\scene\SetScene.cpp" />
     <ClCompile Include="..\Classes\scene\StartScene.cpp" />
     <ClCompile Include="main.cpp" />
@@ -191,7 +193,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\mechanicsManager\Spelleffects.h" />
     <ClInclude Include="..\Classes\mechanicsManager\Manager.h" />
     <ClInclude Include="..\Classes\mechanicsManager\SpellManager.h" />
-    <ClInclude Include="..\Classes\scene\BoardScene.h" />
     <ClInclude Include="..\Classes\scene\StartScene.h" />
     <ClInclude Include="..\Classes\battle\battle.h" />
     <ClInclude Include="..\Classes\network\CocosUIListener.h" />
@@ -200,9 +201,12 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\network\UIListener.h" />
     <ClInclude Include="..\Classes\players\player.h" />
     <ClInclude Include="..\Classes\players\GameData.h" />
+    <ClInclude Include="..\Classes\scene\BoardScene.h" />
+    <ClInclude Include="..\Classes\scene\EditGroupScene.h" />
     <ClInclude Include="..\Classes\scene\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\scene\MainScene.h" />
     <ClInclude Include="..\Classes\scene\MatchingScene.h" />
+    <ClInclude Include="..\Classes\scene\SelectionScene.h" />
     <ClInclude Include="..\Classes\scene\SetScene.h" />
     <ClInclude Include="Alluse.h" />
     <ClInclude Include="AudioPlayer.h" />
