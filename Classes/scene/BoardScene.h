@@ -7,6 +7,7 @@
 #include "network/CocosUIListener.h" 
 #include "network/CustomEventCodes.h"
 #include "players/player.h"
+#include "../card/ALLCard.h"
 #include <cstdint> 
 #include <vector>
 #include <map>

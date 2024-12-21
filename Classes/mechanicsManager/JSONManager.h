@@ -43,26 +43,28 @@ public:
             card->from_json(j);
             return card;
         }
-        else if (cardType == "WEAPON") {}   // 还没有完完成
-        else if (cardType == "HERO") {}
+        else if (cardType == "WEAPON") {}
+        //else if (cardType == "HERO") {}
         else {
             throw std::runtime_error("Unknown card type: " + cardType);
             return nullptr;
         }
     }
 
+public:
+    // 对外接口
     // 按 dbfId 查找卡片
-    std::vector<std::shared_ptr<CardBase>> find_by_dbfId(int dbfId) const {
-        std::vector<std::shared_ptr<CardBase>> result;
+    std::shared_ptr<CardBase> find_by_dbfId(int dbfId) const {
         for (const auto& card : cards) {
             if (card->dbfId == dbfId) {
-                result.push_back(card);
+                return card;
             }
         }
-        return result;
+        return nullptr;
     }
 
-    // 按 cardClass 查找卡片
+
+    // 按 cardClass 查找卡片 暂时没有使用
     std::vector<std::shared_ptr<CardBase>> find_by_cardClass(const cardClass cardClass) const {
         std::vector<std::shared_ptr<CardBase>> result;
         for (const auto& card : cards) {
@@ -85,7 +87,7 @@ public:
         return result;
     }
 
-    // 输出所有卡片信息（可选，方便调试）
+    // 输出所有卡片信息  方便调试
     void print_all_cards() const {
         for (const auto& card : cards) {
             std::cout << "dbfId: " << card->dbfId << ", cardClass: " << card->cardClass << ", name: " << card->name << std::endl;
