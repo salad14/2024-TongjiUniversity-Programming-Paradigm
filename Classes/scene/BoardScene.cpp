@@ -750,8 +750,17 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
 void BoardScene::addCardToBattlefield(int playerNumber, int cardNumber) {
     JSONManager manager("cards/json/cards.json");
 
+    // 创建卡牌精灵，使用修正后的 createWithCard 方法
+    auto cardData = manager.find_by_dbfId(cardNumber);
+    if (!cardData) {
+        CCLOG("Card data not found for cardNumber: %d", cardNumber);
+        cocosUIListener->writeString(EG::JString(L"Card data not found for cardNumber: ") +
+            EG::JString(std::to_wstring(cardNumber).c_str()));
+        return;
+    }
+    Size desiredSize(100, 150); // 根据需要调整
     // 创建卡牌精灵
-    auto battlefieldCard = cardSprite::create(manager.find_by_dbfId(cardNumber)); // 使用卡牌正面纹理
+    auto battlefieldCard = cardSprite::createWithCard(cardData, desiredSize); // 使用修正后的方法
     if (battlefieldCard) {
         battlefieldCard->setTag(cardNumber); // 使用 cardNumber 作为 tag
 
@@ -770,7 +779,7 @@ void BoardScene::addCardToBattlefield(int playerNumber, int cardNumber) {
         }
 
         // 添加到战场并记录位置
-        this->addChild(battlefieldCard);
+        this->addChild(battlefieldCard, 1);
 
         // 设置初始位置在目标位置上方并淡入
         if (playerNumber == localPlayerNumber) {
@@ -869,6 +878,7 @@ void BoardScene::distributeInitialHands()
         players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
         std::shared_ptr<CardBase> card = localPlayer->drawCard();
         if (card) {
+            CCLOG("Distributing initial cardNumber: %d to playerNumber: %d", card->dbfId, localPlayerNumber);
             addCardToLocalPlayer(card);
             cocosUIListener->writeString(EG::JString(L"Player drew initial card."));
         }
@@ -884,17 +894,19 @@ void BoardScene::addCardToLocalPlayer(std::shared_ptr<CardBase> card) {
     players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
     // localPlayer->addCardToHand(card);
 
-    // 创建卡牌精灵
-    std::string str = "cards/" + card->dbfId;
-    str += ".png";
-    cardSprite* newCard = cardSprite::create(card); // 使用卡牌正面纹理
-    //auto newCard = Sprite::create(str); // 使用卡牌正面纹理
+    Size desiredSize(100, 150);
+
+    cardSprite* newCard = cardSprite::createWithCard(card, desiredSize);
 
     if (newCard) {
+        CCLOG("Successfully created cardSprite for cardNumber: %d", card->dbfId);
         newCard->setTag(card->dbfId); // 使用 cardNumber 作为 tag
 
-        // 设置初始位置基于常量 CARD_REGION_X 和 CARD_REGION_Y
-        Vec2 originalPos(CARD_REGION_X + localPlayerCards.size() * (newCard->getContentSize().width + 30), CARD_REGION_Y);
+        //float xPos = CARD_REGION_X + localPlayerCards.size() * (newCard->getContentSize().width + 30);
+        Vec2 originalPos(CARD_REGION_X + localPlayerCards.size() * (newCard->getContentSize().width + 30),
+            CARD_REGION_Y);
+        //Vec2 originalPos(xPos, CARD_REGION_Y);
+        CCLOG("Setting card position to: (%f, %f)", originalPos.x, originalPos.y);
 
         // 添加到待出牌区域并记录位置
         this->addChild(newCard);

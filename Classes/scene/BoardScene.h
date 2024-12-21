@@ -15,18 +15,19 @@ USING_NS_CC;
 
 class cardSprite : public cocos2d::Sprite {
 public:
-    cardSprite(std::shared_ptr<CardBase> card) : card(card) {
-        std::string str = "cards/" + std::to_string(card->dbfId);
-        str += ".png";
-        this->initWithFile(str);
-    }
+    static cardSprite* createWithCard(const std::shared_ptr<CardBase>& card, const Size& desiredSize = Size(100, 150)) {
+        // 构造对象
+        cardSprite* sprite = new (std::nothrow) cardSprite();
+        if (sprite && sprite->initWithFile("cards/" + std::to_string(card->dbfId) + ".png")) {
+            // 调整大小
+            Size originalSize = sprite->getContentSize();
+            float scaleX = desiredSize.width / originalSize.width;
+            float scaleY = desiredSize.height / originalSize.height;
+            float scale = std::min(scaleX, scaleY); // 保持比例
+            sprite->setScale(scale);
 
-    static cardSprite* create(std::shared_ptr<CardBase> card) {
-        // 创建对象
-        cardSprite* sprite = new (std::nothrow) cardSprite(card);
-        if (sprite && sprite->init()) {
-            // 如果初始化成功，将对象加入自动释放池
             sprite->autorelease();
+            sprite->card = card;
             return sprite;
         }
         // 如果初始化失败，删除对象并返回 nullptr
