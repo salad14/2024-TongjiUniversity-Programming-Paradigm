@@ -25,6 +25,9 @@
     <ClCompile Include="..\Classes\scene\SelectionScene.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\scene\EditGroupScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
@@ -57,6 +60,9 @@
       <Filter>src\scene</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\scene\SelectionScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\EditGroupScene.h">
       <Filter>src\scene</Filter>
     </ClInclude>
   </ItemGroup>

@@ -246,10 +246,6 @@ void BoardScene::checkDropArea() {
     }
 }
 
-
-
-
-
 // 鼠标移动检测
 void BoardScene::onMouseMove(Event* event) {
     EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
@@ -276,7 +272,6 @@ void BoardScene::onMouseMove(Event* event) {
         if (hoveredCard && hoveredCard != selectedCard) {
             scaleSprite(hoveredCard, 1.0f);
         }
-
         // 放大新的悬停精灵
         if (newHoveredSprite && newHoveredSprite != selectedCard) {
             scaleSprite(newHoveredSprite, 1.5f); // 放大1.5倍

@@ -5,6 +5,7 @@
 
 #include "MainScene.h"
 #include "SetScene.h"
+#include "EditGroupScene.h"
 #include "SimpleAudioEngine.h"
 #include "BoardScene.h"
 #include "MatchingScene.h"
@@ -190,8 +191,9 @@ void MainScene::normalGameCallback(Ref* pSender)
     // 加载点击音效
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     
-
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
+    // 使用 pushScene，保留主菜单场景在场景栈中
+    Director::getInstance()->pushScene(SelectionScene::create());
+    //Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
     //Director::getInstance()->replaceScene(TransitionFade::create(0.2f, SelectionScene::createScene()));
 
 }
@@ -209,7 +211,8 @@ void MainScene::collectionCallback(Ref* pSender)
     // 加载点击音效
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     // 使用 pushScene，保留主菜单场景在场景栈中
-    Director::getInstance()->pushScene(SelectionScene::create());
+    //Director::getInstance()->pushScene(SelectionScene::create());
+    //Director::getInstance()->pushScene(EditGroupScene::create());
 }
 
 // set 按钮的回调
