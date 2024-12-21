@@ -6,6 +6,9 @@
     <ClCompile Include="..\Classes\battle\battle.cpp">
       <Filter>src\battle</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\card\card.cpp">
+      <Filter>src\card</Filter>
+    </ClCompile>
     <ClCompile Include="..\Classes\card\SpellCard.cpp">
       <Filter>src\card</Filter>
     </ClCompile>
@@ -35,6 +38,7 @@
     </ClCompile>
     <ClCompile Include="..\Classes\players\player.cpp">
       <Filter>src\players</Filter>
+    </ClCompile>
     <ClCompile Include="..\Classes\scene\SetScene.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
@@ -214,12 +218,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\scene\StartScene.h">
       <Filter>src\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\mechanicsManager\JSONManager.h">
-      <Filter>src\mechanicsManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\card\ALLCard.h">
-      <Filter>src\card</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
