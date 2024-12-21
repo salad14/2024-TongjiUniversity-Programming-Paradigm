@@ -2,6 +2,7 @@
 #include "Scene/StartScene.h"
 #include "proj.win32/Alluse.h"
 #include "network/CocosUIListener.h"
+#include "mechanicsManager/JSONManager.h"
 
 #if USE_AUDIO_ENGINE && USE_SIMPLE_AUDIO_ENGINE
 #error "Don't use AudioEngine and SimpleAudioEngine at the same time. Please just select one in your game!"
@@ -23,8 +24,13 @@ static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 
+
 AppDelegate::AppDelegate()
 {
+    //JSONManager manager("cards/json/cards.json");
+    //std::vector<std::shared_ptr<CardBase>> newdeck; // �ƿ�
+    //manager.getdeck(newdeck);
+    //int a;
 }
 
 AppDelegate::~AppDelegate()
@@ -79,6 +85,14 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 #if 1
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);
+    // set the scale factor
+    const auto frameSize = glview->getFrameSize();
+    float scaleX = frameSize.width / designResolutionSize.width;
+    float scaleY = frameSize.height / designResolutionSize.height;
+    float scale = MIN(scaleX, scaleY);
+
+    director->setContentScaleFactor(scale);
+#endif
 
 #if 0
     auto frameSize = glview->getFrameSize();
