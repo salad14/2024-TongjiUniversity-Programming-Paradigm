@@ -1,5 +1,5 @@
 /****************************************************************
-* ���˵�ҳ���ʵ��
+* ���˵�ҳ���ʵ��?
 * Author: Lee
  ****************************************************************/
 
@@ -146,7 +146,7 @@ bool MainScene::init()
         auto visibleSize = Director::getInstance()->getVisibleSize();
         auto origin = Director::getInstance()->getVisibleOrigin();
 
-        // ���ñ�����λ�ã�ʹ�������ʾ
+        // ���ñ�����λ�ã�ʹ��������?
         sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
         // ������Ļ�Ĵ�С���������Ĵ�С
@@ -172,21 +172,21 @@ bool MainScene::init()
     return true;
 }
 
-//�ú�������û��ʹ�ã�
-// ���ڸ���Photon
-//void MainScene::updatePhoton(float dt)
-//{
-//    PhotonLib* photonLib = PhotonLib::getInstance();
-//    if (photonLib)
-//    {
-//        photonLib->update();
-//    }
-//}
+//�ú�������û��ʹ�ã�
+ //���ڸ���Photon
+void MainScene::updatePhoton(float dt)
+{
+    PhotonLib* photonLib = PhotonLib::getInstance();
+    if (photonLib)
+    {
+        photonLib->update();
+    }
+}
 
 // normalGame ��ť�Ļص�
 void MainScene::normalGameCallback(Ref* pSender)
 {
-    // ���ص����Ч
+    // ���ص�����?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
 }
@@ -194,21 +194,21 @@ void MainScene::normalGameCallback(Ref* pSender)
 // adventureGame ��ť�Ļص�
 void MainScene::adventureGameCallback(Ref* pSender)
 {
-    // ���ص����Ч
+    // ���ص�����?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
 
 // collection ��ť�Ļص�
 void MainScene::collectionCallback(Ref* pSender)
 {
-    // ���ص����Ч
+    // ���ص�����?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
 
 // set ��ť�Ļص�
 void MainScene::setCallback(Ref* pSender)
 {
-    // ���ص����Ч
+    // ���ص�����?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 
     // ʹ�� pushScene���������˵������ڳ���ջ��

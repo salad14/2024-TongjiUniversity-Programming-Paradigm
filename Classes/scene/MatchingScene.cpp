@@ -32,6 +32,8 @@ bool MatchingScene::init()
         return false;
     }
 
+    boardSceneCreated = false;
+
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
@@ -94,10 +96,20 @@ bool MatchingScene::init()
                 this->updatePlayerCount(playerCount);
 
                 // 如果达到2人，则切换到 BoardScene
-                if (playerCount >= 2)
+                if (playerCount == 2 && !boardSceneCreated.exchange(true)) // 使用 exchange(true) 保证线程安全
                 {
                     CCLOG("Player count reached 2. Switching to BoardScene.");
                     cocosUIListener->writeString(L"Player count reached 2. Starting game...");
+
+                    // 清理 MatchingScene 的 PhotonLib 回调
+                    photonLib->setRoomJoinedCallback(nullptr);
+                    photonLib->setLeaveRoomCallback(nullptr);
+                    photonLib->setPlayerCountChangedCallback(nullptr);
+                    CCLOG("PhotonLib callbacks cleared.");
+
+                    // 取消定时器
+                    this->unschedule(CC_SCHEDULE_SELECTOR(MatchingScene::updatePhoton));
+                    CCLOG("updatePhoton unscheduled.");
 
                     CCLOG("GameData instance starting");
                     // 初始化 GameData 单例（这将创建 player1 和 player2）
@@ -126,6 +138,7 @@ bool MatchingScene::init()
 
                     // 切换到 BoardScene
                     Director::getInstance()->replaceScene(transition);
+                    CCLOG("Scene switched to BoardScene.");
                 }
                 });
             });

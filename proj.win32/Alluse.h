@@ -53,6 +53,12 @@ constexpr int CARD_REGION_Y = 100;
 constexpr int PUTOUT_CARD_REGION_HALF_X = 700;     // 出牌区域半宽X
 constexpr int PUTOUT_CARD_REGION_HALF_Y = 300;     // 出牌区域半高Y
 
+// 定义常量（可以根据实际需求调整）
+constexpr int PLAYED_AREA_PLAYER1_X = 400;   // 本地玩家已打出卡牌显示区域的起始X坐标
+constexpr int PLAYED_AREA_PLAYER2_X = 1300;  // 对方玩家已打出卡牌显示区域的起始X坐标
+constexpr int PLAYED_AREA_Y = 600;			// 卡牌显示的Y坐标
+constexpr int CARD_SPACING = 120;			// 卡牌之间的水平间距
+
 // 设置场景设置
 constexpr int SETSCENE_SLIDER_X = 1050;                                // 设置场景音量滑动条与标签位置 X 
 constexpr int SETSCENE_BGMSLIDER_Y = 820;                              // 设置场景背景音乐音量滑动条与标签位置 Y 

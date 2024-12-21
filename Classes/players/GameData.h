@@ -11,11 +11,19 @@ namespace players {
 class GameData {
 public:
     // 获取单例实例
-    static GameData& getInstance();
-
+    static GameData& getInstance() {
+        static GameData instance;
+        return instance;
+    }
     // 获取玩家对象
-    players::Player* getPlayer1();
-    players::Player* getPlayer2();
+    players::Player* getPlayer1() {
+        return player1;
+    }
+
+    players::Player* getPlayer2() {
+        return player2;
+    }
+
 
     // 获取唯一的卡牌编号
     CardNumber getUniqueCardNumber();

@@ -6,7 +6,7 @@
 namespace players {
 
     Player::Player(PlayerNumber number, const std::string& nickname, GameData& gameData)
-        : playerNumber(number), nickname(nickname), health(30), money(0), maxmoney(1), overdrawCount(0), gameData(gameData)
+        : playerNumber(number), nickname(nickname), health(30), money(0), maxmoney(10), overdrawCount(0), gameData(gameData)
     {
         CCLOG("Creating Player %d: %s", playerNumber, nickname.c_str());
         initializeDeck();
@@ -50,6 +50,13 @@ namespace players {
         health = hp;
         CCLOG("Player %d: %s, Health set to: %d", playerNumber, nickname.c_str(), health);
     }
+
+    void Player::increaseMana() {
+        if (money < maxmoney) {
+            money += 1;
+        }
+    }
+
 
     // 获取和设置法力值
     int Player::getMoney() const
