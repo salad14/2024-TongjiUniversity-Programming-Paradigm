@@ -139,14 +139,15 @@ namespace players {
         
         //CardNumber cardNumber = newdeck.back();
         //newdeck.pop_back();
-        //CCLOG("Player %d: %s drew cardNumber: %d from deck. Remaining deck size: %zu",
-        //    playerNumber, nickname.c_str(), cardNumber, deck.size());
 
         // ÃÌº”µΩ ÷≈∆
         std::shared_ptr<CardBase> card = newdeck.back();
         // addCardToHand(card);
         hand.push_back(card);
         newdeck.pop_back();
+
+        CCLOG("Player %d: %s drew cardNumber: %d from deck. Remaining deck size: %zu",
+            playerNumber, nickname.c_str(), card->dbfId, newdeck.size());
 
         return card;
     }
