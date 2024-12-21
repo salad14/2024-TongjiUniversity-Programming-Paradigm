@@ -80,11 +80,20 @@ private:
     std::vector<cardSprite*> localplayedCards;        // 本地玩家已打出的卡牌
     std::vector<cardSprite*> oppentplayedCards;        // 对方玩家已打出的卡牌
 
-    // 当前选中的卡牌
-    //cocos2d::Sprite* selectedCard;
-    //cocos2d::Sprite* hoveredCard;
-    cardSprite* selectedCard;
-    cardSprite* hoveredCard;
+    // 卡牌状态
+    cardSprite* selectedCard;//选中
+    cardSprite* hoveredCard;//悬停
+    cardSprite* attackingCard;//攻击
+    DrawNode* attackIndicator;//被攻击
+
+    // 卡牌属性结构
+    struct CardInfo {
+        int health;
+        int attack;
+        int cost;
+    };
+
+    std::map<cardSprite*, CardInfo> cardStats;
 
     // 玩家信息 UI
     cocos2d::Label* localPlayerHealth;
@@ -112,11 +121,6 @@ private:
     void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event);
     void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
     void onMouseMove(cocos2d::Event* event);
-
-
-    void returnCardToOriginalPosition(Sprite* card);
-
-    // 缩放精灵
     void scaleSprite(cardSprite* sprite, float scale);
 
     // 玩家管理
@@ -128,10 +132,16 @@ private:
     // 卡牌管理
     void removeCard(cardSprite* sprite);
     void updatePlayedCardsPosition();
-
-    // void addCardToBattlefield(int playerNumber, int cardNumber);
+    void updateEnemyCardsPosition();
+    void addCardStats(cardSprite* card, int health, int attack, int cost);
+    void updateCardStats(cardSprite* card);
+    void returnCardToHand(cardSprite* card);
     void addCardToBattlefield(int playerNumber, int cardNumber);
-
+    void createAttackIndicator(const Vec2& startPos);
+    void attackmove(int attackerIndex, int defenderIndex);
+    void handleAttack(cardSprite* attacker, cardSprite* defender);
+    void removeCardWithAnimation(cardSprite* card);
+    void handleAttackToHero();
     // 事件发送
     void sendPlayCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
     void sendTurnStartEvent();
@@ -155,9 +165,11 @@ private:
     int getCardCost(std::shared_ptr<CardBase> card);
     int getCardCost(int cardNumber);
 
+
+    void initEnemyCards();
+
     // 辅助方法：根据卡牌ID查找精灵
     cardSprite* findCardByID(int cardID);
-
     // 析构函数
     virtual ~BoardScene();
 };
