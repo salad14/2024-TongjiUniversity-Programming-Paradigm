@@ -48,9 +48,9 @@ bool MatchingScene::init()
     cocosUIListener->attachToLayer(uiLayer, Vec2(visibleSize.width / 2, visibleSize.height - 50));
 
     // ¼ÓÔØ±³¾°
-    const auto background = Sprite::create("../Resources/Scenes/3MatchingScene.png");
+    const auto background = Sprite::create("../Resources/Scenes/4MatchingScene.png");
     if (background == nullptr) {
-        problemLoading("../Resources/Scenes/3MatchingScene.png");
+        problemLoading("../Resources/Scenes/4MatchingScene.png");
         return false;
     }
     background->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));

@@ -41,6 +41,25 @@ constexpr int MAIN_SCENE_PLAYBUTTON_OFFSET_X = 0;                   // MainScene
 constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_Y = 100;                    // MainScene adventure 按键 Y 偏移量（相对于屏幕中心）
 constexpr int MAIN_SCENE_ADVBUTTON_OFFSET_X = 0;                    // MainScene adventure 按键 X 偏移量
 
+//自定义卡组界面相关设置
+constexpr int EDIT_START_X = 200;       // 待选区X坐标
+constexpr int EDIT_START_Y = 200;       // 待选区Y坐标
+constexpr int EDIT_SELECT_WIDTH = 1000;    // 待选区宽度
+constexpr int EDIT_SELECT_HEIGHT = 1000;    // 待选区高度
+constexpr int CARD_PER_ROW = 5;         // 待选区每行卡牌数
+constexpr int EDIT_SELECTED_X = 1330;    // 已选择区X坐标
+constexpr int EDIT_SELECTED_Y = 200;     // 已选择区Y坐标
+constexpr int EDIT_SELECTED_WIDTH = 600;    // 已选择区宽度
+constexpr int EDIT_SELECTED_HEIGHT = 1000;    // 已选择区高度
+
+//卡组选择界面相关设置
+constexpr float SELECT_ICON_SCALE = 0.8f;  // 图标缩放比例
+constexpr int SELECT_ICON_SPACING = 350;  // 图标间距
+constexpr int SELECT_START_X = 300;    // 第一个图标的X坐标
+constexpr int SELECT_START_Y = 800;    // 第一行图标的Y坐标
+constexpr int SELECT_ICONS_PER_ROW = 3;     // 每行图标数
+
+
 //MatchingScene 匹配场景设置
 constexpr int MATCHING_SCENE_CANCEL_OFFSET_X = 30;      // 匹配场景 取消按钮 X 偏移量
 constexpr int MATCHING_SCENE_CANCEL_OFFSET_Y = -440;      // 匹配场景 取消按钮 Y 偏移量（相对于屏幕中心）
