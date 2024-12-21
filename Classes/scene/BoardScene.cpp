@@ -405,8 +405,8 @@ int BoardScene::getCardCost(int dbfId) {
 
 void BoardScene::initPlayers()
 {
-    // localPlayerNumber = photonLib->getLocalPlayerNumber();
-    localPlayerNumber = 1;
+    localPlayerNumber = photonLib->getLocalPlayerNumber();
+    // localPlayerNumber = 1;
     currentPlayerNumber = 1;
     player1 = GameData::getInstance().getPlayer1();
     player2 = GameData::getInstance().getPlayer2();
