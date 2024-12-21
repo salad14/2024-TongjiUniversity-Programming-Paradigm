@@ -126,8 +126,8 @@
     "type": "MINION"
   },
   {
-    "dbfId": 12348,
-    "name": "毒袭",
+    "dbfId": 68458,
+    "name": "毒刃",
     "cost": 2,
     "cardClass": "ROGUE",
     "text": "造成1点伤害。抽一张牌。",
@@ -146,7 +146,7 @@
     ]
   },
   {
-    "dbfId": 12349,
+    "dbfId": 68353,
     "name": "疾跑",
     "cost": 7,
     "cardClass": "ROGUE",
@@ -162,8 +162,8 @@
     ]
   },
   {
-    "dbfId": 12350,
-    "name": "秘法射击",
+    "dbfId": 68434,
+    "name": "奥术射击",
     "cost": 1,
     "cardClass": "ROGUE",
     "text": "造成2点伤害。",
