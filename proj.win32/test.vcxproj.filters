@@ -144,6 +144,9 @@
     <ClInclude Include="..\Classes\mechanicsManager\JSONManager.h">
       <Filter>src\mechanicsManager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\card\ALLCard.h">
+      <Filter>src\card</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />

@@ -37,6 +37,7 @@ namespace players {
         void setMoney(int m);
         int getMaxMoney() const;
         void setMaxMoney(int maxm);
+        void increaseMana();
 
         // 玩家携带的卡组
         std::vector<CardNumber> getPlayerCards() const;
@@ -67,6 +68,9 @@ namespace players {
         // 析构函数
         ~Player();
 
+        int health = 30;   // 当前生命值
+        int money = 5;     // 当前法力值
+        int maxmoney = 10;  // 最大法力值
     private:
         GameData& gameData; // 引用 GameData
 
@@ -75,9 +79,7 @@ namespace players {
         int cardNumberCounter;
 
         std::string nickname;
-        int health = 30;   // 当前生命值
-        int money = 0;     // 当前法力值
-        int maxmoney = 1;  // 最大法力值
+        
         std::vector<CardNumber> playerCards;  // 玩家携带的卡组
 
         // 牌库管理

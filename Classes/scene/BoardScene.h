@@ -7,10 +7,11 @@
 #include "network/CocosUIListener.h" 
 #include "network/CustomEventCodes.h"
 #include "players/player.h"
+#include "../card/ALLCard.h"
 #include <cstdint> 
 #include <vector>
 #include <map>
-
+USING_NS_CC;
 class BoardScene : public cocos2d::Scene
 {
 public:
@@ -49,17 +50,18 @@ private:
     // 手牌管理
     std::vector<cocos2d::Sprite*> localPlayerCards; // 手中的卡牌
     std::map<cocos2d::Sprite*, cocos2d::Vec2> cardOriginalPositions; // 卡牌的原始位置
-    std::vector<cocos2d::Sprite*> playedCards; // 已打出的卡牌
+    std::vector<Sprite*> localplayedCards;        // 本地玩家已打出的卡牌
+    std::vector<Sprite*> oppentplayedCards;        // 对方玩家已打出的卡牌
 
     // 当前选中的卡牌
     cocos2d::Sprite* selectedCard;
     cocos2d::Sprite* hoveredCard;
 
     // 玩家信息 UI
-    cocos2d::Label* player1Health;
-    cocos2d::Label* player1Mana;
-    cocos2d::Label* player2Health;
-    cocos2d::Label* player2Mana;
+    cocos2d::Label* localPlayerHealth;
+    cocos2d::Label* localPlayerMana;
+    cocos2d::Label* opponentPlayerHealth;
+    cocos2d::Label* opponentPlayerMana;
     cocos2d::Label* turnIndicator;
 
     // 回合结束按钮
@@ -71,11 +73,15 @@ private:
     void createDropArea();
     void checkDropArea();
 
+   
     // 事件监听器回调
     bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
     void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event);
     void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
     void onMouseMove(cocos2d::Event* event);
+
+
+    void returnCardToOriginalPosition(Sprite* card);
 
     // 缩放精灵
     void scaleSprite(cocos2d::Sprite* sprite, float scale);
@@ -90,6 +96,8 @@ private:
     void removeCard(cocos2d::Sprite* sprite);
     void updatePlayedCardsPosition();
 
+    void addCardToBattlefield(int playerNumber, int cardNumber);
+
     // 事件发送
     void sendPlayCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
     void sendTurnStartEvent();
@@ -97,6 +105,7 @@ private:
     // Photon 事件处理
     void handlePlayCard(const ExitGames::Common::Hashtable& parameters);
     void handleTurnStart(const ExitGames::Common::Hashtable& parameters);
+
 
     // 游戏结束
     void endGame(players::Player* winner);
@@ -109,7 +118,7 @@ private:
     void addCardToLocalPlayer(CardNumber cardNumber);
 
     // 获取卡牌的费用
-    int getCardCost(cocos2d::Sprite* card);
+    int getCardCost(int cardNumber);
 
     // 辅助方法：根据卡牌ID查找精灵
     cocos2d::Sprite* findCardByID(int cardID);

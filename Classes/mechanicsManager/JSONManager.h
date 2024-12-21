@@ -24,6 +24,8 @@ public:
         file >> j;
         cards.clear();
         for (const auto& item : j) {
+            // 每张卡放两次
+            cards.push_back(create_card_from_json(item));
             cards.push_back(create_card_from_json(item));
         }
     }
@@ -43,26 +45,34 @@ public:
             card->from_json(j);
             return card;
         }
-        else if (cardType == "WEAPON") {}   // 还没有完完成
-        else if (cardType == "HERO") {}
+        else if (cardType == "WEAPON") {}
+        //else if (cardType == "HERO") {}
         else {
             throw std::runtime_error("Unknown card type: " + cardType);
             return nullptr;
         }
     }
 
-    // 按 dbfId 查找卡片
-    std::vector<std::shared_ptr<CardBase>> find_by_dbfId(int dbfId) const {
-        std::vector<std::shared_ptr<CardBase>> result;
-        for (const auto& card : cards) {
-            if (card->dbfId == dbfId) {
-                result.push_back(card);
-            }
+public:
+    void getdeck(std::vector<std::shared_ptr<CardBase>>& newdeck) {
+        std::vector<std::shared_ptr<CardBase>> selectedCards;
+        for (auto i : cards) {
+            newdeck.push_back(i);  // 直接复制 shared_ptr
         }
-        return result;
     }
 
-    // 按 cardClass 查找卡片
+    // 对外接口
+    // 按 dbfId 查找卡片
+    std::shared_ptr<CardBase> find_by_dbfId(int dbfId) const {
+        for (const auto& card : cards) {
+            if (card->dbfId == dbfId) {
+                return card;
+            }
+        }
+        return nullptr;
+    }
+
+    // 按 cardClass 查找卡片 暂时没有使用
     std::vector<std::shared_ptr<CardBase>> find_by_cardClass(const cardClass cardClass) const {
         std::vector<std::shared_ptr<CardBase>> result;
         for (const auto& card : cards) {
@@ -85,7 +95,7 @@ public:
         return result;
     }
 
-    // 输出所有卡片信息（可选，方便调试）
+    // 输出所有卡片信息  方便调试
     void print_all_cards() const {
         for (const auto& card : cards) {
             std::cout << "dbfId: " << card->dbfId << ", cardClass: " << card->cardClass << ", name: " << card->name << std::endl;

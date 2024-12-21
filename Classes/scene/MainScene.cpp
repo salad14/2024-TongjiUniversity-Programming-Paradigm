@@ -141,13 +141,7 @@ bool MainScene::init()
         auto visibleSize = Director::getInstance()->getVisibleSize();
         auto origin = Director::getInstance()->getVisibleOrigin();
 
-        CCLOG("Sprite Content Size: %f, %f", sprite->getContentSize().width, sprite->getContentSize().height);
-        CCLOG("Visible Size: %f, %f", visibleSize.width, visibleSize.height);
-        CCLOG("Origin: %f, %f", origin.x, origin.y);
-
-
-
-        // ���ñ�����λ�ã�ʹ�������ʾ
+        // ���ñ�����λ�ã�ʹ��������?
         sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
         // ������Ļ�Ĵ�С���������Ĵ�С
@@ -174,20 +168,20 @@ bool MainScene::init()
 }
 
 //�ú�������û��ʹ�ã�
-// ���ڸ���Photon
-//void MainScene::updatePhoton(float dt)
-//{
-//    PhotonLib* photonLib = PhotonLib::getInstance();
-//    if (photonLib)
-//    {
-//        photonLib->update();
-//    }
-//}
+ //���ڸ���Photon
+void MainScene::updatePhoton(float dt)
+{
+    PhotonLib* photonLib = PhotonLib::getInstance();
+    if (photonLib)
+    {
+        photonLib->update();
+    }
+}
 
 // normalGame ��ť�Ļص�
 void MainScene::normalGameCallback(Ref* pSender)
 {
-    // ���ص����Ч
+    // ���ص�����?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MatchingScene::createScene()));
 }
@@ -195,21 +189,21 @@ void MainScene::normalGameCallback(Ref* pSender)
 // adventureGame ��ť�Ļص�
 void MainScene::adventureGameCallback(Ref* pSender)
 {
-    // ���ص����Ч
+    // ���ص�����?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
 
 // collection ��ť�Ļص�
 void MainScene::collectionCallback(Ref* pSender)
 {
-    // ���ص����Ч
+    // ���ص�����?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
 
 // set ��ť�Ļص�
 void MainScene::setCallback(Ref* pSender)
 {
-    // ���ص����Ч
+    // ���ص�����?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 
     // ʹ�� pushScene���������˵������ڳ���ջ��

@@ -21,6 +21,8 @@ public:
     // 更新玩家数量并检查是否切换场景
     void updatePlayerCount(int playerCount);
 
+    std::atomic<bool> boardSceneCreated;
+
     // 实现 "static create()" 方法
     CREATE_FUNC(MatchingScene);
 
