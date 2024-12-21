@@ -1,4 +1,4 @@
-#include "AppDelegate.h"
+ï»¿#include "AppDelegate.h"
 #include "Scene/StartScene.h"
 #include "proj.win32/Alluse.h"
 #include "network/CocosUIListener.h"
@@ -18,7 +18,7 @@ using namespace CocosDenshion;
 
 USING_NS_CC;
 
-//´°¿Ú´óÐ¡¼°·Ö±æÂÊÉèÖÃ
+//ï¿½ï¿½ï¿½Ú´ï¿½Ð¡ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 static cocos2d::Size designResolutionSize = cocos2d::Size(2048, 1280);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
@@ -28,12 +28,12 @@ static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 AppDelegate::AppDelegate()
 {
     //JSONManager manager("cards/json/cards.json");
-    //std::vector<std::shared_ptr<CardBase>> newdeck; // ÅÆ¿â
+    //std::vector<std::shared_ptr<CardBase>> newdeck; // ï¿½Æ¿ï¿½
     //manager.getdeck(newdeck);
     //int a;
 }
 
-AppDelegate::~AppDelegate() 
+AppDelegate::~AppDelegate()
 {
 #if USE_AUDIO_ENGINE
     AudioEngine::end();
@@ -47,7 +47,7 @@ AppDelegate::~AppDelegate()
 void AppDelegate::initGLContextAttrs()
 {
     // set OpenGL context attributes: red,green,blue,alpha,depth,stencil,multisamplesCount
-    GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8, 0};
+    GLContextAttrs glContextAttrs = { 8, 8, 8, 8, 24, 8, 0 };
 
     GLView::setGLContextAttrs(glContextAttrs);
 }
@@ -72,7 +72,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
         director->setOpenGLView(glview);
     }
 
-    //ÏÔÊ¾Ö¡ÂÊµÈ²ÎÊý£¬ÕûÌåÍê³Éºó¿ÉÉ¾³ý
+    //ï¿½ï¿½Ê¾Ö¡ï¿½ÊµÈ²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Éºï¿½ï¿½É¾ï¿½ï¿½
     // turn on display FPS
     director->setDisplayStats(true);
 
@@ -98,18 +98,18 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto frameSize = glview->getFrameSize();
     // if the frame's height is larger than the height of medium size.
     if (frameSize.height > mediumResolutionSize.height)
-    {        
-        director->setContentScaleFactor(MIN(largeResolutionSize.height/designResolutionSize.height, largeResolutionSize.width/designResolutionSize.width));
+    {
+        director->setContentScaleFactor(MIN(largeResolutionSize.height / designResolutionSize.height, largeResolutionSize.width / designResolutionSize.width));
     }
     // if the frame's height is larger than the height of small size.
     else if (frameSize.height > smallResolutionSize.height)
-    {        
-        director->setContentScaleFactor(MIN(mediumResolutionSize.height/designResolutionSize.height, mediumResolutionSize.width/designResolutionSize.width));
+    {
+        director->setContentScaleFactor(MIN(mediumResolutionSize.height / designResolutionSize.height, mediumResolutionSize.width / designResolutionSize.width));
     }
     // if the frame's height is smaller than the height of medium size.
     else
-    {        
-        director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
+    {
+        director->setContentScaleFactor(MIN(smallResolutionSize.height / designResolutionSize.height, smallResolutionSize.width / designResolutionSize.width));
     }
 
 #endif

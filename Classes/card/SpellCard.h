@@ -1,7 +1,10 @@
 // classes/card/SpellCard.h
 #pragma once
 
-#include "card/Card.h"
+#include <map>
+#include "card.h"
+#include "../mechanicsManager/Spelleffects.h"
+#include "../entity/Minion.h"
 #include <vector>
 #include "cocos2d.h"
 
@@ -10,8 +13,6 @@ namespace SpellMechanics {
         Damage = 1 << 0,
         Draw = 1 << 1,
         Frozen = 1 << 2,
-        Grow = 1 << 3,
-        Crystal = 1 << 4,
     };
 
     inline KeyWord operator|(KeyWord lhs, KeyWord rhs) {
@@ -32,12 +33,11 @@ enum class SpellSchool {
     FIRE,
     FROST,
     ARCANE,
-    // 其他法术类别
 };
 
 struct Effect {
     SpellMechanics::KeyWord type;
-    int amount; // 对于 Damage, Draw, Grow, Crystal 等效果的数值
+    int amount; 
 };
 
 class SpellCard : public CardBase {
@@ -48,6 +48,36 @@ private:
 
 public:
     SpellCard() = default;
+
+    std::map<std::string, ::cardClass> cardClassMap = {
+    {"MAGE", cardClass::MAGE},
+    {"WARRIOR", cardClass::WARRIOR},
+    {"DRUID", cardClass::DRUID},
+    {"ROGUE", cardClass::ROGUE},
+    {"NEUTRAL", cardClass::NEUTRAL}
+    };
+
+    std::map<std::string, ::cardType> cardTypeMap = {
+        {"SPELL", cardType::SPELL},
+        {"MINION", cardType::MINION},
+        {"WEAPON", cardType::WEAPON},
+        {"HERO", cardType::HERO}
+    };
+
+    std::map<std::string, ::cardRarity> cardRarityMap = {
+        {"FREE", cardRarity::COMMON},
+        {"COMMON", cardRarity::COMMON},
+        {"RARE", cardRarity::COMMON},
+        {"EPIC", cardRarity::COMMON},
+        {"LEGENDARY", cardRarity::LEGENDARY}
+    };
+
+    std::map<std::string, ::SpellSchool> cardSpellMap = {
+        {"FIRE", SpellSchool::FIRE},
+        {"FROST", SpellSchool::FROST},
+        {"ARCANE", SpellSchool::ARCANE},
+    };
+
 
     SpellCard(int dbfId, const std::string& name, int cost, ::cardClass cardClassType,
         const std::string& text, cardRarity rarity, SpellSchool spellSchool)
@@ -78,12 +108,55 @@ public:
     //    return name;
     //}
 
+    int getDbfId() const { return dbfId; }
+    std::string getName() const { return name; }
+    std::string getText() const { return text; }
+    int getCost() const { return cost; }
     SpellSchool getSpellSchool() const { return spellSchool; }
+
 
     void play() override {}
 
+    /*
+    void playSpell(SpellEffects* effects, Minion* minion) override {
+        for (const auto& effect : this->getEffects()) {
+            switch (effect.type) {
+                case SpellMechanics::KeyWord::Damage:
+                    effects->damage(minion, effect.amount);
+                    break;
+                case SpellMechanics::KeyWord::Draw:
+                    effects->draw(effect.amount);
+                    break;
+                case SpellMechanics::KeyWord::Frozen:
+                    effects->frozen(minion);
+                    break;
+                default:
+                    break;
+            }
+        }
+    } */
+
 public:
     void from_json(const json& j) override {
-        // to be handled
+
+        // cardBase
+        dbfId = j.at("dbfId").get<int>();
+        name = j.at("name").get<std::string>();
+        cost = j.at("cost").get<int>();
+        text = j.at("text").get<std::string>();
+
+        // for enum
+        std::string cardClassStr = j.at("cardClass").get<std::string>();
+        cardClass = cardClassMap.at(cardClassStr);
+        std::string typeStr = j.at("type").get<std::string>();
+        type = cardTypeMap.at(typeStr);
+        std::string cardRarityStr = j.at("rarity").get<std::string>();
+        auto it = cardRarityMap.find(cardRarityStr);
+        if (it != cardRarityMap.end()) {
+            rarity = it->second;
+        }
+        else {
+            rarity = cardRarity::COMMON; // ???? COMMON
+        }
     }
 };

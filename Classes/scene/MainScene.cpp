@@ -1,8 +1,3 @@
-/****************************************************************
-* ï¿½ï¿½ï¿½Ëµï¿½Ò³ï¿½ï¿½ï¿½Êµï¿½ï¿?
-* Author: Lee
- ****************************************************************/
-
 #include "MainScene.h"
 #include "SetScene.h"
 #include "EditGroupScene.h"
@@ -148,7 +143,7 @@ bool MainScene::init()
         auto visibleSize = Director::getInstance()->getVisibleSize();
         auto origin = Director::getInstance()->getVisibleOrigin();
 
-        // ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê?
+        // ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
         sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½Ä´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½Ð¡
@@ -174,8 +169,8 @@ bool MainScene::init()
     return true;
 }
 
-//¸Ãº¯ÊýºÃÏñÃ»ÓÐÊ¹ÓÃ£¿
- //¶¨ÆÚ¸üÐÂPhoton
+//ï¿½Ãºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ê¹ï¿½Ã£ï¿½
+ //ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½Photon
 void MainScene::updatePhoton(float dt)
 {
     PhotonLib* photonLib = PhotonLib::getInstance();
@@ -188,7 +183,7 @@ void MainScene::updatePhoton(float dt)
 // normalGame ï¿½ï¿½Å¥ï¿½Ä»Øµï¿½
 void MainScene::normalGameCallback(Ref* pSender)
 {
-    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½Ð?
+    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     
     // Ê¹ÓÃ pushScene£¬±£ÁôÖ÷²Ëµ¥³¡¾°ÔÚ³¡¾°Õ»ÖÐ
@@ -201,14 +196,14 @@ void MainScene::normalGameCallback(Ref* pSender)
 // adventureGame ï¿½ï¿½Å¥ï¿½Ä»Øµï¿½
 void MainScene::adventureGameCallback(Ref* pSender)
 {
-    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½Ð?
+    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
 
 // collection ï¿½ï¿½Å¥ï¿½Ä»Øµï¿½
 void MainScene::collectionCallback(Ref* pSender)
 {
-    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½Ð?
+    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     // Ê¹ÓÃ pushScene£¬±£ÁôÖ÷²Ëµ¥³¡¾°ÔÚ³¡¾°Õ»ÖÐ
     //Director::getInstance()->pushScene(SelectionScene::create());
@@ -218,7 +213,7 @@ void MainScene::collectionCallback(Ref* pSender)
 // set ï¿½ï¿½Å¥ï¿½Ä»Øµï¿½
 void MainScene::setCallback(Ref* pSender)
 {
-    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½Ð?
+    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 
     // Ê¹ï¿½ï¿½ pushSceneï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú³ï¿½ï¿½ï¿½Õ»ï¿½ï¿½

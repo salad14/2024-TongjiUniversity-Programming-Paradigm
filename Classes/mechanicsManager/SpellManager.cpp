@@ -1,4 +1,4 @@
-// classes/mechanicsManager/SpellManager.cpp
+/* classes / mechanicsManager / SpellManager.cpp
 #include "SpellManager.h"
 #include <fstream>
 #include <iostream>
@@ -107,3 +107,7 @@ std::shared_ptr<SpellCard> SpellManager::getSpellCardById(int dbfId) const {
     }
     return nullptr;
 }
+
+const std::unordered_map<int, std::shared_ptr<SpellCard>>& SpellManager::getAllSpells() const {
+    return spellCards;
+}*/
