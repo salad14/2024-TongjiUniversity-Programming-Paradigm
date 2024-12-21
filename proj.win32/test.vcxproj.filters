@@ -6,9 +6,6 @@
     <ClCompile Include="..\Classes\battle\battle.cpp">
       <Filter>src\battle</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\card\card.cpp">
-      <Filter>src\card</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\card\SpellCard.cpp">
       <Filter>src\card</Filter>
     </ClCompile>

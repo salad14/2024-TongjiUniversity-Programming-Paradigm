@@ -27,6 +27,10 @@ static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 
 AppDelegate::AppDelegate()
 {
+    //JSONManager manager("cards/json/cards.json");
+    //std::vector<std::shared_ptr<CardBase>> newdeck; // ÅÆ¿â
+    //manager.getdeck(newdeck);
+    //int a;
 }
 
 AppDelegate::~AppDelegate() 

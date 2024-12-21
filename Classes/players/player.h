@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include "../card/ALLCard.h"
 
 typedef int PlayerNumber; // 玩家编号，例如 1 或 2
 typedef int CardNumber;   // 卡牌编号，每个玩家内部唯一
@@ -20,7 +21,7 @@ namespace players {
         Player(PlayerNumber number, const std::string& nickname, GameData& gameData);
 
         // 添加卡牌到手牌
-        void addCardToHand(CardNumber cardNumber);
+        // void addCardToHand(std::shared_ptr<CardBase> card);
 
         // 从手牌中移除卡牌
         void removeCardFromHand(CardNumber cardNumber);
@@ -46,12 +47,12 @@ namespace players {
         void initializeDeck();
 
         // 抽牌相关
-        CardNumber drawCard(); // 返回 cardNumber
+        std::shared_ptr<CardBase> drawCard(); // 返回 cardNumber
         bool hasCards() const;
-        void resetDeck();
+        //void resetDeck();
 
         // 获取手牌
-        const std::vector<CardNumber>& getHand() const { return hand; }
+        // const std::vector<CardNumber>& getHand() const { return hand; }
 
         // 处理过度抽牌
         void handleOverdraw();
@@ -83,8 +84,11 @@ namespace players {
         std::vector<CardNumber> playerCards;  // 玩家携带的卡组
 
         // 牌库管理
-        std::vector<CardNumber> deck; // 每张卡牌的 cardNumber
-        std::vector<CardNumber> hand; // 手牌
+        // std::vector<CardNumber> deck; // 每张卡牌的 cardNumber
+        //std::vector<CardNumber> hand; // 手牌
+
+        std::vector<std::shared_ptr<CardBase>> hand; // 手牌
+        std::vector<std::shared_ptr<CardBase>> newdeck; // 牌库
 
         // 过度抽牌计数器
         int overdrawCount = 0;

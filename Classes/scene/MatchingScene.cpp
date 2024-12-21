@@ -96,7 +96,8 @@ bool MatchingScene::init()
                 this->updatePlayerCount(playerCount);
 
                 // 如果达到2人，则切换到 BoardScene
-                if (playerCount == 2 && !boardSceneCreated.exchange(true)) // 使用 exchange(true) 保证线程安全
+                // if (playerCount == 2 && !boardSceneCreated.exchange(true)) // 使用 exchange(true) 保证线程安全
+                if (true && !boardSceneCreated.exchange(true)) // 使用 exchange(true) 保证线程安全
                 {
                     CCLOG("Player count reached 2. Switching to BoardScene.");
                     cocosUIListener->writeString(L"Player count reached 2. Starting game...");

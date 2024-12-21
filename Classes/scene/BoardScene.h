@@ -12,6 +12,32 @@
 #include <vector>
 #include <map>
 USING_NS_CC;
+
+class cardSprite : public cocos2d::Sprite {
+public:
+    cardSprite(std::shared_ptr<CardBase> card) : card(card) {
+        std::string str = "cards/" + std::to_string(card->dbfId);
+        str += ".png";
+        this->initWithFile(str);
+    }
+
+    static cardSprite* create(std::shared_ptr<CardBase> card) {
+        // 创建对象
+        cardSprite* sprite = new (std::nothrow) cardSprite(card);
+        if (sprite && sprite->init()) {
+            // 如果初始化成功，将对象加入自动释放池
+            sprite->autorelease();
+            return sprite;
+        }
+        // 如果初始化失败，删除对象并返回 nullptr
+        CC_SAFE_DELETE(sprite);
+        return nullptr;
+    }
+
+public:
+    std::shared_ptr<CardBase> card;
+};
+
 class BoardScene : public cocos2d::Scene
 {
 public:
@@ -35,7 +61,7 @@ private:
     // UI 元素
     cocos2d::DrawNode* dropArea;
 
-    // 玩家相关
+    // 本地玩家
     int localPlayerNumber;
 
     players::Player* player1;
@@ -48,14 +74,16 @@ private:
     bool handsInitialized = false;
 
     // 手牌管理
-    std::vector<cocos2d::Sprite*> localPlayerCards; // 手中的卡牌
-    std::map<cocos2d::Sprite*, cocos2d::Vec2> cardOriginalPositions; // 卡牌的原始位置
-    std::vector<Sprite*> localplayedCards;        // 本地玩家已打出的卡牌
-    std::vector<Sprite*> oppentplayedCards;        // 对方玩家已打出的卡牌
+    std::vector<cardSprite*> localPlayerCards; // 手中的卡牌
+    std::map<cardSprite*, cocos2d::Vec2> cardOriginalPositions; // 卡牌的原始位置
+    std::vector<cardSprite*> localplayedCards;        // 本地玩家已打出的卡牌
+    std::vector<cardSprite*> oppentplayedCards;        // 对方玩家已打出的卡牌
 
     // 当前选中的卡牌
-    cocos2d::Sprite* selectedCard;
-    cocos2d::Sprite* hoveredCard;
+    //cocos2d::Sprite* selectedCard;
+    //cocos2d::Sprite* hoveredCard;
+    cardSprite* selectedCard;
+    cardSprite* hoveredCard;
 
     // 玩家信息 UI
     cocos2d::Label* localPlayerHealth;
@@ -66,6 +94,10 @@ private:
 
     // 回合结束按钮
     cocos2d::MenuItemImage* endTurnButton;
+
+    //////////////////////////
+    //std::map<cocos2d::Sprite*, std::shared_ptr<CardBase>> cardMap; // 卡牌精灵和卡牌对象的映射
+    // JSONManager manager;
 
     // 方法声明
     void cancelCallback(cocos2d::Ref* pSender);
@@ -84,18 +116,19 @@ private:
     void returnCardToOriginalPosition(Sprite* card);
 
     // 缩放精灵
-    void scaleSprite(cocos2d::Sprite* sprite, float scale);
+    void scaleSprite(cardSprite* sprite, float scale);
 
     // 玩家管理
     void initPlayers();
     void createPlayerUI();
-    void updatePlayerUI();
+    void updatePlayerUI(); // 没有完成
     void switchTurn();
 
     // 卡牌管理
-    void removeCard(cocos2d::Sprite* sprite);
+    void removeCard(cardSprite* sprite);
     void updatePlayedCardsPosition();
 
+    // void addCardToBattlefield(int playerNumber, int cardNumber);
     void addCardToBattlefield(int playerNumber, int cardNumber);
 
     // 事件发送
@@ -115,13 +148,14 @@ private:
 
     // 分发初始手牌
     void distributeInitialHands();
-    void addCardToLocalPlayer(CardNumber cardNumber);
+    void addCardToLocalPlayer(std::shared_ptr<CardBase> card);
 
     // 获取卡牌的费用
+    int getCardCost(std::shared_ptr<CardBase> card);
     int getCardCost(int cardNumber);
 
     // 辅助方法：根据卡牌ID查找精灵
-    cocos2d::Sprite* findCardByID(int cardID);
+    cardSprite* findCardByID(int cardID);
 
     // 析构函数
     virtual ~BoardScene();
