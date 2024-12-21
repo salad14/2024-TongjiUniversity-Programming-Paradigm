@@ -758,7 +758,7 @@ void BoardScene::addCardToBattlefield(int playerNumber, int cardNumber) {
             EG::JString(std::to_wstring(cardNumber).c_str()));
         return;
     }
-    Size desiredSize(100, 150); // 根据需要调整
+    Size desiredSize(200, 250); // 根据需要调整
     // 创建卡牌精灵
     auto battlefieldCard = cardSprite::createWithCard(cardData, desiredSize); // 使用修正后的方法
     if (battlefieldCard) {
@@ -779,7 +779,7 @@ void BoardScene::addCardToBattlefield(int playerNumber, int cardNumber) {
         }
 
         // 添加到战场并记录位置
-        this->addChild(battlefieldCard, 1);
+        this->addChild(battlefieldCard, 50);
 
         // 设置初始位置在目标位置上方并淡入
         if (playerNumber == localPlayerNumber) {
@@ -894,18 +894,15 @@ void BoardScene::addCardToLocalPlayer(std::shared_ptr<CardBase> card) {
     players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
     // localPlayer->addCardToHand(card);
 
-    Size desiredSize(100, 150);
+    Size desiredSize(120, 180); // 根据需要调整宽度和高度
 
     cardSprite* newCard = cardSprite::createWithCard(card, desiredSize);
 
     if (newCard) {
         CCLOG("Successfully created cardSprite for cardNumber: %d", card->dbfId);
         newCard->setTag(card->dbfId); // 使用 cardNumber 作为 tag
-
-        //float xPos = CARD_REGION_X + localPlayerCards.size() * (newCard->getContentSize().width + 30);
         Vec2 originalPos(CARD_REGION_X + localPlayerCards.size() * (newCard->getContentSize().width + 30),
             CARD_REGION_Y);
-        //Vec2 originalPos(xPos, CARD_REGION_Y);
         CCLOG("Setting card position to: (%f, %f)", originalPos.x, originalPos.y);
 
         // 添加到待出牌区域并记录位置

@@ -20006,3 +20006,281 @@ Sent custom event with eventCode: 1
 Sent PLAY_CARD event with playerNumber: 1, cardNumber: 69565
 Player does not have enough mana to play the card.
 >>>>>>> Stashed changes
+Log label attached to new layer.
+Connecting to Photon...
+2024-12-22 03:03:05,191 INFO    PeerBase.cpp                   ExitGames::Photon::Internal::PeerBase::connect()             116   address: wss://ns.photonengine.cn:19093
+2024-12-22 03:03:05,193 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::startConnection() 108   Connecting to host: ns.photonengine.cn, port: 19093, secure: 1, path: /?libversion=5.0.12.0&sid=16&app=558bddbb2dda4767ad341ea68fdec86e
+2024-12-22 03:03:05,195 INFO    Photon_lib.cpp                 PhotonLib::connectToPhoton()                                 624   Attempting to connect to Photon...
+Attempting to connect to Photon...
+2024-12-22 03:03:05,721 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::connectAndReceive() 215   Succesfully upgraded to websocket protocol
+2024-12-22 03:03:05,722 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::connectAndReceive() 229   Connected
+2024-12-22 03:03:05,723 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onStatusChanged()          1978  connected to nameserver
+2024-12-22 03:03:05,774 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 220, returnCode: 0
+2024-12-22 03:03:05,775 INFO    Peer.cpp                       ExitGames::LoadBalancing::Peer::opAuthenticateOnce()         207   OperationRequest - operationCode: 231 {224="558bddbb-2dda-4767-ad34-1ea68fdec86e", 220="1.0", 210="cn", 225="36707766", 193=13, 195=0}
+2024-12-22 03:03:05,923 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 231, returnCode: 0 {196="default", 230="123.206.109.115:5055", 221="AtUW67LO02L3/xB3elbcA8fUEWbfXu6IlSj1G3RKo1GvlfEn5S4Sv+0RvaVgL058PCkvvzaEV/TrcwCJZoZu6vaTUOKA/6n/JoU88hhG2nHBD8ePoigq3tymcg8Qxp+UsVsYnBYmEWZPtVDbRdzrttuGwKCBmkSNxQscSoC+GtrXE0RLnxsZty2Fp47MHii5/O0o0N63imCwJvqiaPWZStrsdb6+D4S9mF7T/tvnrkvqxP/SOTzhUw2vTr1OkNCiAvbIBO8UH1Nphf0CweFMSPduS8NmYWT+AgbmuucmZ+Dh5h26He/JMsMa6RTpiPcPKIqwsO+YJZRp58V9kJ9dzYdw+UKQc7vy7/dyGnpEZ9ZrAOwVamRkcxrO4j9iRqSzkQ==", 225="36707766", 192={0=13, 1=[62, 244, 117, 120, 193, 139, 128, 76, 79, 166, 117, 113, 109, 143, 218, 255, 60, 170, 91, 100, 103, 133, 233, 175, 249, 125, 134, 92, 240, 176, 117, 27]}}
+2024-12-22 03:03:05,923 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1560  Server returned secret
+2024-12-22 03:03:05,924 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1619  Setting userID sent by server: "36707766"
+2024-12-22 03:03:05,924 INFO    DatagramEncryptorBcrypt.cpp    ExitGames::Photon::Internal::Encryption::DatagramEncryptor::DatagramEncryptor() 42    Encryptor initialized
+2024-12-22 03:03:05,924 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::stopConnection() 277   Stopping connection
+2024-12-22 03:03:05,959 INFO    PeerBase.cpp                   ExitGames::Photon::Internal::PeerBase::connect()             116   address: 123.206.109.115:5055
+2024-12-22 03:03:05,960 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::stopConnection() 277   Stopping connection
+2024-12-22 03:03:06,015 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onStatusChanged()          1988  connected to masterserver
+2024-12-22 03:03:06,131 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 231, returnCode: 0 {223=0, 221="Anvfks5UHgWefm350YYUeArNoNSvSOINrdrv/66XgXFQrbjq3TiJngRvdVqHJHizIH2EdnsARBArlqNVFjIlpSUWbRY4Zu/9E+kkFLryxfd8BV9pIoZF8lQ/LJBDSPpbn1LUYITTPqRj+qS2d6fnRLaN9577+X4tgXpU3DSJPGn7UtW64u1VG7//oVS61/SoUWhC/sIaAI4YJjovWCGMBbc6vM8woMkemBnEi8xwa79dPoF7QDcKDiZOHFgvhTox626Zu04nP/gSke8AW778eLvGBygIiAWcU+eII2BSvQ6rH+eZJCUUMMnhl3K3H7U4XKlBQsKRDWU5aJtaQHTbqL07fOrPx5K6L28FxF4W+AK1ft6aS1Q3rDx4KnCq7FYmqg=="}
+2024-12-22 03:03:06,131 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1560  Server returned secret
+2024-12-22 03:03:06,132 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 226
+Log label attached to new layer.
+2024-12-22 03:03:06,165 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 229, returnCode: 0
+2024-12-22 03:03:06,165 INFO    Photon_lib.cpp                 PhotonLib::connectReturn()                                   318   connected to cluster default of region cn
+connected to cluster default
+Connected to Photon successfully. Switching to MainScene.
+2024-12-22 03:03:06,255 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 230
+Log label attached to new layer.
+Joining or creating room...
+2024-12-22 03:03:19,095 INFO    EnetPeer.cpp                   ExitGames::Photon::Internal::EnetPeer::execute()             1175  Info: Server sent disconnect because of a timeout. PeerId: 31271   RTT/Variance: 19/36
+2024-12-22 03:03:19,101 ERROR   Photon_lib.cpp                 PhotonLib::connectionErrorReturn()                           178   code: 1041
+received connection error 1041
+Failed to connect to Photon: Connection error: 1041
+2024-12-22 03:03:19,101 INFO    Photon_lib.cpp                 PhotonLib::connectionErrorReturn()                           198   Retrying to connect... Attempt 1
+Retrying to connect... Attempt 1
+2024-12-22 03:03:19,102 INFO    Photon_lib.cpp                 PhotonLib::disconnectReturn()                                373   disconnected
+disconnected
+2024-12-22 03:03:21,111 INFO    PeerBase.cpp                   ExitGames::Photon::Internal::PeerBase::connect()             116   address: wss://ns.photonengine.cn:19093
+2024-12-22 03:03:21,111 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::startConnection() 108   Connecting to host: ns.photonengine.cn, port: 19093, secure: 1, path: /?libversion=5.0.12.0&sid=16&app=558bddbb2dda4767ad341ea68fdec86e
+2024-12-22 03:03:21,112 INFO    Photon_lib.cpp                 PhotonLib::connectToPhoton()                                 624   Attempting to connect to Photon...
+Attempting to connect to Photon...
+2024-12-22 03:03:21,229 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::connectAndReceive() 215   Succesfully upgraded to websocket protocol
+2024-12-22 03:03:21,230 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::connectAndReceive() 229   Connected
+2024-12-22 03:03:21,294 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onStatusChanged()          1978  connected to nameserver
+2024-12-22 03:03:21,394 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 220, returnCode: 0
+2024-12-22 03:03:21,396 INFO    Peer.cpp                       ExitGames::LoadBalancing::Peer::opAuthenticateOnce()         207   OperationRequest - operationCode: 231 {224="558bddbb-2dda-4767-ad34-1ea68fdec86e", 220="1.0", 210="cn", 225="36723688", 193=13, 195=0}
+2024-12-22 03:03:21,495 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 231, returnCode: 0 {196="default", 230="123.206.109.115:5055", 221="AkT73KRMGJ3Betk93UAsSV3UZP1MtXRHOxPGC68P7VAEn5INan5BUcNUNvAwkPcabIEcye8Df1WPz6CziitT7/HBz1Abg3xGC4TmWds1Vpu7wsCUcC0F2f2532YBPiOU27Cj8aFfs1JAJVF+g37dmwD+kGBP7NtFw3qla3SiXQN4nstB0WgiLqrT5v7oOg9EAN0Mqfr7SpZ5e+r2n2fqwmoxhSRSHVQW5FJOFTPen2ArNDFHC5sp/vg6ybZBwwCr7+ZnYQa7PWvlkUc+g9q3U3bsLfWcWNM1U5ma9neZ6JkWdlFTNmpkpDJHlu7mcJ8civPg6CxGcRSV8v0I/TNosOE5hYVl1sorT5v1LCG7utOuEdzxCbPgYQiErex+bgDdFg==", 225="36723688", 192={0=13, 1=[108, 83, 114, 191, 146, 154, 22, 66, 233, 247, 7, 13, 82, 142, 243, 49, 17, 23, 30, 69, 247, 2, 39, 84, 80, 198, 67, 243, 15, 96, 63, 229]}}
+2024-12-22 03:03:21,495 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1560  Server returned secret
+2024-12-22 03:03:21,496 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1619  Setting userID sent by server: "36723688"
+2024-12-22 03:03:21,496 INFO    DatagramEncryptorBcrypt.cpp    ExitGames::Photon::Internal::Encryption::DatagramEncryptor::DatagramEncryptor() 42    Encryptor initialized
+2024-12-22 03:03:21,497 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::stopConnection() 277   Stopping connection
+2024-12-22 03:03:21,529 INFO    PeerBase.cpp                   ExitGames::Photon::Internal::PeerBase::connect()             116   address: 123.206.109.115:5055
+2024-12-22 03:03:21,530 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::stopConnection() 277   Stopping connection
+2024-12-22 03:03:21,886 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onStatusChanged()          1988  connected to masterserver
+2024-12-22 03:03:21,887 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 231, returnCode: 0 {223=0, 221="Aure6oGh5LyMleWtfO5aecVG/tyrpvEYa5j4Q7ZoFkIbwIAqp5stFPHKhhFex3sI7KsPBkE2pVewunfrXVlEv9MUm0C0kZ1Gn5kDY0JtAz10UTeo2FWk+1lJlpQwVAecfyNU86mymlAhH4Pg6z79MTkd4laj1vdEycXpd2XyLokr39nYTGsLxWrhp6eNzuuyB0THvy+rotFKFzV5622vft8ct/jJg4ABfdIPy3x5+UdYRyYkgV5wLA2lCm3erWro+yOuHDLKMQG+6/DJ+noyb2NcIUvXNcMNhZIcX9ssGKCJ+IkN3Qx6holaDSgviTP6zW53Fr/ELJdxansxOaRxyFUHyvejQRhxL0R7W+aC/viyGiuJ5FzX2t5HcJ5BkM8lmA=="}
+2024-12-22 03:03:21,887 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1560  Server returned secret
+2024-12-22 03:03:21,887 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 226
+Log label attached to new layer.
+2024-12-22 03:03:21,985 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 229, returnCode: 0
+2024-12-22 03:03:21,985 INFO    Photon_lib.cpp                 PhotonLib::connectReturn()                                   318   connected to cluster default of region cn
+connected to cluster default
+Connected to Photon successfully. Switching to MainScene.
+2024-12-22 03:03:21,986 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 230
+Log label attached to new layer.
+Joining or creating room...
+2024-12-22 03:03:23,651 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 226
+2024-12-22 03:03:23,851 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 226, returnCode: 0
+2024-12-22 03:03:23,851 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1560  Server returned secret
+2024-12-22 03:03:23,952 INFO    PeerBase.cpp                   ExitGames::Photon::Internal::PeerBase::connect()             116   address: 49.234.55.23:5056
+2024-12-22 03:03:24,451 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onStatusChanged()          1983  connected to gameserver
+2024-12-22 03:03:24,451 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 231, returnCode: 0 {}
+2024-12-22 03:03:24,651 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 226, returnCode: 0
+2024-12-22 03:03:24,652 INFO    Photon_lib.cpp                 PhotonLib::joinOrCreateRoomReturn()                          445   
+2024-12-22 03:03:24,652 INFO    Photon_lib.cpp                 PhotonLib::joinOrCreateRoomReturn()                          455   localPlayerNr: 2
+... room DefaultRoom has been entered
+regularly sending dummy events now
+Room joined successfully.
+Log label attached to new layer.
+2024-12-22 03:03:24,653 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 255
+2024-12-22 03:03:24,653 INFO    Photon_lib.cpp                 PhotonLib::joinRoomEventAction()                             242   user36723688 joined the game
+player 2 user36723688
+Player count reached 2. Starting game...
+Added initial card locally.
+Player drew initial card.
+Added initial card locally.
+Player drew initial card.
+Added initial card locally.
+Player drew initial card.
+Handled TURN_START event. Switched turn.
+Added initial card locally.
+Player drew a card.
+Handled TURN_START event. Switched turn.
+Sent custom event with eventCode: 1
+Sent PLAY_CARD event with playerNumber: 2, cardNumber: 69565
+Player does not have enough mana to play the card.
+Sent custom event with eventCode: 3
+Sent TURN_START event.
+Switched turn.
+Handled TURN_START event. Switched turn.
+Added initial card locally.
+Player drew a card.
+Handled TURN_START event. Switched turn.
+Sent custom event with eventCode: 3
+Sent TURN_START event.
+Switched turn.
+Handled TURN_START event. Switched turn.
+Added initial card locally.
+Player drew a card.
+Handled TURN_START event. Switched turn.
+Sent custom event with eventCode: 3
+Sent TURN_START event.
+Switched turn.
+Handled TURN_START event. Switched turn.
+Added initial card locally.
+Player drew a card.
+Handled TURN_START event. Switched turn.
+Sent custom event with eventCode: 3
+Sent TURN_START event.
+Switched turn.
+Handled TURN_START event. Switched turn.
+Added initial card locally.
+Player drew a card.
+Handled TURN_START event. Switched turn.
+Sent custom event with eventCode: 1
+Sent PLAY_CARD event with playerNumber: 2, cardNumber: 12347
+Player does not have enough mana to play the card.
+Sent custom event with eventCode: 1
+Sent PLAY_CARD event with playerNumber: 2, cardNumber: 12350
+Player does not have enough mana to play the card.
+2024-12-22 03:04:06,562 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 254
+2024-12-22 03:04:06,563 INFO    Photon_lib.cpp                 PhotonLib::leaveRoomEventAction()                            267   
+player 1 has left the game
+Sent custom event with eventCode: 3
+Sent TURN_START event.
+Switched turn.
+Handled TURN_START event. Switched turn.
+Log label attached to new layer.
+Connecting to Photon...
+2024-12-22 03:06:14,804 INFO    PeerBase.cpp                   ExitGames::Photon::Internal::PeerBase::connect()             116   address: wss://ns.photonengine.cn:19093
+2024-12-22 03:06:14,808 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::startConnection() 108   Connecting to host: ns.photonengine.cn, port: 19093, secure: 1, path: /?libversion=5.0.12.0&sid=16&app=558bddbb2dda4767ad341ea68fdec86e
+2024-12-22 03:06:14,809 INFO    Photon_lib.cpp                 PhotonLib::connectToPhoton()                                 624   Attempting to connect to Photon...
+Attempting to connect to Photon...
+2024-12-22 03:06:15,154 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::connectAndReceive() 215   Succesfully upgraded to websocket protocol
+2024-12-22 03:06:15,155 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::connectAndReceive() 229   Connected
+2024-12-22 03:06:15,162 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onStatusChanged()          1978  connected to nameserver
+2024-12-22 03:06:15,214 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 220, returnCode: 0
+2024-12-22 03:06:15,214 INFO    Peer.cpp                       ExitGames::LoadBalancing::Peer::opAuthenticateOnce()         207   OperationRequest - operationCode: 231 {224="558bddbb-2dda-4767-ad34-1ea68fdec86e", 220="1.0", 210="cn", 225="36897380", 193=13, 195=0}
+2024-12-22 03:06:15,362 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 231, returnCode: 0 {196="default", 230="123.206.109.115:5055", 221="Al/joUJwGTWcWmwBg//QrsMXNNbWdl3azKu7ltf4/iiJs/JkmqU8pOJW36ZL69hQAyyFqHzWYq/EXS+hx76SrIh/CMQac10w271ri0KiaL8jpf3FNx1/MVeU6wAhOSp6m82Y4lTLm4f7DAtMhDzdmTKdtkxHcL6dKE/L0Jvc3K6UeOC01zPjM5w5wAl7XUT82uu0O+/yRLwdFQ84B1oCzF5sC2w3DPOO5Zix1LjIHHD5p314NdbnYGe61sBbGNgdk2Anfrlar6tvMF86RU4pzfNCnBkaViPHl3AJNJhhQBpIKTRsulQDuAeoQikY3WgGWZ38ijBbYjdL5MaNbbgzD3YwRRitB5GzXF4YRzkNJYVDMq+hAFyOdidd1lypKG33Qg==", 225="36897380", 192={0=13, 1=[240, 68, 228, 193, 243, 192, 35, 227, 172, 125, 46, 19, 187, 10, 7, 109, 138, 70, 12, 228, 160, 220, 220, 211, 138, 74, 105, 91, 136, 56, 31, 180]}}
+2024-12-22 03:06:15,363 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1560  Server returned secret
+2024-12-22 03:06:15,363 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1619  Setting userID sent by server: "36897380"
+2024-12-22 03:06:15,363 INFO    DatagramEncryptorBcrypt.cpp    ExitGames::Photon::Internal::Encryption::DatagramEncryptor::DatagramEncryptor() 42    Encryptor initialized
+2024-12-22 03:06:15,363 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::stopConnection() 277   Stopping connection
+2024-12-22 03:06:15,397 INFO    PeerBase.cpp                   ExitGames::Photon::Internal::PeerBase::connect()             116   address: 123.206.109.115:5055
+2024-12-22 03:06:15,398 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::stopConnection() 277   Stopping connection
+2024-12-22 03:06:15,453 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onStatusChanged()          1988  connected to masterserver
+2024-12-22 03:06:15,570 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 231, returnCode: 0 {223=0, 221="Alf1cGIU8GdIO8MLzjMXGBYFvkR2X/AsdulvC4J9pb2PIjh5GruI81jxcVPNOpO1BJC/8FkJH+280mcLSXnxnAKHo+qnXHkBiEBzKoWVYltuSX61l2JUkZzuLZbpkQ82oSeEv3NEwEyxyFRwHwICszxMvp1YjrnMHzpgIlQtyP/o11LJKRLfN8L7IH7MCJF7VDGd+SNusCUt2vxbEMglg5/WL/3xYrjlSW8XajntKtqwYbj7cCzj2v05Kmbz4oTKRomrhd9ajdN4n0Zhk+M4XukfFdyAKxk4XqmihOURzUCMw2WqbAeEHqy0iPoYYgR3gSZCN1sD2NrNrLVECfg4fgVXKfabBzrZhpM7VpWEBDNvMwgbs6kWs77xaCmO9T5CdQ=="}
+2024-12-22 03:06:15,570 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1560  Server returned secret
+2024-12-22 03:06:15,571 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 226
+Log label attached to new layer.
+2024-12-22 03:06:15,586 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 229, returnCode: 0
+2024-12-22 03:06:15,586 INFO    Photon_lib.cpp                 PhotonLib::connectReturn()                                   318   connected to cluster default of region cn
+connected to cluster default
+Connected to Photon successfully. Switching to MainScene.
+2024-12-22 03:06:15,683 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 230
+Log label attached to new layer.
+Joining or creating room...
+2024-12-22 03:06:19,953 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 226, returnCode: 0
+2024-12-22 03:06:19,953 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1560  Server returned secret
+2024-12-22 03:06:20,152 INFO    PeerBase.cpp                   ExitGames::Photon::Internal::PeerBase::connect()             116   address: 110.40.182.22:5056
+2024-12-22 03:06:20,552 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onStatusChanged()          1983  connected to gameserver
+2024-12-22 03:06:20,553 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 231, returnCode: 0 {}
+2024-12-22 03:06:20,652 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 226, returnCode: 0
+2024-12-22 03:06:20,653 INFO    Photon_lib.cpp                 PhotonLib::joinOrCreateRoomReturn()                          445   
+2024-12-22 03:06:20,653 INFO    Photon_lib.cpp                 PhotonLib::joinOrCreateRoomReturn()                          455   localPlayerNr: 1
+... room DefaultRoom has been entered
+regularly sending dummy events now
+Room joined successfully.
+2024-12-22 03:06:20,654 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 255
+2024-12-22 03:06:20,654 INFO    Photon_lib.cpp                 PhotonLib::joinRoomEventAction()                             242   user36897378 joined the game
+player 1 user36897378
+2024-12-22 03:06:22,253 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 255
+2024-12-22 03:06:22,253 INFO    Photon_lib.cpp                 PhotonLib::joinRoomEventAction()                             242   user36899017 joined the game
+player 2 user36899017
+Log label attached to new layer.
+Player count reached 2. Starting game...
+Added initial card locally.
+Player drew initial card.
+Added initial card locally.
+Player drew initial card.
+Added initial card locally.
+Player drew initial card.
+Sent custom event with eventCode: 3
+Sent TURN_START event.
+Added initial card locally.
+Player drew a card.
+Handled TURN_START event. Switched turn.
+Sent custom event with eventCode: 3
+Sent TURN_START event.
+Switched turn.
+Handled TURN_START event. Switched turn.
+Added initial card locally.
+Player drew a card.
+Handled TURN_START event. Switched turn.
+Sent custom event with eventCode: 3
+Sent TURN_START event.
+Switched turn.
+Handled TURN_START event. Switched turn.
+Added initial card locally.
+Player drew a card.
+Handled TURN_START event. Switched turn.
+Sent custom event with eventCode: 1
+Sent PLAY_CARD event with playerNumber: 1, cardNumber: 69565
+Log label attached to new layer.
+Connecting to Photon...
+2024-12-22 03:12:42,262 INFO    PeerBase.cpp                   ExitGames::Photon::Internal::PeerBase::connect()             116   address: wss://ns.photonengine.cn:19093
+2024-12-22 03:12:42,263 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::startConnection() 108   Connecting to host: ns.photonengine.cn, port: 19093, secure: 1, path: /?libversion=5.0.12.0&sid=16&app=558bddbb2dda4767ad341ea68fdec86e
+2024-12-22 03:12:42,263 INFO    Photon_lib.cpp                 PhotonLib::connectToPhoton()                                 624   Attempting to connect to Photon...
+Attempting to connect to Photon...
+2024-12-22 03:12:42,534 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::connectAndReceive() 215   Succesfully upgraded to websocket protocol
+2024-12-22 03:12:42,535 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::connectAndReceive() 229   Connected
+2024-12-22 03:12:42,544 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onStatusChanged()          1978  connected to nameserver
+2024-12-22 03:12:42,693 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 220, returnCode: 0
+2024-12-22 03:12:42,694 INFO    Peer.cpp                       ExitGames::LoadBalancing::Peer::opAuthenticateOnce()         207   OperationRequest - operationCode: 231 {224="558bddbb-2dda-4767-ad34-1ea68fdec86e", 220="1.0", 210="cn", 225="37284839", 193=13, 195=0}
+2024-12-22 03:12:42,844 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 231, returnCode: 0 {196="default", 230="123.206.109.115:5055", 221="AtgjktDQFb8GXwoDTezTEaF7BsHW+kiM++ayPwTg7cVVFnxpHNeQMEeaG7tG4c/V4i3T6HH/fAELbJ7sd12RYSuLhpGyZUasrM+mTILbV+SDX2eaAAEc4Xjs/JobRCmPpASGqoB5VMl9E4Hh/lPIqbeNxEIgQJ/aao6WxOqk5/TSZvIrs1kzr3viUXaCZBrvRQxfyzD6m1fAjNFia4DrjgpeiO3THp2ehIJ39fBjP9hyTFZqXP5cQ6wuYpUuVz7AynjcyPUP2Hcxfx0wnqRIuPhwHGdj1mZLU3dxAnK7HeDNN7iQI3yvmwcYVys8UuFbFJWvHnj/1vPmAFSoosnhtBdNNjwtIgoDKMPFuqAQuX99fKY/GtB8/cry9Gq9lRV7dw==", 225="37284839", 192={0=13, 1=[46, 11, 42, 24, 75, 114, 249, 223, 234, 224, 140, 221, 96, 217, 136, 226, 113, 203, 69, 246, 108, 91, 27, 225, 210, 34, 46, 55, 12, 170, 74, 70]}}
+2024-12-22 03:12:42,844 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1560  Server returned secret
+2024-12-22 03:12:42,844 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1619  Setting userID sent by server: "37284839"
+2024-12-22 03:12:42,845 INFO    DatagramEncryptorBcrypt.cpp    ExitGames::Photon::Internal::Encryption::DatagramEncryptor::DatagramEncryptor() 42    Encryptor initialized
+2024-12-22 03:12:42,845 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::stopConnection() 277   Stopping connection
+2024-12-22 03:12:42,876 INFO    PeerBase.cpp                   ExitGames::Photon::Internal::PeerBase::connect()             116   address: 123.206.109.115:5055
+2024-12-22 03:12:42,877 INFO    WebSocketWindows.cpp           ExitGames::Photon::Internal::WebSocketConnect::stopConnection() 277   Stopping connection
+2024-12-22 03:12:43,048 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onStatusChanged()          1988  connected to masterserver
+2024-12-22 03:12:43,049 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 231, returnCode: 0 {223=0, 221="AqLnpySTIBmbnRg9wvoeA6gJDwjL7MPbFu8NfSK0sV5SacU74z7nDy/4KVmlXtCs06PSmxzCPnWJsTN95eHLM2ey45QIZehAGwIlCVNWxJSyb+nLucAINLCjfpAPLj+U23Ou3mxBG/3ytbrx5z/vsG6FIg4vKGsBcBokUPNUF0OytSqhVnpkkCwXUYXz4Gyrx4sF6YTkYhtGk7qRXHXEsOwIz1me6a10BwTXKsQpXpfln1cGF78ggMTPqagIWKpFH62Zp+PJp+Ymg2Vxi7ROk5qgLnVD03caKwU+BbLMN1SwTfCqD7KeUPDslM5B+n2aXPzL6v34ddxwuxDpPbV//jLzu/F81gZBYgYdXiFs4SJ/pz4RgrkqNFNSMP6ZcWYssw=="}
+2024-12-22 03:12:43,049 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1560  Server returned secret
+2024-12-22 03:12:43,049 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 226
+Log label attached to new layer.
+2024-12-22 03:12:43,065 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 229, returnCode: 0
+2024-12-22 03:12:43,065 INFO    Photon_lib.cpp                 PhotonLib::connectReturn()                                   318   connected to cluster default of region cn
+connected to cluster default
+Connected to Photon successfully. Switching to MainScene.
+2024-12-22 03:12:43,158 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 230
+Log label attached to new layer.
+Joining or creating room...
+2024-12-22 03:12:47,343 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 226
+2024-12-22 03:12:47,345 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 229
+2024-12-22 03:12:47,443 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 226, returnCode: 0
+2024-12-22 03:12:47,445 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1560  Server returned secret
+2024-12-22 03:12:47,628 INFO    PeerBase.cpp                   ExitGames::Photon::Internal::PeerBase::connect()             116   address: 123.207.216.222:5056
+2024-12-22 03:12:48,028 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onStatusChanged()          1983  connected to gameserver
+2024-12-22 03:12:48,028 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 231, returnCode: 0 {}
+2024-12-22 03:12:48,127 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onOperationResponse()      1555  OperationResponse - operationCode: 226, returnCode: 0
+2024-12-22 03:12:48,128 INFO    Photon_lib.cpp                 PhotonLib::joinOrCreateRoomReturn()                          445   
+2024-12-22 03:12:48,128 INFO    Photon_lib.cpp                 PhotonLib::joinOrCreateRoomReturn()                          455   localPlayerNr: 2
+... room DefaultRoom has been entered
+regularly sending dummy events now
+Room joined successfully.
+Log label attached to new layer.
+2024-12-22 03:12:48,129 INFO    Client.cpp                     ExitGames::LoadBalancing::Client::onEvent()                  2102  EventData - code: 255
+2024-12-22 03:12:48,129 INFO    Photon_lib.cpp                 PhotonLib::joinRoomEventAction()                             242   user37284839 joined the game
+player 2 user37284839
+Player count reached 2. Starting game...
+Added initial card locally.
+Player drew initial card.
+Added initial card locally.
+Player drew initial card.
+Added initial card locally.
+Player drew initial card.
+Handled TURN_START event. Switched turn.
+Added initial card locally.
+Player drew a card.
+Handled TURN_START event. Switched turn.
+Sent custom event with eventCode: 3
+Sent TURN_START event.
+Switched turn.
+Handled TURN_START event. Switched turn.
+Added initial card locally.
+Player drew a card.
+Handled TURN_START event. Switched turn.

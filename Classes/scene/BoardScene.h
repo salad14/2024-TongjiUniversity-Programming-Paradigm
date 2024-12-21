@@ -15,7 +15,7 @@ USING_NS_CC;
 
 class cardSprite : public cocos2d::Sprite {
 public:
-    static cardSprite* createWithCard(const std::shared_ptr<CardBase>& card, const Size& desiredSize = Size(100, 150)) {
+    static cardSprite* createWithCard(const std::shared_ptr<CardBase>& card, const Size& desiredSize = Size(200, 250)) {
         // 构造对象
         cardSprite* sprite = new (std::nothrow) cardSprite();
         if (sprite && sprite->initWithFile("cards/" + std::to_string(card->dbfId) + ".png")) {
