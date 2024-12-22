@@ -37,6 +37,8 @@ public:
         return nullptr;
     }
 
+    void getDamage(int damage) { this->currentHealth -= damage; }
+
 public:
     std::shared_ptr<CardBase> card;
     int currentHealth = 0;
@@ -77,7 +79,7 @@ private:
     cocos2d::DrawNode* dropArea;
 
     // 本地玩家
-    int localPlayerNumber;
+    int localPlayerNumber; // 1, 2
 
     players::Player* player1;
     players::Player* player2;
@@ -151,23 +153,29 @@ private:
     void updateCardStats(cardSprite* card);
     void returnCardToHand(cardSprite* card);
     void add_NewCardToBattlefield(int playerNumber, int cardNumber);
-    void add_HandCardToBattlefield(int playerNumber, cardSprite* minion);
+    void add_HandCardToBattlefield(cardSprite* minion);
     void createAttackIndicator(const Vec2& startPos);
-    void attackmove(int attackerIndex, int defenderIndex);
-    void handleMinionAttackMinion(int attacker, int defender); // 改为index索引用来绑定  方便双方同时处理 需要保证两边同步index相同
+    void attackmove(PlayerNumber player, int attackerIndex, int defenderIndex);
+    // void handleMinionAttackMinion(int attacker, int defender); // 改为index索引用来绑定  方便双方同时处理 需要保证两边同步index相同
     void removeCardWithAnimation(cardSprite* card);
-    void handleMinionAttackHero(int attackMinion); // 修改为index索引
+    void handleMinionAttackHero(); // 纯UI函数
+
     // 事件发送
     void sendPlay_MinionCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
     void sendPlay_SpellCardEvent(PlayerNumber playerNumber, CardNumber dbfID);
-    void sendAttackEvent(PlayerNumber attackPlayer, int attackerIndex, int defenderIndex, int damage);
-    void sendDrawCardEvent(PlayerNumber playerNumber);
+    void sendSpellAttackEvent(PlayerNumber attackPlayer, int defenderIndex, int dbfId);
+    //void sendDrawCardEvent(PlayerNumber playerNumber);
+    void sendMinionAttackEvent(PlayerNumber playerNumber, int attackerIndex, int defenderIndex);
     void sendTurnStartEvent();
 
     // Photon 事件处理
     void handle_PlayMinionCard(const ExitGames::Common::Hashtable& parameters);
     void handle_PlaySpellCard(const ExitGames::Common::Hashtable& parameters);
-    void handleTurnStart(const ExitGames::Common::Hashtable& parameters);
+    void handle_SpellAttackEvent(const ExitGames::Common::Hashtable& parameters);
+    //void handle_DrawCardEvent(const ExitGames::Common::Hashtable& parameters);
+    void handle_MinionAttackEvent(const ExitGames::Common::Hashtable& parameters);  
+    void handle_TurnStart(const ExitGames::Common::Hashtable& parameters);
+    
 
     // 游戏结束
     void endGame(players::Player* winner);

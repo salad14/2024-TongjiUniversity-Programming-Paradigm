@@ -18,40 +18,40 @@
 #include <codecvt>
 #include <sstream>
 
-// Ê¹ÓÃ cocos2d ÃüÃû¿Õ¼ä
+// Ê¹ï¿½ï¿½ cocos2d ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½
 USING_NS_CC;
 
-// Ê¹ÓÃÃüÃû¿Õ¼ä±ðÃû¼ò»¯ Photon SDK µÄÀàÐÍÒýÓÃ
+// Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Photon SDK ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 namespace EG = ExitGames::Common;
 
-// ¶¨Òå cardNumber Îª int
+// ï¿½ï¿½ï¿½ï¿½ cardNumber Îª int
 typedef int CardNumber;
 
-// ¶¨ÒåÍæ¼Ò±àºÅÀàÐÍ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 typedef int PlayerNumber;
 
-// ´´½¨³¡¾°
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 Scene* BoardScene::createScene() {
     return BoardScene::create();
 }
 
-// ´òÓ¡¼ÓÔØ´íÎóÐÅÏ¢
+// ï¿½ï¿½Ó¡ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 static void problemLoading(const char* filename) {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in BoardScene.cpp\n");
 }
 
-// ³õÊ¼»¯
+// ï¿½ï¿½Ê¼ï¿½ï¿½
 bool BoardScene::init() {
     if (!Scene::init()) {
         return false;
     }
 
-    // ³õÊ¼»¯Õ½³¡¿¨ÅÆÈÝÆ÷
+    // ï¿½ï¿½Ê¼ï¿½ï¿½Õ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     localMinionCard.clear();
     oppentMinionCard.clear();
 
-    // »ñÈ¡È«¾Ö PhotonLib ÊµÀý
+    // ï¿½ï¿½È¡È«ï¿½ï¿½ PhotonLib Êµï¿½ï¿½
     photonLib = PhotonLib::getInstance();
     if (!photonLib) {
         CCLOG("Failed to get PhotonLib instance.");
@@ -59,28 +59,28 @@ bool BoardScene::init() {
         return false;
     }
 
-    // »ñÈ¡È«¾Ö CocosUIListener ÊµÀý
+    // ï¿½ï¿½È¡È«ï¿½ï¿½ CocosUIListener Êµï¿½ï¿½
     cocosUIListener = CocosUIListener::getInstance();
     if (!cocosUIListener) {
         CCLOG("Failed to get CocosUIListener instance.");
         return false;
     }
 
-    // ´´½¨Ò»¸öÓÃÓÚUIµÄLayer£¨Èç¹ûMainSceneÖÐÒÑ¾­ÓÐ£¬¿ÉÒÔÊ¡ÂÔ£©
+    // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½UIï¿½ï¿½Layerï¿½ï¿½ï¿½ï¿½ï¿½MainSceneï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Ê¡ï¿½Ô£ï¿½
     auto uiLayer = Layer::create();
-    this->addChild(uiLayer, 100); // È·±£UI²ãÔÚ×îÉÏ²ã
+    this->addChild(uiLayer, 100); // È·ï¿½ï¿½UIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï²ï¿½
 
-    // ½« CocosUIListener ¸½¼Óµ½ UI Layer ÉÏ
-    cocosUIListener->attachToLayer(uiLayer, Vec2(100, 100)); // ¸ù¾ÝÐèÒªµ÷ÕûÎ»ÖÃ
+    // ï¿½ï¿½ CocosUIListener ï¿½ï¿½ï¿½Óµï¿½ UI Layer ï¿½ï¿½
+    cocosUIListener->attachToLayer(uiLayer, Vec2(100, 100)); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 
-    // ÉèÖÃ PhotonLib µÄ×Ô¶¨ÒåÊÂ¼þ»Øµ÷
+    // ï¿½ï¿½ï¿½ï¿½ PhotonLib ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½Øµï¿½
     photonLib->setCustomEventCallback(CC_CALLBACK_2(BoardScene::onPhotonEvent, this));
 
-    // »ñÈ¡ÆÁÄ»³ß´çºÍÔ­µã
+    // ï¿½ï¿½È¡ï¿½ï¿½Ä»ï¿½ß´ï¿½ï¿½Ô­ï¿½ï¿½
     const Size visibleSize = Director::getInstance()->getVisibleSize();
     const Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    // Ìí¼Ó±³¾°Í¼Æ¬
+    // ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½Í¼Æ¬
     auto title_sprite = Sprite::create("board.png");
     if (title_sprite == nullptr) {
         problemLoading("board.png");
@@ -88,14 +88,14 @@ bool BoardScene::init() {
         return false;
     }
     else {
-        // ÉèÖÃÍ¼Æ¬µÄ³ß´çÎª´°¿ÚµÄ³ß´ç
+        // ï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½Ä³ß´ï¿½Îªï¿½ï¿½ï¿½ÚµÄ³ß´ï¿½
         title_sprite->setContentSize(visibleSize);
-        // ½«Í¼Æ¬µÄÎ»ÖÃµ÷ÕûÎª´°¿ÚµÄÖÐÐÄ
+        // ï¿½ï¿½Í¼Æ¬ï¿½ï¿½Î»ï¿½Ãµï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½
         title_sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
         this->addChild(title_sprite, 0);
     }
 
-    // ´´½¨·µ»Ø°´Å¥
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø°ï¿½Å¥
     auto cancel = MenuItemImage::create(
         "button/cancel.png",
         "button/cancelSelected.png",
@@ -107,16 +107,16 @@ bool BoardScene::init() {
     }
     else
     {
-        // Ê¹ÓÃµÚÒ»´ÎÌá¹©µÄ²ÎÊý
-        cancel->setPosition(Vec2(1940, 80)); // ÓëµÚÒ»´ÎÊµÏÖÒ»ÖÂ
+        // Ê¹ï¿½Ãµï¿½Ò»ï¿½ï¿½ï¿½á¹©ï¿½Ä²ï¿½ï¿½ï¿½
+        cancel->setPosition(Vec2(1940, 80)); // ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Êµï¿½ï¿½Ò»ï¿½ï¿½
     }
     auto menu = Menu::create(cancel, nullptr);
 
-    // Ìí¼Ó²Ëµ¥
+    // ï¿½ï¿½ï¿½Ó²Ëµï¿½
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-    // ´´½¨´¥Ãþ¼àÌýÆ÷
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     auto listener = EventListenerTouchOneByOne::create();
     listener->setSwallowTouches(true);
     listener->onTouchBegan = CC_CALLBACK_2(BoardScene::onTouchBegan, this);
@@ -126,25 +126,25 @@ bool BoardScene::init() {
 
     selectedCard = nullptr;
 
-    // ´´½¨ÒÆ¶¯¼àÌýÆ÷
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseMove = CC_CALLBACK_1(BoardScene::onMouseMove, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
     hoveredCard = nullptr;
 
-    // ´´½¨ÖÐÑë³öÅÆÇøÓò
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     createDropArea();
 
-    // ³õÊ¼»¯Íæ¼Ò
+    // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½
     initPlayers();
 
-    // ´´½¨Íæ¼ÒÐÅÏ¢UI
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢UI
     createPlayerUI();
 
     this->scheduleUpdate();
 
-    distributeInitialHands(); // Í¨¹ýÊÂ¼þ·Ö·¢³éÅÆ
+    distributeInitialHands(); // Í¨ï¿½ï¿½ï¿½Â¼ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½
 
     if (localPlayerNumber == 1)
     {
@@ -153,28 +153,28 @@ bool BoardScene::init() {
     return true;
 }
 
-// ´´½¨µÐ·½Ëæ´Ó£¨½ö¹©²âÊÔ£¬³õÊ¼»¯ÁË4ÕÅËæ´ÓÅÆÔÚ³¡ÉÏ£©
+// ï¿½ï¿½ï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú³ï¿½ï¿½Ï£ï¿½
 //void BoardScene::initEnemyCards() {
-//    // ³õÊ¼»¯4ÕÅµÐ·½Ëæ´Ó¿¨ÅÆ
+//    // ï¿½ï¿½Ê¼ï¿½ï¿½4ï¿½ÅµÐ·ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½
 //    for (int i = 0; i < 4; i++) {
 //        auto cardData = std::make_shared<MinionCard>();
-//        cardData->dbfId = 67; // Ê¾Àý¿¨ÅÆID£¬È·±£ 67.png ´æÔÚÓÚ Resources/cards/
-//        // ¶¨Òå¹Ì¶¨´óÐ¡£¨¸ù¾ÝÐèÒªµ÷Õû£©
+//        cardData->dbfId = 67; // Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½È·ï¿½ï¿½ 67.png ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Resources/cards/
+//        // ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //        Size desiredSize(120, 180);
 //
-//        // Ê¹ÓÃÐÞÕýºóµÄ createWithCard ·½·¨´´½¨¿¨ÅÆ¾«Áé£¬²¢´«ÈëÆÚÍû´óÐ¡
+//        // Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ createWithCard ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¾ï¿½ï¿½é£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
 //        auto card = cardSprite::createWithCard(cardData, desiredSize);
 //        if (card) {
-//            // ÉèÖÃ¿¨ÅÆµÄËõ·Å£¨Èç¹ûÐèÒª½øÒ»²½µ÷Õû£©
-//            card->setScale(0.8f); // Èç¹ûÒÑÔÚ createWithCard ÖÐµ÷Õû¹ý´óÐ¡£¬¿ÉÊ¡ÂÔ
+//            // ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½Å£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//            card->setScale(0.8f); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ createWithCard ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½Ê¡ï¿½ï¿½
 //
-//            // Ìí¼ÓÊôÐÔ±êÇ©£¨ÑªÁ¿5£¬¹¥»÷Á¦1£¬·ÑÓÃ1£©
+//            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½Ç©ï¿½ï¿½Ñªï¿½ï¿½5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½
 //            addCardStats(card, 5, 1, 1);
 //
-//            // Ìí¼Óµ½µÐ·½ÒÑ³öÅÆ¿¨ÅÆÁÐ±í
+//            // ï¿½ï¿½ï¿½Óµï¿½ï¿½Ð·ï¿½ï¿½Ñ³ï¿½ï¿½Æ¿ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
 //            oppentMinionCard.push_back(card);
 //
-//            // Ìí¼Óµ½³¡¾°ÖÐ£¬ÉèÖÃ z-order Îª 50£¨¸ù¾ÝÐèÒªµ÷Õû£©
+//            // ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ z-order Îª 50ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //            this->addChild(card, 50);
 //        }
 //        else {
@@ -185,13 +185,13 @@ bool BoardScene::init() {
 //
 //}
 
-// Ìí¼Ó¿¨ÅÆµÄÊôÐÔ±êÇ©
+// ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½Ô±ï¿½Ç©
 void BoardScene::addCardStats(cardSprite* newcard) {
     if (!newcard) return;
     // auto minionCard = std::dynamic_pointer_cast<MinionCard>(newcard->card);
     // if (!minionCard) throw std::runtime_error("Attacker is not a minion card");
 
-    // ´´½¨²¢Ìí¼ÓÊôÐÔ±êÇ©
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½Ç©
     auto healthLabel = Label::createWithTTF(std::to_string(newcard->currentHealth), "fonts/arial.ttf", 24);
     healthLabel->setPosition(Vec2(newcard->getContentSize().width - 20, 20));
     healthLabel->setName("healthLabel");
@@ -211,15 +211,15 @@ void BoardScene::addCardStats(cardSprite* newcard) {
     //newcard->addChild(costLabel);
 }
 
-// ¸üÐÂ¿¨ÅÆÉÏµÄÊôÐÔ±êÇ©
+// ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½Ô±ï¿½Ç©
 void BoardScene::updateCardStats(cardSprite* card)
 {
     if (!card) return;
-    // »ñÈ¡±êÇ©
+    // ï¿½ï¿½È¡ï¿½ï¿½Ç©
     auto healthLabel = dynamic_cast<Label*>(card->getChildByName("healthLabel"));
     auto attackLabel = dynamic_cast<Label*>(card->getChildByName("attackLabel"));
     //auto costLabel = dynamic_cast<Label*>(newcard->getChildByName("costLabel"));
-    // ¸üÐÂ±êÇ©
+    // ï¿½ï¿½ï¿½Â±ï¿½Ç©
     if (healthLabel && card->currentHealth > 0) {
         healthLabel->setString(std::to_string(card->currentHealth));
     }
@@ -231,29 +231,29 @@ void BoardScene::updateCardStats(cardSprite* card)
     //}
 }
 
-// ·µ»ØÖ÷²Ëµ¥
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½
 void BoardScene::cancelCallback(Ref* pSender)
 {
-    // ¼ÓÔØµã»÷ÒôÐ§
+    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½Ð§
     audioPlayer("Music/ClickSoundEffect.mp3", false);
-    // Àë¿ª·¿¼ä
+    // ï¿½ë¿ªï¿½ï¿½ï¿½ï¿½
     photonLib->leaveRoom();
     cocosUIListener->writeString(EG::JString(L"Leaving room and returning to main menu."));
-    // ÇÐ»»µ½Ö÷²Ëµ¥
+    // ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½
     Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MainScene::createScene(), Color3B::WHITE));
 }
 
-// ´´½¨ÖÐÑë³öÅÆÇøÓò
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void BoardScene::createDropArea()
 {
     dropArea = DrawNode::create();
 
-    // »ñÈ¡ÆÁÄ»ÖÐÐÄµã
+    // ï¿½ï¿½È¡ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Äµï¿½
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     Vec2 center = Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
 
-    // »æÖÆ°ëÍ¸Ã÷µÄ¾ØÐÎÇøÓò
+    // ï¿½ï¿½ï¿½Æ°ï¿½Í¸ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Vec2 vertices[] =
     {
         Vec2(center.x - PUTOUT_CARD_REGION_HALF_X, center.y - PUTOUT_CARD_REGION_HALF_Y),
@@ -262,14 +262,14 @@ void BoardScene::createDropArea()
         Vec2(center.x - PUTOUT_CARD_REGION_HALF_X, center.y + PUTOUT_CARD_REGION_HALF_Y)
     };
 
-    Color4F fillColor(0.5f, 0.5f, 0.5f, 0.3f); // °ëÍ¸Ã÷»ÒÉ«
-    Color4F borderColor(1.0f, 1.0f, 1.0f, 0.8f); // °×É«±ß¿ò
+    Color4F fillColor(0.5f, 0.5f, 0.5f, 0.3f); // ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½É«
+    Color4F borderColor(1.0f, 1.0f, 1.0f, 0.8f); // ï¿½ï¿½É«ï¿½ß¿ï¿½
 
     dropArea->drawPolygon(vertices, 4, fillColor, 2, borderColor);
     this->addChild(dropArea, 1);
 }
 
-// ¶¨Òå checkDropArea º¯Êý
+// ï¿½ï¿½ï¿½ï¿½ checkDropArea ï¿½ï¿½ï¿½ï¿½
 void BoardScene::checkDropArea() {
     if (!selectedCard)
         return;
@@ -278,13 +278,13 @@ void BoardScene::checkDropArea() {
     Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height / 2);
     Vec2 spritePos = selectedCard->getPosition();
 
-    // ¼ì²éÊÇ·ñÔÚÍ¶·ÅÇøÓòÄÚ
+    // ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Í¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     bool inDropArea =
         abs(spritePos.x - center.x) <= PUTOUT_CARD_REGION_HALF_X &&
         abs(spritePos.y - center.y) <= PUTOUT_CARD_REGION_HALF_Y;
 }
 
-// Ãé×¼ Ñ¡Ôñ¹¥»÷¶ÔÏó
+// ï¿½ï¿½×¼ Ñ¡ï¿½ñ¹¥»ï¿½ï¿½ï¿½ï¿½ï¿½
 void BoardScene::createAttackIndicator(const Vec2& startPos) {
     if (attackIndicator) {
         attackIndicator->removeFromParent();
@@ -293,35 +293,45 @@ void BoardScene::createAttackIndicator(const Vec2& startPos) {
     attackIndicator = DrawNode::create();
     this->addChild(attackIndicator, 100);
 
-    // »æÖÆºìÉ«Ãé×¼È¦
+    // ï¿½ï¿½ï¿½Æºï¿½É«ï¿½ï¿½×¼È¦
     attackIndicator->drawCircle(startPos, 30, 0, 360, false, Color4F(1, 0, 0, 0.8f));
 }
 
-// ¹¥»÷¶¯»­£¨Í¨¹ýË÷ÒýÕÒ£©£¨µÐÎÒ¹«ÓÃ£©
-void BoardScene::attackmove(int attackerIndex, int defenderIndex) {
-    if (attackerIndex < 0 || attackerIndex >= localMinionCard.size() ||
-        defenderIndex < 0 || defenderIndex >= oppentMinionCard.size()) {
-        return;
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¹ï¿½ï¿½Ã£ï¿½ // Ä¬ï¿½ï¿½attackerï¿½Ç¼ï¿½ï¿½ï¿½
+void BoardScene::attackmove(PlayerNumber player, int attackerIndex, int defenderIndex) {
+    if (attackerIndex < 0 || defenderIndex < 0) { return; }
+
+    cardSprite* attacker = nullptr;
+    cardSprite* defender = nullptr;
+    if (player == localPlayerNumber) { // ï¿½ï¿½ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½
+        if (attackerIndex >= localMinionCard.size() || defenderIndex >= oppentMinionCard.size())
+            throw std::runtime_error("out of index");
+        attacker = localMinionCard[attackerIndex];
+        defender = oppentMinionCard[defenderIndex];
+    } else { //ï¿½Ô·ï¿½ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½
+        if (defenderIndex >= localMinionCard.size() || attackerIndex >= oppentMinionCard.size())
+            throw std::runtime_error("out of index");
+        attacker = oppentMinionCard[defenderIndex];
+        defender = localMinionCard[attackerIndex];
     }
-    auto attacker = localMinionCard[attackerIndex];
-    auto defender = oppentMinionCard[defenderIndex];
-    // ±£´æ¹¥»÷ÕßµÄÔ­Ê¼Î»ÖÃ
+
+    // ï¿½ï¿½ï¿½æ¹¥ï¿½ï¿½ï¿½ßµï¿½Ô­Ê¼Î»ï¿½ï¿½
     Vec2 originalPos = attacker->getPosition();
-    // »ñÈ¡Ä¿±êÎ»ÖÃ
+    // ï¿½ï¿½È¡Ä¿ï¿½ï¿½Î»ï¿½ï¿½
     Vec2 targetPos = defender->getPosition();
-    // ´´½¨¹¥»÷¶¯»­ÐòÁÐ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     attacker->runAction(Sequence::create(
-        // ¿ìËÙÒÆ¶¯µ½Ä¿±êÎ»ÖÃ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Î»ï¿½ï¿½
         EaseIn::create(MoveTo::create(0.2f, targetPos), 2.0f),
-        // Ìí¼ÓÒ»¸öºÜ¶ÌµÄÍ£¶Ù
+        // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ü¶Ìµï¿½Í£ï¿½ï¿½
         DelayTime::create(0.1f),
-        // ·µ»ØÔ­Ê¼Î»ÖÃ
+        // ï¿½ï¿½ï¿½ï¿½Ô­Ê¼Î»ï¿½ï¿½
         EaseOut::create(MoveTo::create(0.2f, originalPos), 2.0f),
         nullptr
     ));
-    // ¿ÉÒÔÌí¼ÓÒ»¸ö¼òµ¥µÄÊÜ»÷Ð§¹û
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½òµ¥µï¿½ï¿½Ü»ï¿½Ð§ï¿½ï¿½
     defender->runAction(Sequence::create(
-        // »Î¶¯Ð§¹û
+        // ï¿½Î¶ï¿½Ð§ï¿½ï¿½
         RotateBy::create(0.1f, 10),
         RotateBy::create(0.1f, -20),
         RotateBy::create(0.1f, 10),
@@ -329,70 +339,60 @@ void BoardScene::attackmove(int attackerIndex, int defenderIndex) {
     ));
 }
 
-// ´¦ÀíËæ´Ó¶ÔËæ´ÓµÄ¹¥»÷
-// Ã»ÓÐ·¢ËÍ¹¥»÷ÐÅºÅ
-void BoardScene::handleMinionAttackMinion(int attackerIndex, int defenderIndex) {
-    if (attackerIndex == -1 || defenderIndex == -1) return;
-    
-    // ×ª»»Îª±¾µØÖ¸Õë´¦Àí
-    auto attacker = localMinionCard[attackerIndex];
-    auto defender = oppentMinionCard[defenderIndex];
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¶ï¿½ï¿½ï¿½ÓµÄ¹ï¿½ï¿½ï¿½
+//////////////// Ã»ï¿½Ð·ï¿½ï¿½Í¹ï¿½ï¿½ï¿½ï¿½Åºï¿½
+//void BoardScene::handleMinionAttackMinion(int attackerIndex, int defenderIndex) {
+//    if (attackerIndex == -1 || defenderIndex == -1) return;
+//    
+//    // ×ªï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë´¦ï¿½ï¿½
+//    auto attacker = localMinionCard[attackerIndex];
+//    auto defender = oppentMinionCard[defenderIndex];
+//
+//    // ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½
+//    attacker->currentHealth -= defender->currentAttack;
+//    defender->currentHealth -= attacker->currentAttack;
+//
+//    // UIï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½UI
+//    attackmove(attackerIndex, defenderIndex);
+//    updateCardStats(defender);
+//    updateCardStats(attacker);
+//    //////// ï¿½ï¿½ï¿½ï¿½ï¿½Ü·ï¿½ï¿½Ò»ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ó³Ù¹ï¿½ï¿½Ü£ï¿½  Õ¹Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//
+//    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//    checkMinionDie(attacker);
+//    checkMinionDie(defender);
+//
+//    // ï¿½ï¿½ï¿½ï¿½UI
+//    updatePlayerUI();
+//
+//    // ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+//    audioPlayer("Music/attack.mp3", false);
+//}
 
-    // get the minion's attack and health
-    attacker->currentHealth -= defender->currentAttack;
-    defender->currentHealth -= attacker->currentAttack;
-
-    // UI¶¯»­ ²¥·Å¹¥»÷¶¯»­ ¸üÐÂ¿¨ÅÆUI
-    attackmove(attackerIndex, defenderIndex);
-    updateCardStats(defender);
-    //////// ÕâÀïÄÜ·ñ¼ÓÒ»¸öÊ±¼äÑÓ³Ù¹¦ÄÜ£¿  Õ¹Ê¾Ëæ´ÓËÀÍö
-
-    // ¼ì²âËæ´ÓËÀÍö
-    checkMinionDie(attacker);
-    checkMinionDie(defender);
-
-    // ¸üÐÂUI
-    updatePlayerUI();
-
-    // ²¥·Å¹¥»÷ÒôÐ§
-    audioPlayer("Music/attack.mp3", false);
-}
-
-// ´¦Àí¶ÔÓ¢ÐÛµÄ¹¥»÷
-//////////////////////// ÐèÒªÏÈ¶¨Òå¹¥»÷ÐÅºÅ
-void BoardScene::handleMinionAttackHero(int attackerIndex) {
-    // »ñÈ¡¹¥»÷Ëæ´ÓµÄ¹¥»÷Á¦
-    int attack = oppentMinionCard[attackerIndex]->currentAttack;
-
-    // ÕâÀïÐÞ¸Ä ÐèÒª¶¨ÒåÐÅºÅÁ¿
-    // ¿Û³ý¶Ô·½Ó¢ÐÛÉúÃüÖµ
-    player2->health -= attackerStats.attack;
-    // ¿Û³ý¹¥»÷·ÑÓÃ
-    player1->money -= 1;
-    // ¸üÐÂUI
-    updatePlayerUI();
-
-    // ²¥·Å¹¥»÷ÒôÐ§
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¢ï¿½ÛµÄ¹ï¿½ï¿½ï¿½
+//////////////////////// ï¿½ï¿½Òªï¿½È¶ï¿½ï¿½å¹¥ï¿½ï¿½ï¿½Åºï¿½
+void BoardScene::handleMinionAttackHero() {
+    // ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
     audioPlayer("Music/attack.mp3", false);
 
-    //ÒÔÏÂÊµÏÖÒ»¸ö»­ÃæÕð¶¯Ð§¹û
-    // »ñÈ¡±³¾°¾«Áé£¨Í¨¹ýtag»òÃû×Ö£©
-    auto background = this->getChildByTag(0);  // Ö®Ç°Ìí¼Ó±³¾°Ê±ÉèÖÃµÄtagÎª0
-    // »òÕßÍ¨¹ýÃû×Ö»ñÈ¡
+    //ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
+    // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¨Í¨ï¿½ï¿½tagï¿½ï¿½ï¿½ï¿½ï¿½Ö£ï¿½
+    auto background = this->getChildByTag(0);  // Ö®Ç°ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ãµï¿½tagÎª0
+    // ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½È¡
     // auto background = this->getChildByName("background");
 
     if (background) {
-        // ±£´æÔ­Ê¼Î»ÖÃ
+        // ï¿½ï¿½ï¿½ï¿½Ô­Ê¼Î»ï¿½ï¿½
         Vec2 originalPos = background->getPosition();
 
-        // ´´½¨Õð¶¯ÐòÁÐ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         auto shake = Sequence::create(
             MoveBy::create(0.02f, Vec2(-10, -5)),
             MoveBy::create(0.02f, Vec2(20, 10)),
             MoveBy::create(0.02f, Vec2(-20, -10)),
             MoveBy::create(0.02f, Vec2(20, 10)),
             MoveBy::create(0.02f, Vec2(-10, -5)),
-            // È·±£»Øµ½Ô­Ê¼Î»ÖÃ
+            // È·ï¿½ï¿½ï¿½Øµï¿½Ô­Ê¼Î»ï¿½ï¿½
             MoveTo::create(0, originalPos),
             nullptr
         );
@@ -401,13 +401,13 @@ void BoardScene::handleMinionAttackHero(int attackerIndex) {
     }
 }
 
-// ÒÆ³ý¿¨ÅÆ²¢²¥·Å¶¯»­
+// ï¿½Æ³ï¿½ï¿½ï¿½ï¿½Æ²ï¿½ï¿½ï¿½ï¿½Å¶ï¿½ï¿½ï¿½
 void BoardScene::removeCardWithAnimation(cardSprite* card) {
     if (!card) return;
-    // ÏÈ´Ó cardStats ÖÐÒÆ³ý
-    cardStats.erase(card);
+    // ï¿½È´ï¿½ cardStats ï¿½ï¿½ï¿½Æ³ï¿½
+    // cardStats.erase(card);
 
-    // ¿¨ÅÆÏûÊ§¶¯»­
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ï¿½ï¿½
     card->runAction(Sequence::create(
         Spawn::create(
             FadeOut::create(0.5f),
@@ -415,7 +415,7 @@ void BoardScene::removeCardWithAnimation(cardSprite* card) {
             nullptr
         ),
         CallFunc::create([this, card]() {
-            // ´ÓÊý×éÖÐÒÆ³ý
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½
             auto it = std::find(oppentMinionCard.begin(), oppentMinionCard.end(), card);
             if (it != oppentMinionCard.end()) {
                 oppentMinionCard.erase(it);
@@ -431,17 +431,17 @@ void BoardScene::removeCardWithAnimation(cardSprite* card) {
         nullptr
     ));
 
-    // ²¥·ÅÒÆ³ýÒôÐ§
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½Ð§
     audioPlayer("Music/broken.mp3", false);
 }
 
 
-// Êó±êÒÆ¶¯¼ì²â
+// ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½
 void BoardScene::onMouseMove(Event* event) {
     EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
     Vec2 mousePos = Vec2(mouseEvent->getCursorX(), mouseEvent->getCursorY());
 
-    // ¼ì²éÊó±êÊÇ·ñÐüÍ£ÔÚÄ³¸ö¾«ÁéÉÏ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Í£ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     cardSprite* newHoveredSprite = nullptr;
 
     for (auto it = localPlayerCards.rbegin(); it != localPlayerCards.rend(); ++it) {
@@ -456,26 +456,26 @@ void BoardScene::onMouseMove(Event* event) {
         }
     }
 
-    // Èç¹ûÐüÍ£µÄ¾«Áé·¢Éú±ä»¯
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½Ä¾ï¿½ï¿½é·¢ï¿½ï¿½ï¿½ä»¯
     if (hoveredCard != newHoveredSprite) {
-        // »Ö¸´Ö®Ç°ÐüÍ£¾«ÁéµÄ´óÐ¡
+        // ï¿½Ö¸ï¿½Ö®Ç°ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½Ä´ï¿½Ð¡
         if (hoveredCard && hoveredCard != selectedCard) {
             scaleSprite(hoveredCard, 1.0f);
         }
-        // ·Å´óÐÂµÄÐüÍ£¾«Áé
+        // ï¿½Å´ï¿½ï¿½Âµï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½
         if (newHoveredSprite && newHoveredSprite != selectedCard) {
-            scaleSprite(newHoveredSprite, 1.5f); // ·Å´ó1.5±¶
+            scaleSprite(newHoveredSprite, 1.5f); // ï¿½Å´ï¿½1.5ï¿½ï¿½
         }
 
         hoveredCard = newHoveredSprite;
     }
 }
 void BoardScene::scaleSprite(cardSprite* sprite, float scale) {
-    // Ê¹ÓÃ¶¯×÷ÊµÏÖÆ½»¬µÄËõ·ÅÐ§¹û
+    // Ê¹ï¿½Ã¶ï¿½ï¿½ï¿½Êµï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
     sprite->runAction(ScaleTo::create(0.1f, scale));
 }
 
-// Êó±ê´¥Ãþ¼ì²â
+// ï¿½ï¿½ê´¥ï¿½ï¿½ï¿½ï¿½ï¿½
 bool BoardScene::onTouchBegan(Touch* touch, Event* event)
 {
     if (!isLocalPlayerTurn) {
@@ -483,28 +483,27 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
     }
     Vec2 touchLocation = touch->getLocation();
 
-    // Èç¹ûÒÑ¾­Ñ¡ÖÐÁË¹¥»÷Ëæ´Ó£¬¼ì²éÊÇ·ñµã»÷ÁËÓÐÐ§Ä¿±ê
+    // ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½Ñ¡ï¿½ï¿½ï¿½Ë¹ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§Ä¿ï¿½ï¿½
     if (attackingCard) {
-        // ¼ì²éÊÇ·ñµã»÷ÁËµÐ·½Ëæ´Ó»òµÐ·½Ó¢ÐÛÇøÓò
+        // ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ËµÐ·ï¿½ï¿½ï¿½Ó»ï¿½Ð·ï¿½Ó¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         bool targetFound = false;
 
-        // ¼ì²éµÐ·½Ëæ´Ó
+        // ï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½ï¿½
         for (int i = 0; i < oppentMinionCard.size(); ++i) {
             cardSprite* enemyCard = oppentMinionCard[i];
             if (enemyCard->getBoundingBox().containsPoint(touchLocation)) {
-                handleMinionAttackMinion(get_localMinionIndex(attackingCard), i);
+                sendMinionAttackEvent(localPlayerNumber, get_localMinionIndex(attackingCard), i);
                 targetFound = true;
                 break;
             }
         }
 
-
-        // ¼ì²éµÐ·½Ó¢ÐÛÇøÓò
+        // ï¿½ï¿½ï¿½Ð·ï¿½Ó¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (!targetFound && touchLocation.y > Director::getInstance()->getVisibleSize().height * 0.7f) {
-            handleMinionAttackHero();
+            sendMinionAttackEvent(localPlayerNumber, get_localMinionIndex(attackingCard), -1);
         }
 
-        // Çå³ý¹¥»÷×´Ì¬
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬
         attackingCard = nullptr;
         if (attackIndicator) {
             attackIndicator->removeFromParent();
@@ -513,19 +512,16 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
         return true;
     }
 
-    // ¼ì²éÊÇ·ñµã»÷ÁË¼º·½Ëæ´Ó
+    // ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ë¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     for (auto card : localMinionCard) {
         if (card->getBoundingBox().containsPoint(touchLocation)) {
-            // ¼ì²éÊÇ·ñÓÐ×ã¹»µÄ·ÑÓÃ¹¥»÷
-            if (isLocalPlayerTurn && player1->money >= 1) {
-                attackingCard = card;
-                createAttackIndicator(card->getPosition());
-                return true;
-            }
+            attackingCard = card;
+            createAttackIndicator(card->getPosition());
+            return true;
         }
     }
 
-    // ¼ì²âÊÖÅÆ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     for (auto it = localPlayerCards.rbegin(); it != localPlayerCards.rend(); ++it) {
         cardSprite* sprite = *it;
         Vec2 locationInNode = sprite->convertToNodeSpace(touchLocation);
@@ -534,7 +530,7 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
 
         if (rect.containsPoint(locationInNode)) {
             selectedCard = sprite;
-            // ¿ªÊ¼ÍÏ¶¯Ê±»Ö¸´Õý³£´óÐ¡
+            // ï¿½ï¿½Ê¼ï¿½Ï¶ï¿½Ê±ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
             scaleSprite(sprite, 1.0f);
             return true;
         }
@@ -550,14 +546,14 @@ void BoardScene::onTouchMoved(Touch* touch, Event* event) {
         checkDropArea();
     }
     else if (attackingCard && attackIndicator) {
-        // ¸üÐÂ¹¥»÷Ö¸Ê¾Æ÷Î»ÖÃ
+        // ï¿½ï¿½ï¿½Â¹ï¿½ï¿½ï¿½Ö¸Ê¾ï¿½ï¿½Î»ï¿½ï¿½
         attackIndicator->clear();
         Vec2 startPos = attackingCard->getPosition();
         Vec2 currentPos = touch->getLocation();
 
-        // »æÖÆ¹¥»÷Ïß
+        // ï¿½ï¿½ï¿½Æ¹ï¿½ï¿½ï¿½ï¿½ï¿½
         attackIndicator->drawLine(startPos, currentPos, Color4F(1, 0, 0, 0.8f));
-        // »æÖÆÃé×¼È¦
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¼È¦
         attackIndicator->drawCircle(currentPos, 30, 0, 360, false, Color4F(1, 0, 0, 0.8f));
     }
 }
@@ -575,37 +571,37 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
             abs(finalPos.y - center.y) <= PUTOUT_CARD_REGION_HALF_Y;
 
         cardSprite* cardToHandle = selectedCard;
-        selectedCard = nullptr;  // ÏÈÇå³ýÑ¡ÖÐ×´Ì¬
+        selectedCard = nullptr;  // ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½×´Ì¬
 
         if (inDropArea) {
-            // ÔÚ³öÅÆÇøÓòÄÚ£¬Ö´ÐÐÒÆ³ý
+            // ï¿½Ú³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½Ö´ï¿½ï¿½ï¿½Æ³ï¿½
             players::Player* currentPlayer = (currentPlayerNumber == 1) ? player1 : player2;
             if (currentPlayer) {
-                // »ñÈ¡¿¨ÅÆ·ÑÓÃ
+                // ï¿½ï¿½È¡ï¿½ï¿½ï¿½Æ·ï¿½ï¿½ï¿½
                 int cardCost = jsonmanager.getCardCost(cardToHandle->card->cost);
-                if (currentPlayer->getMoney() >= cardCost) { // Ê¹ÓÃ getter ·½·¨
-                    // ¿Û³ý·¨Á¦Öµ
+                if (currentPlayer->getMoney() >= cardCost) { // Ê¹ï¿½ï¿½ getter ï¿½ï¿½ï¿½ï¿½
+                    // ï¿½Û³ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
                     currentPlayer->setMoney(currentPlayer->getMoney() - cardCost);
                     CCLOG("Player %d mana reduced to %d", localPlayerNumber, currentPlayer->getMoney());
 
-                    // ¸üÐÂUI
+                    // ï¿½ï¿½ï¿½ï¿½UI
                     updatePlayerUI();
 
                     if (cardToHandle->card->type == cardType::MINION) {
-                        // ·¢ËÍ PLAY_MINION_CARD ÊÂ¼þ
+                        // ï¿½ï¿½ï¿½ï¿½ PLAY_MINION_CARD ï¿½Â¼ï¿½
                         sendPlay_MinionCardEvent(localPlayerNumber, cardToHandle->card->dbfId);
-                        // ÏÔÊ¾¿¨ÅÆÔÚÕ½³¡ÉÏ
-                        add_HandCardToBattlefield(localPlayerNumber, cardToHandle);
-                        // ´ÓÊÖÅÆÖÐÒÆ³ý¿¨ÅÆ
+                        // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ½ï¿½ï¿½ï¿½ï¿½
+                        add_HandCardToBattlefield(cardToHandle);
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½
                         removeCard(cardToHandle);
                     }
                     else if (cardToHandle->card->type == cardType::SPELL) {
-                        // ·¢ËÍ PLAY_SPELL_CARD ÊÂ¼þ
+                        // ï¿½ï¿½ï¿½ï¿½ PLAY_SPELL_CARD ï¿½Â¼ï¿½
                         sendPlay_SpellCardEvent(localPlayerNumber, cardToHandle->card->dbfId);
                         
                         
-                        //1. ·¢ËÍÐ§¹ûÐÅºÅ
-                        //2./////////// ÕâÀïÐèÒª´¦Àí´¥·¢·¨ÊõµÄÂß¼­ \\\\\\\\\\\\\\\\
+                        //1. ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½Åºï¿½
+                        //2./////////// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ \\\\\\\\\\\\\\\\
                         
 
                     }
@@ -623,7 +619,7 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
     }
 }
 
-// È¡ÏûÊ¹ÓÃÅÆ£¬ ½«¿¨ÅÆ·Å»ØÊÖÅÆ
+// È¡ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½Æ£ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Æ·Å»ï¿½ï¿½ï¿½ï¿½ï¿½
 void BoardScene::returnCardToHand(cardSprite* card) {
     Vec2 originalPos = cardOriginalPositions[card];
     card->runAction(Sequence::create(
@@ -647,44 +643,44 @@ void BoardScene::initPlayers()
     player1 = GameData::getInstance().getPlayer1();
     player2 = GameData::getInstance().getPlayer2();
 
-    // ¸ù¾Ý currentPlayerNumber ºÍ localPlayerNumber ÉèÖÃ isLocalPlayerTurn
+    // ï¿½ï¿½ï¿½ï¿½ currentPlayerNumber ï¿½ï¿½ localPlayerNumber ï¿½ï¿½ï¿½ï¿½ isLocalPlayerTurn
     isLocalPlayerTurn = (currentPlayerNumber == localPlayerNumber);
 }
 
-// ´´½¨Íæ¼ÒÐÅÏ¢UI
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢UI
 void BoardScene::createPlayerUI() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    // ¶¨Òå±¾µØÍæ¼ÒºÍ¶ÔÊÖµÄÖ¸Õë
+    // ï¿½ï¿½ï¿½å±¾ï¿½ï¿½ï¿½ï¿½ÒºÍ¶ï¿½ï¿½Öµï¿½Ö¸ï¿½ï¿½
     players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
     players::Player* opponentPlayer = (localPlayerNumber == 1) ? player2 : player1;
 
-    // ´´½¨¼º·½Íæ¼ÒÐÅÏ¢ÏÔÊ¾
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê¾
     localPlayerHealth = Label::createWithTTF("HP:" + std::to_string(localPlayer->getHealth()), "fonts/arial.ttf", 24);
     localPlayerHealth->setPosition(Vec2(800, 220));
     this->addChild(localPlayerHealth);
-    // ÉèÖÃÃè±ß£¨Í¬Ê±ÉèÖÃÑÕÉ«ºÍ´ÖÏ¸£©
-    localPlayerHealth->enableOutline(Color4B::BLACK, 2);         // ºÚÉ«Ãè±ß£¬´ÖÏ¸Îª2
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½Í¬Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½Í´ï¿½Ï¸ï¿½ï¿½
+    localPlayerHealth->enableOutline(Color4B::BLACK, 2);         // ï¿½ï¿½É«ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ï¸Îª2
 
     localPlayerMana = Label::createWithTTF("Mana:" + std::to_string(localPlayer->getMoney()) + "/" + std::to_string(localPlayer->getMaxMoney()), "fonts/arial.ttf", 24);
     localPlayerMana->setPosition(Vec2(800, 280));
     this->addChild(localPlayerMana);
-    // ÉèÖÃÃè±ß£¨Í¬Ê±ÉèÖÃÑÕÉ«ºÍ´ÖÏ¸£©
-    localPlayerMana->enableOutline(Color4B::BLACK, 2);         // ºÚÉ«Ãè±ß£¬´ÖÏ¸Îª2
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½Í¬Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½Í´ï¿½Ï¸ï¿½ï¿½
+    localPlayerMana->enableOutline(Color4B::BLACK, 2);         // ï¿½ï¿½É«ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ï¸Îª2
 
-    // ´´½¨¶Ô·½Íæ¼ÒÐÅÏ¢ÏÔÊ¾
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê¾
     opponentPlayerHealth = Label::createWithTTF("HP:" + std::to_string(opponentPlayer->getHealth()), "fonts/arial.ttf", 24);
     opponentPlayerHealth->setPosition(Vec2(800, visibleSize.height - 220));
     this->addChild(opponentPlayerHealth);
-    opponentPlayerHealth->enableOutline(Color4B::BLACK, 2);         // ºÚÉ«Ãè±ß£¬´ÖÏ¸Îª2
+    opponentPlayerHealth->enableOutline(Color4B::BLACK, 2);         // ï¿½ï¿½É«ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ï¸Îª2
 
     opponentPlayerMana = Label::createWithTTF("Mana:" + std::to_string(opponentPlayer->getMoney()) + "/" + std::to_string(opponentPlayer->getMaxMoney()), "fonts/arial.ttf", 24);
     opponentPlayerMana->setPosition(Vec2(800, visibleSize.height - 280));
     this->addChild(opponentPlayerMana);
-    opponentPlayerMana->enableOutline(Color4B::BLACK, 2);         // ºÚÉ«Ãè±ß£¬´ÖÏ¸Îª2
+    opponentPlayerMana->enableOutline(Color4B::BLACK, 2);         // ï¿½ï¿½É«ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ï¸Îª2
 
-    // »ØºÏÖ¸Ê¾Æ÷
+    // ï¿½Øºï¿½Ö¸Ê¾ï¿½ï¿½
     turnIndicator = Label::createWithTTF("Your Turn", "fonts/arial.ttf", 32);
     if (isLocalPlayerTurn) {
         turnIndicator->setString("Your Turn");
@@ -692,12 +688,12 @@ void BoardScene::createPlayerUI() {
     else {
         turnIndicator->setString("Opponent's Turn");
     }
-    turnIndicator->setPosition(Vec2(1880, 600)); // ÓëµÚÒ»´ÎÊµÏÖÒ»ÖÂ
+    turnIndicator->setPosition(Vec2(1880, 600)); // ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Êµï¿½ï¿½Ò»ï¿½ï¿½
     this->addChild(turnIndicator);
-    // ÉèÖÃÃè±ß£¨Í¬Ê±ÉèÖÃÑÕÉ«ºÍ´ÖÏ¸£©
-    turnIndicator->enableOutline(Color4B::BLACK, 2);         // ºÚÉ«Ãè±ß£¬´ÖÏ¸Îª2
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½Í¬Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½Í´ï¿½Ï¸ï¿½ï¿½
+    turnIndicator->enableOutline(Color4B::BLACK, 2);         // ï¿½ï¿½É«ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ï¸Îª2
 
-    // Ìí¼Ó»ØºÏ½áÊø°´Å¥£¨½ö±¾µØÍæ¼Ò¿ÉÒÔ¿´µ½£©
+    // ï¿½ï¿½ï¿½Ó»ØºÏ½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¿ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½
     auto endTurnBtn = MenuItemImage::create(
         "button/endturn.png",
         "button/endturnSelected.png",
@@ -705,18 +701,18 @@ void BoardScene::createPlayerUI() {
             this->switchTurn();
         }
     );
-    endTurnBtn->setPosition(Vec2(1880, 700)); // ÓëµÚÒ»´ÎÊµÏÖÒ»ÖÂ
+    endTurnBtn->setPosition(Vec2(1880, 700)); // ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Êµï¿½ï¿½Ò»ï¿½ï¿½
     auto menu = Menu::create(endTurnBtn, nullptr);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu);
 }
 
 void BoardScene::updatePlayerUI() {
-    // ¶¨Òå±¾µØÍæ¼ÒºÍ¶ÔÊÖµÄÖ¸Õë
+    // ï¿½ï¿½ï¿½å±¾ï¿½ï¿½ï¿½ï¿½ÒºÍ¶ï¿½ï¿½Öµï¿½Ö¸ï¿½ï¿½
     players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
     players::Player* opponentPlayer = (localPlayerNumber == 1) ? player2 : player1;
 
-    // µ÷ÊÔÈÕÖ¾
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾
     CCLOG("Updating UI:");
     CCLOG("Local Player (Number %d) - HP: %d, Mana: %d/%d", localPlayerNumber, localPlayer->getHealth(), localPlayer->getMoney(), localPlayer->getMaxMoney());
     CCLOG("Opponent Player (Number %d) - HP: %d, Mana: %d/%d",
@@ -725,15 +721,15 @@ void BoardScene::updatePlayerUI() {
         opponentPlayer->getMoney(),
         opponentPlayer->getMaxMoney());
 
-    // ¸üÐÂ±¾µØÍæ¼ÒÉúÃüÖµºÍ·¨Á¦Öµ
+    // ï¿½ï¿½ï¿½Â±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½Í·ï¿½ï¿½ï¿½Öµ
     localPlayerHealth->setString("HP: " + std::to_string(localPlayer->getHealth()));
     localPlayerMana->setString("Mana: " + std::to_string(localPlayer->getMoney()) + "/" + std::to_string(localPlayer->getMaxMoney()));
 
-    // ¸üÐÂ¶ÔÊÖÍæ¼ÒÉúÃüÖµºÍ·¨Á¦Öµ
+    // ï¿½ï¿½ï¿½Â¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½Í·ï¿½ï¿½ï¿½Öµ
     opponentPlayerHealth->setString("HP: " + std::to_string(opponentPlayer->getHealth()));
     opponentPlayerMana->setString("Mana: " + std::to_string(opponentPlayer->getMoney()) + "/" + std::to_string(opponentPlayer->getMaxMoney()));
 
-    // ¸üÐÂ»ØºÏÖ¸Ê¾
+    // ï¿½ï¿½ï¿½Â»Øºï¿½Ö¸Ê¾
     if (isLocalPlayerTurn) {
         turnIndicator->setString("Your Turn");
     }
@@ -741,22 +737,22 @@ void BoardScene::updatePlayerUI() {
         turnIndicator->setString("Opponent's Turn");
     }
 
-    // ÊÓ¾õÉÏ·´Ó³»ØºÏ×´Ì¬
+    // ï¿½Ó¾ï¿½ï¿½Ï·ï¿½Ó³ï¿½Øºï¿½×´Ì¬
     for (auto& card : localPlayerCards) {
         if (isLocalPlayerTurn) {
-            // ¿É²Ù×÷Ê±£¬»Ö¸´Õý³£Íâ¹Û
+            // ï¿½É²ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             card->setOpacity(255);
             card->setColor(Color3B::WHITE);
         }
         else {
-            // ²»¿É²Ù×÷Ê±£¬ÉèÖÃÎª°ëÍ¸Ã÷»ò»ÒÉ«
-            card->setOpacity(128); // °ëÍ¸Ã÷
-            card->setColor(Color3B(100, 100, 100)); // »ÒÉ«
+            // ï¿½ï¿½ï¿½É²ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½ï¿½É«
+            card->setOpacity(128); // ï¿½ï¿½Í¸ï¿½ï¿½
+            card->setColor(Color3B(100, 100, 100)); // ï¿½ï¿½É«
         }
     }
 }
 
-// ÇÐ»»»ØºÏ
+// ï¿½Ð»ï¿½ï¿½Øºï¿½
 void BoardScene::switchTurn()
 {
     if (!isLocalPlayerTurn) {
@@ -765,29 +761,29 @@ void BoardScene::switchTurn()
         return;
     }
 
-    // ¼ÆËãÏÂÒ»¸öÍæ¼Ò±àºÅ£¨ÔÚ2ÈËÓÎÏ·ÖÐ£¬Íæ¼Ò±àºÅÎª1»ò2£©
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ò±ï¿½Å£ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½Ï·ï¿½Ð£ï¿½ï¿½ï¿½Ò±ï¿½ï¿½Îª1ï¿½ï¿½2ï¿½ï¿½
     int nextPlayerNumber = (currentPlayerNumber == 1) ? 2 : 1;
 
-    // ¸üÐÂµ±Ç°Íæ¼Ò±àºÅ
+    // ï¿½ï¿½ï¿½Âµï¿½Ç°ï¿½ï¿½Ò±ï¿½ï¿½
     currentPlayerNumber = nextPlayerNumber;
 
-    // ¸üÐÂÊÇ·ñÎª±¾µØÍæ¼ÒµÄ»ØºÏ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÒµÄ»Øºï¿½
     isLocalPlayerTurn = (currentPlayerNumber == localPlayerNumber);
 
-    // ·¢ËÍ TURN_START ÊÂ¼þ
+    // ï¿½ï¿½ï¿½ï¿½ TURN_START ï¿½Â¼ï¿½
     sendTurnStartEvent();
 
-    // ¸üÐÂ UI
+    // ï¿½ï¿½ï¿½ï¿½ UI
     updatePlayerUI();
 
     CCLOG("Switched turn to playerNumber: %d", currentPlayerNumber);
     cocosUIListener->writeString(EG::JString(L"Switched turn."));
 }
 
-// ·¢ËÍ»ØºÏ¿ªÊ¼ÊÂ¼þ
+// ï¿½ï¿½ï¿½Í»ØºÏ¿ï¿½Ê¼ï¿½Â¼ï¿½
 void BoardScene::sendTurnStartEvent() {
     EG::Hashtable eventContent;
-    // ´«µÝµ±Ç°Íæ¼Ò±àºÅ
+    // ï¿½ï¿½ï¿½Ýµï¿½Ç°ï¿½ï¿½Ò±ï¿½ï¿½
     PlayerNumber currentPlayerNum = currentPlayerNumber;
     eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(currentPlayerNum));
 
@@ -796,7 +792,7 @@ void BoardScene::sendTurnStartEvent() {
     cocosUIListener->writeString(EG::JString(L"Sent TURN_START event."));
 }
 
-// ´Ó¿¨ÅÆÒÆ³ý²¢Ìí¼Óµ½Õ½³¡
+// ï¿½Ó¿ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½Õ½ï¿½ï¿½
 void BoardScene::removeCard(cardSprite* sprite) {
     if (!sprite) return;
 
@@ -804,21 +800,21 @@ void BoardScene::removeCard(cardSprite* sprite) {
         hoveredCard = nullptr;
     }
 
-    // ´Ó localPlayerCards ÒÆ³ý
+    // ï¿½ï¿½ localPlayerCards ï¿½Æ³ï¿½
     auto iter = std::find(localPlayerCards.begin(), localPlayerCards.end(), sprite);
     if (iter != localPlayerCards.end()) {
-        // »ñÈ¡±»ÒÆ³ý¿¨ÅÆµÄË÷ÒýÎ»ÖÃ
+        // ï¿½ï¿½È¡ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
         size_t removedIndex = std::distance(localPlayerCards.begin(), iter);
 
         localPlayerCards.erase(iter);
         cardOriginalPositions.erase(sprite);
 
-        // ²»ÔÙ½«¿¨ÅÆÌí¼Óµ½ playedCards£¬ÕâÀïÓÉ handle_PlayMinionCard Í³Ò»´¦Àí
+        // ï¿½ï¿½ï¿½Ù½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ playedCardsï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ handle_PlayMinionCard Í³Ò»ï¿½ï¿½ï¿½ï¿½
         sprite->removeFromParent();
-        // ²¥·ÅÒôÐ§
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
         audioPlayer("Music/putcard.mp3", false);
 
-        // ¸üÐÂÊ£Óà¿¨ÅÆµÄÎ»ÖÃ
+        // ï¿½ï¿½ï¿½ï¿½Ê£ï¿½à¿¨ï¿½Æµï¿½Î»ï¿½ï¿½
         Size visibleSize = Director::getInstance()->getVisibleSize();
         for (size_t i = removedIndex; i < localPlayerCards.size(); i++) {
             cardSprite* card = localPlayerCards[i];
@@ -834,7 +830,7 @@ void BoardScene::removeCard(cardSprite* sprite) {
     }
 }
 
-// ¸üÐÂ¼º·½Ëæ´ÓµÄÎ»ÖÃ
+// ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½Î»ï¿½ï¿½
 void BoardScene::updatePlayedCardsPosition() {
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height * 0.45f);
@@ -850,7 +846,7 @@ void BoardScene::updatePlayedCardsPosition() {
     }
 }
 
-// ¸üÐÂµÐÈËµÄËæ´ÓÎ»ÖÃ
+// ï¿½ï¿½ï¿½Âµï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 void BoardScene::updateEnemyCardsPosition() {
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height * 0.6f);
@@ -866,14 +862,14 @@ void BoardScene::updateEnemyCardsPosition() {
     }
 }
 
-// ·¢ËÍ´òËæ´ÓÅÆÊÂ¼þ been editted
+// ï¿½ï¿½ï¿½Í´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ been editted
 void BoardScene::sendPlay_MinionCardEvent(PlayerNumber playerNumber, CardNumber dbfID) {
     EG::Hashtable eventContent;
-    // Ê¹ÓÃ²»Í¬µÄ key À´Çø·Ö playerNumber ºÍ cardID
+    // Ê¹ï¿½Ã²ï¿½Í¬ï¿½ï¿½ key ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ playerNumber ï¿½ï¿½ cardID
     eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(playerNumber));
     eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(dbfID));
 
-    photonLib->raiseCustomEvent(eventContent, PLAY_MINION_CARD, ExitGames::Lite::ReceiverGroup::OTHERS); // ÐÞ¸ÄÎªÖ»ÓÐ¶Ô·½½ÓÊÕÐÅºÅ
+    photonLib->raiseCustomEvent(eventContent, PLAY_MINION_CARD, ExitGames::Lite::ReceiverGroup::OTHERS); // ï¿½Þ¸ï¿½ÎªÖ»ï¿½Ð¶Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½
     CCLOG("Sent PLAY_MINION_CARD event with playerNumber: %d, cardID: %d", playerNumber, dbfID);
     cocosUIListener->writeString(EG::JString(L"Sent PLAY_MinionCard event with playerNumber: ") +
         EG::JString(std::to_wstring(playerNumber).c_str()) +
@@ -881,14 +877,14 @@ void BoardScene::sendPlay_MinionCardEvent(PlayerNumber playerNumber, CardNumber 
         EG::JString(std::to_wstring(dbfID).c_str()));
 }
 
-// ·¢ËÍ´ò³ö·¨ÊõÅÆÐÅºÅ
+// ï¿½ï¿½ï¿½Í´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½
 void BoardScene::sendPlay_SpellCardEvent(PlayerNumber playerNumber, CardNumber dbfID) {
     EG::Hashtable eventContent;
-    // Ê¹ÓÃ²»Í¬µÄ key À´Çø·Ö playerNumber ºÍ cardID
+    // Ê¹ï¿½Ã²ï¿½Í¬ï¿½ï¿½ key ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ playerNumber ï¿½ï¿½ cardID
     eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(playerNumber));
     eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(dbfID));
 
-    // Ê¹ÓÃ ReceiverGroup::OTHERS Ö»·¢ËÍ¸øÆäËûÍæ¼Ò
+    // Ê¹ï¿½ï¿½ ReceiverGroup::OTHERS Ö»ï¿½ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     photonLib->raiseCustomEvent(eventContent, PLAY_SPELL_CARD, ExitGames::Lite::ReceiverGroup::OTHERS);
     CCLOG("Sent PLAY_SPELL_CARD event with playerNumber: %d, cardID: %d", playerNumber, dbfID);
     cocosUIListener->writeString(EG::JString(L"Sent PLAY_SpellCard event with playerNumber: ") +
@@ -897,36 +893,61 @@ void BoardScene::sendPlay_SpellCardEvent(PlayerNumber playerNumber, CardNumber d
         EG::JString(std::to_wstring(dbfID).c_str()));
 }
 
-// ·¢ËÍ¹¥»÷ÊÂ¼þ
-void BoardScene::sendAttackEvent(PlayerNumber attackPlayer, int attackerIndex, int defenderIndex, int damage) {
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½
+void BoardScene::sendMinionAttackEvent(PlayerNumber playerNumber, int attackerIndex, int defenderIndex) {
     EG::Hashtable eventContent;
+    // Ê¹ï¿½Ã²ï¿½Í¬ï¿½ï¿½ key ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½Ò¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(playerNumber));
+    eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(attackerIndex));
+    eventContent.put(static_cast<unsigned char>(2), EG::Helpers::ValueToObject<EG::Object>::get(defenderIndex));
 
-    // Ê¹ÓÃ²»Í¬µÄ key À´Çø·Ö¹¥»÷Íæ¼Ò¡¢¹¥»÷ÕßË÷Òý¡¢·ÀÓùÕßË÷ÒýºÍÉËº¦Öµ
-    eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(attackPlayer));  // ¹¥»÷Íæ¼Ò
-    eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(attackerIndex)); // ¹¥»÷ÕßË÷Òý
-    eventContent.put(static_cast<unsigned char>(2), EG::Helpers::ValueToObject<EG::Object>::get(defenderIndex)); // ·ÀÓùÕßË÷Òý
-    eventContent.put(static_cast<unsigned char>(3), EG::Helpers::ValueToObject<EG::Object>::get(damage));         // ÉËº¦Öµ
+    // Ê¹ï¿½ï¿½ ReceiverGroup::OTHERS Ö»ï¿½ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    photonLib->raiseCustomEvent(eventContent, MINION_ATTACK, ExitGames::Lite::ReceiverGroup::OTHERS);
 
-    photonLib->raiseCustomEvent(eventContent, ATTACK_EVENT, ExitGames::Lite::ReceiverGroup::ALL);
+    CCLOG("Sent MINION_ATTACK_EVENT with playerNumber: %d, attackerIndex: %d, defenderIndex: %d", playerNumber, attackerIndex, defenderIndex);
+    cocosUIListener->writeString(EG::JString(L"Sent MINION_ATTACK_EVENT with playerNumber: ") +
+        EG::JString(std::to_wstring(playerNumber).c_str()) +
+        EG::JString(L", attackerIndex: ") +
+        EG::JString(std::to_wstring(attackerIndex).c_str()) +
+        EG::JString(L", defenderIndex: ") +
+        EG::JString(std::to_wstring(defenderIndex).c_str()));
 }
 
-// ·¢ËÍ³éÅÆÊÂ¼þ
-void BoardScene::sendDrawCardEvent(PlayerNumber playerNumber) {
+// ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+void BoardScene::sendSpellAttackEvent(PlayerNumber attackPlayer, int defenderIndex, int dbfId) {
+    EG::Hashtable eventContent;
+    // Ê¹ï¿½Ã²ï¿½Í¬ï¿½ï¿½ key ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½Ò¡ï¿½ï¿½Ü¹ï¿½ï¿½ï¿½ï¿½ï¿½ÒºÍ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ±ï¿½ï¿½
+    eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(attackPlayer));
+    eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(defenderIndex));
+    eventContent.put(static_cast<unsigned char>(2), EG::Helpers::ValueToObject<EG::Object>::get(dbfId));
 
+    // Ê¹ï¿½ï¿½ ReceiverGroup::OTHERS Ö»ï¿½ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    photonLib->raiseCustomEvent(eventContent, SPELL_ATTACK, ExitGames::Lite::ReceiverGroup::ALL);
+
+    CCLOG("Sent SPELL_ATTACK_EVENT with attackPlayer: %d, defenderIndex: %d, cardID: %d", attackPlayer, defenderIndex, dbfId);
+    cocosUIListener->writeString(EG::JString(L"Sent SPELL_ATTACK_EVENT with attackPlayer: ") +
+        EG::JString(std::to_wstring(attackPlayer).c_str()) +
+        EG::JString(L", defenderIndex: ") +
+        EG::JString(std::to_wstring(defenderIndex).c_str()) +
+        EG::JString(L", cardID: ") +
+        EG::JString(std::to_wstring(dbfId).c_str()));
 }
 
-// ´¦Àí Photon ×Ô¶¨ÒåÊÂ¼þ
+// ï¿½ï¿½ï¿½ï¿½ Photon ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 void BoardScene::onPhotonEvent(int eventCode, const EG::Hashtable& parameters) {
     switch (eventCode) {
         case PLAY_MINION_CARD:
             handle_PlayMinionCard(parameters);
             break;
         case TURN_START:
-            handleTurnStart(parameters);
+            handle_TurnStart(parameters);
             break;
         case PLAY_SPELL_CARD:
             handle_PlaySpellCard(parameters);
             break;
+        case SPELL_ATTACK:
+        case DRAW_CARD:
+        case MINION_ATTACK:
         default:
             CCLOG("Received unknown eventCode: %d", eventCode);
             cocosUIListener->writeString(EG::JString(L"Received unknown eventCode: ") +
@@ -935,12 +956,12 @@ void BoardScene::onPhotonEvent(int eventCode, const EG::Hashtable& parameters) {
     }
 }
 
-// ´¦Àí´òËæ´ÓÅÆÊÂ¼þ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 void BoardScene::handle_PlayMinionCard(const EG::Hashtable& parameters) {
     int playerNumber = 0;
     int dbfId = 0;
 
-    // »ñÈ¡ playerNumber
+    // ï¿½ï¿½È¡ playerNumber
     const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
     if (objPlayerNumber) {
         const EG::ValueObject<int>* voPlayerNumber = static_cast<const EG::ValueObject<int>*>(objPlayerNumber);
@@ -960,7 +981,7 @@ void BoardScene::handle_PlayMinionCard(const EG::Hashtable& parameters) {
         return;
     }
 
-    // »ñÈ¡ cardNumber
+    // ï¿½ï¿½È¡ cardNumber
     const EG::Object* objCardNumber = parameters.getValue(static_cast<unsigned char>(1));
     if (objCardNumber) {
         const EG::ValueObject<int>* voCardNumber = static_cast<const EG::ValueObject<int>*>(objCardNumber);
@@ -980,10 +1001,10 @@ void BoardScene::handle_PlayMinionCard(const EG::Hashtable& parameters) {
         return;
     }
 
-    // Èç¹ûÊÇ¼º·½µÄ³öËæ´ÓÅÆÐÅºÅ£¬ÕâÀï²»×ö´¦Àí
+    // ï¿½ï¿½ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï²»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (playerNumber == localPlayerNumber) return;
 
-    // È·¶¨Ä¿±êÍæ¼Ò
+    // È·ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½
     players::Player* targetPlayer = nullptr;
     if (playerNumber == 1) {
         targetPlayer = player1;
@@ -991,7 +1012,7 @@ void BoardScene::handle_PlayMinionCard(const EG::Hashtable& parameters) {
     else if (playerNumber == 2) {
         targetPlayer = player2;
     }
-    // ¿Û³ýÄ¿±êÍæ¼ÒµÄ·¨Á¦Öµ
+    // ï¿½Û³ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ÒµÄ·ï¿½ï¿½ï¿½Öµ
     int cardCost = jsonmanager.getCardCost(dbfId);
     if (targetPlayer->getMoney() < cardCost) {
         CCLOG("Player %d does not have enough mana to play card %d.", playerNumber, dbfId);
@@ -1001,15 +1022,15 @@ void BoardScene::handle_PlayMinionCard(const EG::Hashtable& parameters) {
     targetPlayer->setMoney(targetPlayer->getMoney() - cardCost);
     CCLOG("Player %d mana reduced to %d", playerNumber, targetPlayer->getMoney());
 
-    // ¸üÐÂUI
+    // ï¿½ï¿½ï¿½ï¿½UI
     updatePlayerUI();
 
     if (playerNumber != localPlayerNumber) {
-        // ÏÔÊ¾´ò³öµÄ¿¨ÅÆÔÚÕ½³¡ÉÏ
+        // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½Õ½ï¿½ï¿½ï¿½ï¿½
         add_NewCardToBattlefield(playerNumber, dbfId);
     }
 
-    // Èç¹ûÊÇ±¾µØÍæ¼Ò´ò³öµÄ¿¨ÅÆ£¬Ôò´ÓÊÖÅÆÖÐÒÆ³ý // ÔÚÍâ²¿º¯ÊýÒÑ¾­ÒÆ³ý¹ýÒ»´Î ²»ÐèÒªµ÷ÓÃ
+    // ï¿½ï¿½ï¿½ï¿½Ç±ï¿½ï¿½ï¿½ï¿½ï¿½Ò´ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ // ï¿½ï¿½ï¿½â²¿ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½Æ³ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
     //if (playerNumber == localPlayerNumber) {
     //    cardSprite* card = findCardByID(cardNumber);
     //    if (card) {
@@ -1018,12 +1039,12 @@ void BoardScene::handle_PlayMinionCard(const EG::Hashtable& parameters) {
     //}
 }
 
-// ´¦Àí´ò·¨ÊõÅÆÊÂ¼þ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 void BoardScene::handle_PlaySpellCard(const EG::Hashtable& parameters) {
     int playerNumber = 0;
     int dbfId = 0;
 
-    // »ñÈ¡ playerNumber
+    // ï¿½ï¿½È¡ playerNumber
     const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
     if (objPlayerNumber) {
         const EG::ValueObject<int>* voPlayerNumber = static_cast<const EG::ValueObject<int>*>(objPlayerNumber);
@@ -1043,7 +1064,7 @@ void BoardScene::handle_PlaySpellCard(const EG::Hashtable& parameters) {
         return;
     }
 
-    // »ñÈ¡ cardNumber
+    // ï¿½ï¿½È¡ cardNumber
     const EG::Object* objCardNumber = parameters.getValue(static_cast<unsigned char>(1));
     if (objCardNumber) {
         const EG::ValueObject<int>* voCardNumber = static_cast<const EG::ValueObject<int>*>(objCardNumber);
@@ -1063,16 +1084,234 @@ void BoardScene::handle_PlaySpellCard(const EG::Hashtable& parameters) {
         return;
     }
 
-    // Èç¹ûÊÇ¼º·½µÄ³ö·¨ÊõÅÆÐÅºÅ£¬ÕâÀï²»×ö´¦Àí
+    // ï¿½ï¿½ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï²»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (playerNumber == localPlayerNumber) return;
 
-    // TO DO: UI¸üÐÂ
-    ShowOpponentPlayedCard(dbfId);
+    // ï¿½ï¿½ï¿½ï¿½Ç¶Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // UIï¿½ï¿½ï¿½ï¿½
+    // ShowOpponentPlayedCard(dbfId);
 }
 
-// Ìí¼Ó¿¨ÅÆµ½Õ½³¡ Ö»ÓÐ¶ÔÊÖ´ò³öËæ´ÓÅÆÊ±»áµ÷ÓÃ¸Ãº¯Êý
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+void BoardScene::handle_SpellAttackEvent(const EG::Hashtable& parameters) {
+    int playerNumber = 0;
+    int defenderIndex = 0;
+    int damage = 0;
+
+    // ï¿½ï¿½È¡ playerNumber
+    const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
+    if (objPlayerNumber) {
+        const EG::ValueObject<int>* voPlayerNumber = static_cast<const EG::ValueObject<int>*>(objPlayerNumber);
+        if (voPlayerNumber) {
+            playerNumber = voPlayerNumber->getDataCopy();
+            CCLOG("Received SPELL_ATTACK_EVENT for playerNumber: %d", playerNumber);
+        }
+        else {
+            CCLOG("Failed to cast playerNumber in SPELL_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast playerNumber in SPELL_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("playerNumber not found in SPELL_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"playerNumber not found in SPELL_ATTACK_EVENT."));
+        return;
+    }
+
+    // ï¿½ï¿½È¡ defenderIndex
+    const EG::Object* objDefenderIndex = parameters.getValue(static_cast<unsigned char>(1));
+    if (objDefenderIndex) {
+        const EG::ValueObject<int>* voDefenderIndex = static_cast<const EG::ValueObject<int>*>(objDefenderIndex);
+        if (voDefenderIndex) {
+            defenderIndex = voDefenderIndex->getDataCopy();
+            CCLOG("Received SPELL_ATTACK_EVENT with defenderIndex: %d for playerNumber: %d", defenderIndex, playerNumber);
+        }
+        else {
+            CCLOG("Failed to cast defenderIndex in SPELL_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast defenderIndex in SPELL_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("defenderIndex not found in SPELL_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"defenderIndex not found in SPELL_ATTACK_EVENT."));
+        return;
+    }
+
+    // ï¿½ï¿½È¡ damage
+    const EG::Object* objDamage = parameters.getValue(static_cast<unsigned char>(2));
+    if (objDamage) {
+        const EG::ValueObject<int>* voDamage = static_cast<const EG::ValueObject<int>*>(objDamage);
+        if (voDamage) {
+            damage = voDamage->getDataCopy();
+            CCLOG("Received SPELL_ATTACK_EVENT with damage: %d", damage);
+        }
+        else {
+            CCLOG("Failed to cast damage in SPELL_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast damage in SPELL_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("damage not found in SPELL_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"damage not found in SPELL_ATTACK_EVENT."));
+        return;
+    }
+
+    auto targetplayer = (localPlayerNumber == 1) ? player2 : player1;
+    auto localplayer = (localPlayerNumber == 1) ? player1 : player2;
+    cardSprite* defender = NULL;
+    if (playerNumber == localPlayerNumber) { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        if (defenderIndex == -1) { // ï¿½ï¿½ï¿½ï¿½Ó¢ï¿½ï¿½
+            if (!targetplayer->getDamage(damage)) { // ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½
+                endGame(localplayer);
+                cocosUIListener->writeString(EG::JString(L"Hero is dead."));
+            }
+            updatePlayerUI();
+            return;
+        } else {
+            // ï¿½ï¿½È¡ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»
+            defender = oppentMinionCard[defenderIndex];
+            defender->getDamage(damage);
+            checkMinionDie(defender);
+            updateCardStats(defender);
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // .....
+        }
+    }
+    else { // ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        defender = localMinionCard[defenderIndex];
+        if (defenderIndex == -1) { // ï¿½ï¿½ï¿½ï¿½Ó¢ï¿½ï¿½
+            if (!localplayer->getDamage(damage)) { // ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½
+                endGame(targetplayer);
+                cocosUIListener->writeString(EG::JString(L"Hero is dead."));
+            }
+            updatePlayerUI();
+            return;
+        }
+        else {
+            defender = localMinionCard[defenderIndex];
+            defender->getDamage(damage);
+            checkMinionDie(defender);
+            updateCardStats(defender);
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // .....
+        }
+
+    }
+}
+
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+void BoardScene::handle_MinionAttackEvent(const ExitGames::Common::Hashtable& parameters) {
+    int playerNumber = 0;
+    int attackerIndex = -1;
+    int defenderIndex = -1;
+
+    // ï¿½ï¿½È¡ playerNumber
+    const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
+    if (objPlayerNumber) {
+        const EG::ValueObject<int>* voPlayerNumber = static_cast<const EG::ValueObject<int>*>(objPlayerNumber);
+        if (voPlayerNumber) {
+            playerNumber = voPlayerNumber->getDataCopy();
+            CCLOG("Received MINION_ATTACK_EVENT for playerNumber: %d", playerNumber);
+        }
+        else {
+            CCLOG("Failed to cast playerNumber in MINION_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast playerNumber in MINION_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("playerNumber not found in MINION_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"playerNumber not found in MINION_ATTACK_EVENT."));
+        return;
+    }
+
+    // ï¿½ï¿½È¡ attackerIndexï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    const EG::Object* objAttackerIndex = parameters.getValue(static_cast<unsigned char>(1));
+    if (objAttackerIndex) {
+        const EG::ValueObject<int>* voAttackerIndex = static_cast<const EG::ValueObject<int>*>(objAttackerIndex);
+        if (voAttackerIndex) {
+            attackerIndex = voAttackerIndex->getDataCopy();
+            CCLOG("Received MINION_ATTACK_EVENT with attackerIndex: %d", attackerIndex);
+        }
+        else {
+            CCLOG("Failed to cast attackerIndex in MINION_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast attackerIndex in MINION_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("attackerIndex not found in MINION_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"attackerIndex not found in MINION_ATTACK_EVENT."));
+        return;
+    }
+
+    // ï¿½ï¿½È¡ defenderIndexï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    const EG::Object* objDefenderIndex = parameters.getValue(static_cast<unsigned char>(2));
+    if (objDefenderIndex) {
+        const EG::ValueObject<int>* voDefenderIndex = static_cast<const EG::ValueObject<int>*>(objDefenderIndex);
+        if (voDefenderIndex) {
+            defenderIndex = voDefenderIndex->getDataCopy();
+            CCLOG("Received MINION_ATTACK_EVENT with defenderIndex: %d", defenderIndex);
+        }
+        else {
+            CCLOG("Failed to cast defenderIndex in MINION_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast defenderIndex in MINION_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("defenderIndex not found in MINION_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"defenderIndex not found in MINION_ATTACK_EVENT."));
+        return;
+    }
+
+    cardSprite* attacker = nullptr;
+    cardSprite* defender = nullptr;
+    if (playerNumber == localPlayerNumber) { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¹ï¿½ï¿½ï¿½
+        attacker = localMinionCard[attackerIndex];
+        if (defenderIndex != -1)
+            defender = oppentMinionCard[defenderIndex];
+    } else {
+        attacker = oppentMinionCard[attackerIndex];
+        if (defenderIndex != -1)
+            defender = localMinionCard[defenderIndex];
+    }
+
+    if (defenderIndex == -1) { // ï¿½ï¿½ï¿½ï¿½Ó¢ï¿½ï¿½
+        auto targetplayer = (localPlayerNumber == 1) ? player2 : player1;
+        auto localplayer = (localPlayerNumber == 1) ? player1 : player2;
+        if (!targetplayer->getDamage(attacker->currentAttack)) {
+            endGame(localplayer);
+            cocosUIListener->writeString(EG::JString(L"Hero is dead."));
+        }
+        updatePlayerUI();
+        handleMinionAttackHero();
+        return;
+    }
+
+    attacker->getDamage(defender->currentAttack);
+    defender->getDamage(attacker->currentAttack);
+
+    attackmove(playerNumber, attackerIndex, defenderIndex);
+    updateCardStats(defender);
+    updateCardStats(attacker);
+
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    checkMinionDie(attacker);
+    checkMinionDie(defender);
+
+    // ï¿½ï¿½ï¿½ï¿½UI
+    updatePlayerUI();
+
+    // ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+    audioPlayer("Music/attack.mp3", false);
+}
+
+// ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½Æµï¿½Õ½ï¿½ï¿½ Ö»ï¿½Ð¶ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ã¸Ãºï¿½ï¿½ï¿½
 void BoardScene::add_NewCardToBattlefield(int playerNumber, int cardNumber) {
-    // ´´½¨¿¨ÅÆ¾«Áé£¬Ê¹ÓÃÐÞÕýºóµÄ createWithCard ·½·¨
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¾ï¿½ï¿½é£¬Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ createWithCard ï¿½ï¿½ï¿½ï¿½
     auto newCard = jsonmanager.find_by_dbfId(cardNumber);
     if (!newCard) {
         CCLOG("Card data not found for cardNumber: %d", cardNumber);
@@ -1080,11 +1319,11 @@ void BoardScene::add_NewCardToBattlefield(int playerNumber, int cardNumber) {
             EG::JString(std::to_wstring(cardNumber).c_str()));
         return;
     }
-    Size desiredSize(200, 250); // ¸ù¾ÝÐèÒªµ÷Õû
-    // ´´½¨¿¨ÅÆ¾«Áé
-    auto battlefieldCard = cardSprite::createWithCard(newCard, desiredSize); // Ê¹ÓÃÐÞÕýºóµÄ·½·¨
+    Size desiredSize(200, 250); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¾ï¿½ï¿½ï¿½
+    auto battlefieldCard = cardSprite::createWithCard(newCard, desiredSize); // Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½
     if (battlefieldCard) {
-        battlefieldCard->setTag(cardNumber); // Ê¹ÓÃ cardNumber ×÷Îª tag
+        battlefieldCard->setTag(cardNumber); // Ê¹ï¿½ï¿½ cardNumber ï¿½ï¿½Îª tag
 
         auto minionCard = std::dynamic_pointer_cast<MinionCard>(newCard);
         if (!minionCard) throw std::runtime_error("newCard is not a minion card");
@@ -1093,7 +1332,7 @@ void BoardScene::add_NewCardToBattlefield(int playerNumber, int cardNumber) {
         battlefieldCard->currentHealth = minionCard.get()->maxhealth;
 
         //if (playerNumber == localPlayerNumber) {
-        //    // ±¾µØÍæ¼ÒÒÑ´ò³öµÄ¿¨ÅÆ
+        //    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½
         //    //targetPos = Vec2(PLAYED_AREA_PLAYER1_X + localMinionCard.size() * CARD_SPACING, PLAYED_AREA_Y);
         //    localMinionCard.push_back(battlefieldCard);
         //    updatePlayedCardsPosition();
@@ -1106,10 +1345,10 @@ void BoardScene::add_NewCardToBattlefield(int playerNumber, int cardNumber) {
         oppentMinionCard.push_back(battlefieldCard);
         updateEnemyCardsPosition();
 
-        // Ìí¼Óµ½Õ½³¡²¢¼ÇÂ¼Î»ÖÃ
+        // ï¿½ï¿½ï¿½Óµï¿½Õ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼Î»ï¿½ï¿½
         this->addChild(battlefieldCard, 50);
 
-        //// ¶¯»­ÏÔÊ¾¿¨ÅÆ
+        //// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
         //battlefieldCard->runAction(Sequence::create(
         //    FadeIn::create(0.5f),
         //    MoveTo::create(0.5f, targetPos),
@@ -1123,8 +1362,8 @@ void BoardScene::add_NewCardToBattlefield(int playerNumber, int cardNumber) {
     }
 }
 
-// Ìí¼Ó¿¨ÅÆµ½Õ½³¡ Ö»ÓÐ±¾µØÍæ¼Ò´ò³öËæ´ÓÅÆÊ±»áµ÷ÓÃ¸Ãº¯Êý
-void BoardScene::add_HandCardToBattlefield(int playerNumber, cardSprite* minion) {
+// ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½Æµï¿½Õ½ï¿½ï¿½ Ö»ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½Ò´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ã¸Ãºï¿½ï¿½ï¿½
+void BoardScene::add_HandCardToBattlefield(cardSprite* minion) {
     if (!minion) {
         CCLOG("Invalid card: minion is null");
         return;
@@ -1133,7 +1372,7 @@ void BoardScene::add_HandCardToBattlefield(int playerNumber, cardSprite* minion)
     auto minionCard = std::dynamic_pointer_cast<MinionCard>(minion->card);
     if (!minionCard) { throw std::runtime_error("Card is not a minion card"); return; }
 
-    // ÉèÖÃ¿¨ÅÆµÄ¹¥»÷Á¦ºÍÉúÃüÖµ
+    // ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ÆµÄ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
     minion->currentAttack = minionCard->attack;
     minion->currentHealth = minionCard->maxhealth;
 
@@ -1141,11 +1380,11 @@ void BoardScene::add_HandCardToBattlefield(int playerNumber, cardSprite* minion)
     updatePlayedCardsPosition();
 }
 
-// ´¦Àí»ØºÏ¿ªÊ¼ÊÂ¼þ
-void BoardScene::handleTurnStart(const EG::Hashtable& parameters) {
+// ï¿½ï¿½ï¿½ï¿½ï¿½ØºÏ¿ï¿½Ê¼ï¿½Â¼ï¿½
+void BoardScene::handle_TurnStart(const EG::Hashtable& parameters) {
     int receivedPlayerNumber = 0;
 
-    // »ñÈ¡ receivedPlayerNumber
+    // ï¿½ï¿½È¡ receivedPlayerNumber
     const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
     if (objPlayerNumber && objPlayerNumber->getType() == EG::TypeCode::INTEGER) {
         const EG::ValueObject<int>* voPlayerNumber = static_cast<const EG::ValueObject<int>*>(objPlayerNumber);
@@ -1165,31 +1404,31 @@ void BoardScene::handleTurnStart(const EG::Hashtable& parameters) {
         return;
     }
 
-    // ÑéÖ¤ receivedPlayerNumber ÊÇ·ñÓÐÐ§
+    // ï¿½ï¿½Ö¤ receivedPlayerNumber ï¿½Ç·ï¿½ï¿½ï¿½Ð§
     if (receivedPlayerNumber != 1 && receivedPlayerNumber != 2) {
         CCLOG("Invalid receivedPlayerNumber: %d", receivedPlayerNumber);
         cocosUIListener->writeString(EG::JString(L"Invalid receivedPlayerNumber in TURN_START event."));
         return;
     }
 
-    // ¸üÐÂµ±Ç°Íæ¼Ò±àºÅºÍ±¾µØ»ØºÏ×´Ì¬
+    // ï¿½ï¿½ï¿½Âµï¿½Ç°ï¿½ï¿½Ò±ï¿½ÅºÍ±ï¿½ï¿½Ø»Øºï¿½×´Ì¬
     currentPlayerNumber = receivedPlayerNumber;
     isLocalPlayerTurn = (currentPlayerNumber == localPlayerNumber);
 
     CCLOG("currentPlayerNumber set to: %d, isLocalPlayerTurn: %s", currentPlayerNumber, isLocalPlayerTurn ? "true" : "false");
 
-    // È·¶¨µ±Ç°»ØºÏµÄÍæ¼Ò
+    // È·ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ØºÏµï¿½ï¿½ï¿½ï¿½
     players::Player* currentPlayer = (currentPlayerNumber == 1) ? player1 : player2;
     currentPlayer->increaseMana();
     CCLOG("Player %d mana increased to %d", currentPlayerNumber, currentPlayer->getMoney());
 
-    // ¸üÐÂUI
+    // ï¿½ï¿½ï¿½ï¿½UI
     updatePlayerUI();
 
-    // Èç¹ûÊÇ±¾µØÍæ¼ÒµÄ»ØºÏ£¬³éÒ»ÕÅ¿¨ÅÆ
+    // ï¿½ï¿½ï¿½ï¿½Ç±ï¿½ï¿½ï¿½ï¿½ï¿½ÒµÄ»ØºÏ£ï¿½ï¿½ï¿½Ò»ï¿½Å¿ï¿½ï¿½ï¿½
     if (isLocalPlayerTurn) {
         if (currentPlayer->hasCards()) {
-            std::shared_ptr<CardBase> card = currentPlayer->drawCard(); // ³éÈ¡Ò»ÕÅ¿¨ÅÆ
+            std::shared_ptr<CardBase> card = currentPlayer->drawCard(); // ï¿½ï¿½È¡Ò»ï¿½Å¿ï¿½ï¿½ï¿½
             if (card) {
                 addCardToLocalPlayer(card);
                 CCLOG("Player %d drew cardNumber: %d", currentPlayerNumber, card->dbfId);
@@ -1206,10 +1445,10 @@ void BoardScene::handleTurnStart(const EG::Hashtable& parameters) {
     cocosUIListener->writeString(EG::JString(L"Handled TURN_START event. Switched turn."));
 }
 
-// ·Ö·¢³õÊ¼ÊÖÅÆ
+// ï¿½Ö·ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
 void BoardScene::distributeInitialHands()
 {
-    // Îª±¾µØÍæ¼Ò³éÈ¡³õÊ¼ÊÖÅÆ
+    // Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò³ï¿½È¡ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
     for (int i = 0; i < 3; ++i) {
         players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
         std::shared_ptr<CardBase> card = localPlayer->drawCard();
@@ -1225,50 +1464,50 @@ void BoardScene::distributeInitialHands()
     }
 }
 
-// Ìí¼Ó¿¨ÅÆµ½±¾µØÍæ¼Ò£¨½ö±¾µØÏÔÊ¾£©
+// ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½
 void BoardScene::addCardToLocalPlayer(std::shared_ptr<CardBase> card) {
     players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
     // localPlayer->addCardToHand(card);
 
-    Size desiredSize(120, 180); // ¸ù¾ÝÐèÒªµ÷Õû¿í¶ÈºÍ¸ß¶È
+    Size desiredSize(120, 180); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÈºÍ¸ß¶ï¿½
 
     cardSprite* newCard = cardSprite::createWithCard(card, desiredSize);
-    addCardStats(newCard, 5, 1, 1);  // Ä¬ÈÏÊôÐÔ£ºÑªÁ¿5£¬¹¥»÷Á¦1£¬·ÑÓÃ1
+    addCardStats(newCard);  // Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½Ô£ï¿½Ñªï¿½ï¿½5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1
     if (newCard) {
         CCLOG("Successfully created cardSprite for cardNumber: %d", card->dbfId);
-        newCard->setTag(card->dbfId); // Ê¹ÓÃ cardNumber ×÷Îª tag
+        newCard->setTag(card->dbfId); // Ê¹ï¿½ï¿½ cardNumber ï¿½ï¿½Îª tag
         Vec2 originalPos(CARD_REGION_X + localPlayerCards.size() * (newCard->getContentSize().width + 30),
             CARD_REGION_Y);
         CCLOG("Setting card position to: (%f, %f)", originalPos.x, originalPos.y);
 
-        // Ìí¼Óµ½´ý³öÅÆÇøÓò²¢¼ÇÂ¼Î»ÖÃ
+        // ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò²¢¼ï¿½Â¼Î»ï¿½ï¿½
         this->addChild(newCard);
         cardOriginalPositions[newCard] = originalPos;
         localPlayerCards.push_back(newCard);
 
-        // ³éÅÆ¶¯»­ÐòÁÐ
+        // ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         newCard->runAction(Sequence::create(
-            // 1. ÏÈÉÔÎ¢ÉÏ¸¡
+            // 1. ï¿½ï¿½ï¿½ï¿½Î¢ï¿½Ï¸ï¿½
             EaseOut::create(MoveBy::create(0.2f, Vec2(0, 50)), 2.0f),
-            // 2. ÒÆ¶¯µ½Ä¿±êÎ»ÖÃ²¢·Å´ó
+            // 2. ï¿½Æ¶ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Î»ï¿½Ã²ï¿½ï¿½Å´ï¿½
             Spawn::create(
                 EaseInOut::create(MoveTo::create(0.5f, originalPos), 2.0f),
                 EaseInOut::create(ScaleTo::create(0.5f, 1.0f), 2.0f),
-                RotateBy::create(0.5f, 360), // Ðý×ªÒ»È¦
+                RotateBy::create(0.5f, 360), // ï¿½ï¿½×ªÒ»È¦
                 nullptr
             ),
-            // 3. ×îºóÇáÎ¢µ¯ÌøÐ§¹û
+            // 3. ï¿½ï¿½ï¿½ï¿½ï¿½Î¢ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
             EaseElasticOut::create(ScaleTo::create(0.3f, 1.0f)),
             nullptr
         ));
 
-        // ²¥·Å³éÅÆÒôÐ§
+        // ï¿½ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
         audioPlayer("Music/drawcard.mp3", false);
 
-        // ¸üÐÂUI
+        // ï¿½ï¿½ï¿½ï¿½UI
         updatePlayerUI();
 
-        // ÈÕÖ¾
+        // ï¿½ï¿½Ö¾
         cocosUIListener->writeString(EG::JString(L"Added initial card locally."));
     }
     else {
@@ -1278,7 +1517,7 @@ void BoardScene::addCardToLocalPlayer(std::shared_ptr<CardBase> card) {
     }
 }
 
-// ¸¨Öú·½·¨£º¸ù¾Ý¿¨ÅÆID²éÕÒ¾«Áé
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½Ò¾ï¿½ï¿½ï¿½
 cardSprite* BoardScene::findCardByID(int cardNumber) {
     for (auto& cardSprite : localPlayerCards) {
         if (cardSprite->getTag() == cardNumber) {
@@ -1295,9 +1534,11 @@ bool BoardScene::checkMinionDie(cardSprite* minion) {
         CCLOG("Releasing attacker with health %d", minion->currentHealth);
         minion->removeFromParentAndCleanup(true);
 
-        // È»ºóÖ´ÐÐÒÆ³ý¶¯»­
+        // È»ï¿½ï¿½Ö´ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½
         removeCardWithAnimation(minion);
+        return true;
     }
+    return false;
 }
 
 int BoardScene::get_localMinionIndex(cardSprite* minion) {
@@ -1316,37 +1557,37 @@ int BoardScene::get_opponentMinionIndex(cardSprite* minion) {
     return -1;
 }
 
-// ´¦ÀíÓÎÏ·½áÊø
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½
 void BoardScene::endGame(players::Player* winner) {
-    // ÏÔÊ¾ÓÎÏ·½áÊø½çÃæ
+    // ï¿½ï¿½Ê¾ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     std::string result = winner->getNickname() + " Wins!";
     auto resultLabel = Label::createWithTTF(result, "fonts/arial.ttf", 48);
     resultLabel->setPosition(Director::getInstance()->getVisibleSize() / 2);
     this->addChild(resultLabel, 10);
 
-    // Í£Ö¹ÓÎÏ·ÖÐµÄËùÓÐ²Ù×÷
-    // ÀýÈç£¬½ûÓÃ°´Å¥£¬Í£Ö¹¼ÆÊ±µÈ
+    // Í£Ö¹ï¿½ï¿½Ï·ï¿½Ðµï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ç£¬ï¿½ï¿½ï¿½Ã°ï¿½Å¥ï¿½ï¿½Í£Ö¹ï¿½ï¿½Ê±ï¿½ï¿½
     cocosUIListener->writeString(EG::JString(L"Game Over: ") +
         EG::JString(result.c_str()));
 }
 
-// ¸üÐÂÂß¼­
+// ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
 void BoardScene::update(float dt) {
-    // ¸üÐÂPhotonLib
+    // ï¿½ï¿½ï¿½ï¿½PhotonLib
     if (photonLib) {
         photonLib->update();
     }
 }
 
-// Îö¹¹º¯Êý
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 BoardScene::~BoardScene()
 {
-    // ÇåÀí PhotonLib µÄ×Ô¶¨ÒåÊÂ¼þ»Øµ÷
+    // ï¿½ï¿½ï¿½ï¿½ PhotonLib ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½Øµï¿½
     PhotonLib* photonLib = PhotonLib::getInstance();
     if (photonLib) {
         photonLib->setCustomEventCallback(nullptr);
     }
-    // ÇåÀí¿¨ÅÆ¾«Áé
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¾ï¿½ï¿½ï¿½
     for (auto& card : localPlayerCards) {
         if (card) {
             card->removeFromParent();
@@ -1368,7 +1609,7 @@ BoardScene::~BoardScene()
     }
     oppentMinionCard.clear();
 
-    // ÇåÀí¿¨ÅÆÎ»ÖÃ¼ÇÂ¼
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã¼ï¿½Â¼
     cardOriginalPositions.clear();
 
     player1 = nullptr;
@@ -1377,4 +1618,4 @@ BoardScene::~BoardScene()
 }
 
 
-///Ä¿Ç°ÎÊÌâ UI²»ÊÊÅä£¬Ô­À´µÄ¿¨´ò³öÈÔÈ»´æÔÚ£¬Í¬Ê±Ã»ÄÜÕýÈ·µÄÊµÏÖ¶ÔÊÖ¿¨ÅÆµÄÏÔÊ¾
+///Ä¿Ç°ï¿½ï¿½ï¿½ï¿½ UIï¿½ï¿½ï¿½ï¿½ï¿½ä£¬Ô­ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½Ú£ï¿½Í¬Ê±Ã»ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½Êµï¿½Ö¶ï¿½ï¿½Ö¿ï¿½ï¿½Æµï¿½ï¿½ï¿½Ê¾

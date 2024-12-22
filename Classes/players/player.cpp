@@ -53,6 +53,12 @@ namespace players {
         CCLOG("Player %d: %s, Health set to: %d", playerNumber, nickname.c_str(), health);
     }
 
+    bool Player::getDamage(int damage) {
+        health -= damage;
+        if (health <= 0) return false;
+        else return true;
+    }
+
     void Player::increaseMana() {
         if (money < maxmoney) {
             money += 1;

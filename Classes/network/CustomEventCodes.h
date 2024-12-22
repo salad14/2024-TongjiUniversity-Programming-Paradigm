@@ -4,11 +4,11 @@
 
 enum CustomEventCodes {
     PLAY_MINION_CARD = 1,
-    RESET_DECK,
     TURN_START,
     PLAY_SPELL_CARD,
-    ATTACK_EVENT,
-    DRAW_CARD
+    SPELL_ATTACK,
+    DRAW_CARD,
+    MINION_ATTACK
 };
 
 #endif // __CUSTOM_EVENT_CODES_H__
