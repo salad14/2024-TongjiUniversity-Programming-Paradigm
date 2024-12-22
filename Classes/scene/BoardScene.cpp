@@ -82,6 +82,7 @@ bool BoardScene::init() {
 
     // 添加背景图片
     auto title_sprite = Sprite::create("board.png");
+    title_sprite->setTag(0);
     if (title_sprite == nullptr) {
         problemLoading("board.png");
         cocosUIListener->writeString(EG::JString(L"Failed to load board.png"));
@@ -386,10 +387,11 @@ void BoardScene::handleAttack(cardSprite* attacker, cardSprite* defender) {
             removeCardWithAnimation(defender);
         }
     }
-    // 扣除攻击费用
-    if (isLocalPlayerTurn) {
-        player1->money -= 1;
-    }
+    //随从攻击不扣费
+    //// 扣除攻击费用
+    //if (isLocalPlayerTurn) {
+    //    player1->money -= 1;
+    //}
     // 更新UI
     updatePlayerUI();
 
@@ -408,8 +410,7 @@ void BoardScene::handleAttackToHero() {
     auto& attackerStats = cardStats[attackingCard];
     // 扣除对方英雄生命值
     player2->health -= attackerStats.attack;
-    // 扣除攻击费用
-    player1->money -= 1;
+    
     // 更新UI
     updatePlayerUI();
 
@@ -476,21 +477,6 @@ void BoardScene::removeCardWithAnimation(cardSprite* card) {
     audioPlayer("Music/broken.mp3", false);
 }
 
-// 更新敌人的随从位置
-void BoardScene::updateEnemyCardsPosition() {
-    Size visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height * 0.6f);
-    float cardWidth = 100;
-    float spacing = 20;
-
-    float startX = center.x - (oppentplayedCards.size() * (cardWidth + spacing) - spacing) / 2;
-
-    for (size_t i = 0; i < oppentplayedCards.size(); i++) {
-        Sprite* card = oppentplayedCards[i];
-        Vec2 targetPos = Vec2(startX + i * (cardWidth + spacing), center.y);
-        card->runAction(EaseBackOut::create(MoveTo::create(0.3f, targetPos)));
-    }
-}
 // 鼠标移动检测
 void BoardScene::onMouseMove(Event* event) {
     EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
@@ -902,11 +888,27 @@ void BoardScene::updatePlayedCardsPosition() {
     float startX = center.x - (localplayedCards.size() * (cardWidth + spacing) - spacing) / 2;
 
     for (size_t i = 0; i < localplayedCards.size(); i++) {
-        Sprite* card = localplayedCards[i];
+        cardSprite* card = localplayedCards[i];
         Vec2 targetPos = Vec2(startX + i * (cardWidth + spacing), center.y);
         card->runAction(EaseBackOut::create(MoveTo::create(0.3f, targetPos)));
     }
 }
+// 更新敌人的随从位置
+void BoardScene::updateEnemyCardsPosition() {
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height * 0.6f);
+    float cardWidth = 100;
+    float spacing = 20;
+
+    float startX = center.x - (oppentplayedCards.size() * (cardWidth + spacing) - spacing) / 2;
+
+    for (size_t i = 0; i < oppentplayedCards.size(); i++) {
+        cardSprite* card = oppentplayedCards[i];
+        Vec2 targetPos = Vec2(startX + i * (cardWidth + spacing), center.y);
+        card->runAction(EaseBackOut::create(MoveTo::create(0.3f, targetPos)));
+    }
+}
+
 
 // 发送打牌事件
 ///////////////// to be editted
@@ -1002,6 +1004,7 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
         return;
     }
     targetPlayer->setMoney(targetPlayer->getMoney() - cardCost);
+   
     CCLOG("Player %d mana reduced to %d", playerNumber, targetPlayer->getMoney());
 
     // 更新UI
@@ -1009,12 +1012,17 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
 
     // 显示打出的卡牌在战场上
     addCardToBattlefield(playerNumber, cardNumber);
-
     // 如果是本地玩家打出的卡牌，则从手牌中移除
     if (playerNumber == localPlayerNumber) {
         cardSprite* card = findCardByID(cardNumber);
         if (card) {
-            removeCard(card);
+            // 先从手牌中移除卡牌
+            auto iter = std::find(localPlayerCards.begin(), localPlayerCards.end(), card);
+            if (iter != localPlayerCards.end()) {
+                localPlayerCards.erase(iter);
+                cardOriginalPositions.erase(card);
+                card->removeFromParent(); // 从场景中移除原卡牌
+            }
         }
     }
 }
@@ -1033,39 +1041,56 @@ void BoardScene::addCardToBattlefield(int playerNumber, int cardNumber) {
     }
     Size desiredSize(200, 250); // 根据需要调整
     // 创建卡牌精灵
-    auto battlefieldCard = cardSprite::createWithCard(cardData, desiredSize); // 使用修正后的方法
+    
+    auto battlefieldCard = cardSprite::createWithCard(cardData, desiredSize);
     if (battlefieldCard) {
-        battlefieldCard->setTag(cardNumber); // 使用 cardNumber 作为 tag
+        battlefieldCard->setTag(cardNumber);
 
+        // 检查是否已经存在相同的卡牌
+        std::vector<cardSprite*>& targetVector =
+            (playerNumber == localPlayerNumber) ? localplayedCards : oppentplayedCards;
+
+        // 检查是否已经存在相同tag的卡牌
+        auto it = std::find_if(targetVector.begin(), targetVector.end(),
+            [cardNumber](cardSprite* card) { return card->getTag() == cardNumber; });
+
+        if (it != targetVector.end()) {
+            // 如果已存在，先移除旧的
+            (*it)->removeFromParent();
+            targetVector.erase(it);
+        }
+        // 获取屏幕尺寸
+        Size visibleSize = Director::getInstance()->getVisibleSize();
+        Vec2 targetPos;
+        // 添加新卡牌
         if (playerNumber == localPlayerNumber) {
-            // 本地玩家已打出的卡牌
-            //targetPos = Vec2(PLAYED_AREA_PLAYER1_X + localplayedCards.size() * CARD_SPACING, PLAYED_AREA_Y);
             localplayedCards.push_back(battlefieldCard);
-            updatePlayedCardsPosition();
+            targetPos = Vec2(visibleSize.width / 2, visibleSize.height * 0.45f);
         }
         else {
             oppentplayedCards.push_back(battlefieldCard);
-            updateEnemyCardsPosition();
+            targetPos = Vec2(visibleSize.width / 2, visibleSize.height * 0.6f);
         }
-
-        // 添加到战场并记录位置
+        
+        // 添加卡牌属性
+        addCardStats(battlefieldCard, 5, 1, 1);
+        // 添加到场景
         this->addChild(battlefieldCard, 50);
 
-        //// 设置初始位置在目标位置上方并淡入
-        //if (playerNumber == localPlayerNumber) {
-        //    battlefieldCard->setPosition(Vec2(targetPos.x, targetPos.y + 100));
-        //}
-        //else {
-        //    battlefieldCard->setPosition(Vec2(targetPos.x, targetPos.y - 100));
-        //}
-        //battlefieldCard->setOpacity(0);
+        // 设置初始位置并添加动画
+        battlefieldCard->setPosition(Vec2(targetPos.x, playerNumber == localPlayerNumber ?
+            targetPos.y - 200 : targetPos.y + 200));
+        battlefieldCard->setOpacity(0);
 
-        //// 动画显示卡牌
-        //battlefieldCard->runAction(Sequence::create(
-        //    FadeIn::create(0.5f),
-        //    MoveTo::create(0.5f, targetPos),
-        //    nullptr
-        //));
+        // 动画效果
+        battlefieldCard->runAction(Sequence::create(
+            FadeIn::create(0.3f),
+            EaseBackOut::create(MoveTo::create(0.5f, targetPos)),
+            nullptr
+        ));
+        // 更新位置
+        updatePlayedCardsPosition();
+        updateEnemyCardsPosition();
     }
     else {
         CCLOG("Failed to create battlefield card sprite for cardNumber: %d", cardNumber);
