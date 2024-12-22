@@ -92,7 +92,9 @@ constexpr int SETSCENE_CLOSE_BUTTON_Y = 470;                          // ÉèÖÃ³¡¾
 // Î»ÖÃÊôÐÔÓëÆÁÄ»×ø±êÉèÖÃ£¨Ô¤Áô£©
 
 
-// Õ½¶·²ÎÊýÉèÖÃ£¨Ô¤Áô£©
+// Õ½¶·²ÎÊýÉèÖÃ
+constexpr int UPWARLD_ATTACK = 0;			// 0 -> 1¹¥»÷
+constexpr int DOWNWARLD_ATTACK = 1;			// 1 -> 0¹¥»÷
 
 // ÐòºÅÓë»¶Ó­ÌáÊ¾Óï¼üÖµ¶Ô
 

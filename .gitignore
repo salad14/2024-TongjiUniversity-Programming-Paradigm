@@ -1,9 +1,9 @@
 .vs/
-
 Debug.win32/
-
 release/
-
 build/
-
 out/
+*.vcxproj.filters
+proj.win32/test.vcxproj.filters
+*.filters
+Resources/game_log.txt

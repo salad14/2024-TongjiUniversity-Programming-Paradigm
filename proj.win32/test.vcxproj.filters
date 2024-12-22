@@ -2,65 +2,254 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="..\Classes\card\SpellCard.cpp" />
-    <ClCompile Include="..\Classes\deckstring\Base64\base64.cpp" />
-    <ClCompile Include="..\Classes\entity\Hero.cpp" />
-    <ClCompile Include="..\Classes\entity\Minion.cpp" />
-    <ClCompile Include="..\Classes\entity\Spell.cpp" />
-    <ClCompile Include="..\Classes\mechanicsManager\SpellManager.cpp" />
-    <ClCompile Include="..\Classes\network\CocosUIListener.cpp" />
-    <ClCompile Include="..\Classes\network\Photon_lib.cpp" />
-    <ClCompile Include="..\Classes\players\player.cpp" />
-    <ClCompile Include="..\Classes\players\GameData.cpp" />
-    <ClCompile Include="..\Classes\scene\BoardScene.cpp" />
-    <ClCompile Include="..\Classes\scene\EditGroupScene.cpp" />
-    <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp" />
-    <ClCompile Include="..\Classes\scene\MainScene.cpp" />
-    <ClCompile Include="..\Classes\battle\battle.cpp" />
-    <ClCompile Include="..\Classes\scene\MatchingScene.cpp" />
-    <ClCompile Include="..\Classes\scene\SelectionScene.cpp" />
-    <ClCompile Include="..\Classes\scene\SetScene.cpp" />
-    <ClCompile Include="..\Classes\scene\StartScene.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\Classes\battle\battle.cpp">
+      <Filter>src\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\card\SpellCard.cpp">
+      <Filter>src\card</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\deckstring\Base64\base64.cpp">
+      <Filter>src\deckstring\Base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\entity\Hero.cpp">
+      <Filter>src\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\entity\Minion.cpp">
+      <Filter>src\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\entity\Spell.cpp">
+      <Filter>src\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\mechanicsManager\SpellManager.cpp">
+      <Filter>src\mechanicsManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\network\CocosUIListener.cpp">
+      <Filter>src\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\network\Photon_lib.cpp">
+      <Filter>src\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\players\GameData.cpp">
+      <Filter>src\players</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\players\player.cpp">
+      <Filter>src\players</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\SetScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\SelectionScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\EditGroupScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
     <ClCompile Include="Alluse.cpp" />
+    <ClCompile Include="..\Classes\card\card.cpp">
+      <Filter>src\card</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\Classes\card\ALLCard.h" />
-    <ClInclude Include="..\Classes\card\card.h" />
-    <ClInclude Include="..\Classes\card\HeroCard.h" />
-    <ClInclude Include="..\Classes\card\MinionCard.h" />
-    <ClInclude Include="..\Classes\card\SpellCard.h" />
-    <ClInclude Include="..\Classes\deckstring\Base64\base64.h" />
-    <ClInclude Include="..\Classes\deckstring\buffer.h" />
-    <ClInclude Include="..\Classes\deckstring\deckstring.h" />
-    <ClInclude Include="..\Classes\entity\Hero.h" />
-    <ClInclude Include="..\Classes\entity\Minion.h" />
-    <ClInclude Include="..\Classes\entity\Spell.h" />
-    <ClInclude Include="..\Classes\mechanicsManager\JSONManager.h" />
-    <ClInclude Include="..\Classes\mechanicsManager\Spelleffects.h" />
-    <ClInclude Include="..\Classes\mechanicsManager\Manager.h" />
-    <ClInclude Include="..\Classes\mechanicsManager\SpellManager.h" />
-    <ClInclude Include="..\Classes\scene\StartScene.h" />
-    <ClInclude Include="..\Classes\battle\battle.h" />
-    <ClInclude Include="..\Classes\network\CocosUIListener.h" />
-    <ClInclude Include="..\Classes\network\CustomEventCodes.h" />
-    <ClInclude Include="..\Classes\network\Photon_lib.h" />
-    <ClInclude Include="..\Classes\network\UIListener.h" />
-    <ClInclude Include="..\Classes\players\player.h" />
-    <ClInclude Include="..\Classes\players\GameData.h" />
     <ClInclude Include="..\Classes\scene\BoardScene.h" />
-    <ClInclude Include="..\Classes\scene\EditGroupScene.h" />
     <ClInclude Include="..\Classes\scene\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\scene\MainScene.h" />
     <ClInclude Include="..\Classes\scene\MatchingScene.h" />
-    <ClInclude Include="..\Classes\scene\SelectionScene.h" />
-    <ClInclude Include="..\Classes\scene\SetScene.h" />
+    <ClInclude Include="..\Classes\scene\StartScene.h" />
     <ClInclude Include="Alluse.h" />
     <ClInclude Include="AudioPlayer.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="..\Classes\network\CocosUIListener.h">
+      <Filter>src\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\network\Photon_lib.h">
+      <Filter>src\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\network\UIListener.h">
+      <Filter>src\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\network\CustomEventCodes.h">
+      <Filter>src\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\players\GameData.h">
+      <Filter>src\players</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\SetScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\SelectionScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\EditGroupScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\card\ALLCard.h" />
+    <ClInclude Include="..\Classes\mechanicsManager\JSONManager.h">
+      <Filter>src\mechanicsManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />
+    <Filter Include="win32">
+      <UniqueIdentifier>{84a8ebd7-7cf0-47f6-b75e-d441df67da40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\scene">
+      <UniqueIdentifier>{3777e464-746d-4fa5-81fa-cf570984ea48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\players">
+      <UniqueIdentifier>{558e0793-1440-4938-b15f-10e4a6073e10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\battle">
+      <UniqueIdentifier>{bcde80d7-1f9e-4ed4-a9b2-7b10584181d6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\BoardScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\MainScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\MatchingScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\SetScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\StartScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="Alluse.h" />
+    <ClInclude Include="AudioPlayer.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="..\Classes\battle\battle.h">
+      <Filter>src\battle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\card\card.h">
+      <Filter>src\card</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\card\HeroCard.h">
+      <Filter>src\card</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\card\MinionCard.h">
+      <Filter>src\card</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\card\SpellCard.h">
+      <Filter>src\card</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\deckstring\buffer.h">
+      <Filter>src\deckstring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\deckstring\deckstring.h">
+      <Filter>src\deckstring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\deckstring\Base64\base64.h">
+      <Filter>src\deckstring\Base64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\entity\Hero.h">
+      <Filter>src\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\entity\Minion.h">
+      <Filter>src\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\entity\Spell.h">
+      <Filter>src\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mechanicsManager\SpellManager.h">
+      <Filter>src\mechanicsManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mechanicsManager\Spelleffects.h">
+      <Filter>src\mechanicsManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mechanicsManager\Manager.h">
+      <Filter>src\mechanicsManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\network\CocosUIListener.h">
+      <Filter>src\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\network\CustomEventCodes.h">
+      <Filter>src\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\network\Photon_lib.h">
+      <Filter>src\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\network\UIListener.h">
+      <Filter>src\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\players\GameData.h">
+      <Filter>src\players</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\players\player.h">
+      <Filter>src\players</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\BoardScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\HelloWorldScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\MainScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\MatchingScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\SetScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\StartScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{8a8b5049-9b73-43d8-9cc2-b46f334e9def}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\battle">
+      <UniqueIdentifier>{11d4767d-3cad-4795-a6a6-7bb8f2e962f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\card">
+      <UniqueIdentifier>{47c3616c-6a4f-46d9-a553-3db0e876b280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deckstring">
+      <UniqueIdentifier>{2a4e1aff-9cef-436b-a65c-6fbf8a75029e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deckstring\Base64">
+      <UniqueIdentifier>{b4236680-21bf-46d9-8869-c522465bb654}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\entity">
+      <UniqueIdentifier>{6009e2c1-984c-4110-a2a1-51a3ee6df993}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mechanicsManager">
+      <UniqueIdentifier>{4d6d9a09-174f-437b-a505-dd9e5e425ec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\network">
+      <UniqueIdentifier>{8635c655-030c-4b84-a5a0-efb8f8b00687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\players">
+      <UniqueIdentifier>{1548db64-f164-467d-992d-a5eb49c09673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\scene">
+      <UniqueIdentifier>{fd991c27-295e-4772-80a1-8f83e848f2d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

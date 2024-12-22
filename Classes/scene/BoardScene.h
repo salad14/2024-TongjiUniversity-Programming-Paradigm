@@ -13,6 +13,8 @@
 #include <map>
 USING_NS_CC;
 
+static JSONManager jsonmanager("cards/json/cards.json");
+
 class cardSprite : public cocos2d::Sprite {
 public:
     static cardSprite* createWithCard(const std::shared_ptr<CardBase>& card, const Size& desiredSize = Size(200, 250)) {
@@ -37,7 +39,19 @@ public:
 
 public:
     std::shared_ptr<CardBase> card;
+    int currentHealth = 0;
+    int currentAttack = 0;
 };
+
+//class minionSprite : public cocos2d::Sprite {
+//public:
+//    static minionSprite* creatWithCard(const std::shared_ptr<CardBase>& card, const Size& desiredSize = Size(200, 250)) {
+//
+//    }
+//public:
+//    int currentHealth;  // > 0
+//    int attack;
+//};
 
 class BoardScene : public cocos2d::Scene
 {
@@ -77,8 +91,8 @@ private:
     // 手牌管理
     std::vector<cardSprite*> localPlayerCards; // 手中的卡牌
     std::map<cardSprite*, cocos2d::Vec2> cardOriginalPositions; // 卡牌的原始位置
-    std::vector<cardSprite*> localplayedCards;        // 本地玩家已打出的卡牌
-    std::vector<cardSprite*> oppentplayedCards;        // 对方玩家已打出的卡牌
+    std::vector<cardSprite*> localMinionCard;        // 本地玩家场上的随从牌
+    std::vector<cardSprite*> oppentMinionCard;        // 对方玩家场上的随从牌
 
     // 卡牌状态
     cardSprite* selectedCard;//选中
@@ -87,13 +101,13 @@ private:
     DrawNode* attackIndicator;//被攻击
 
     // 卡牌属性结构
-    struct CardInfo {
-        int health;
-        int attack;
-        int cost;
-    };
+    //struct CardInfo {
+    //    int health;
+    //    int attack;
+    //    int cost;
+    //};
 
-    std::map<cardSprite*, CardInfo> cardStats;
+    //std::map<cardSprite*, CardInfo> cardStats;
 
     // 玩家信息 UI
     cocos2d::Label* localPlayerHealth;
@@ -133,23 +147,27 @@ private:
     void removeCard(cardSprite* sprite);
     void updatePlayedCardsPosition();
     void updateEnemyCardsPosition();
-    void addCardStats(cardSprite* card, int health, int attack, int cost);
+    void addCardStats(cardSprite* card);
     void updateCardStats(cardSprite* card);
     void returnCardToHand(cardSprite* card);
-    void addCardToBattlefield(int playerNumber, int cardNumber);
+    void add_NewCardToBattlefield(int playerNumber, int cardNumber);
+    void add_HandCardToBattlefield(int playerNumber, cardSprite* minion);
     void createAttackIndicator(const Vec2& startPos);
     void attackmove(int attackerIndex, int defenderIndex);
-    void handleAttack(cardSprite* attacker, cardSprite* defender);
+    void handleMinionAttackMinion(int attacker, int defender); // 改为index索引用来绑定  方便双方同时处理 需要保证两边同步index相同
     void removeCardWithAnimation(cardSprite* card);
-    void handleAttackToHero();
+    void handleMinionAttackHero(int attackMinion); // 修改为index索引
     // 事件发送
-    void sendPlayCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
+    void sendPlay_MinionCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
+    void sendPlay_SpellCardEvent(PlayerNumber playerNumber, CardNumber dbfID);
+    void sendAttackEvent(PlayerNumber attackPlayer, int attackerIndex, int defenderIndex, int damage);
+    void sendDrawCardEvent(PlayerNumber playerNumber);
     void sendTurnStartEvent();
 
     // Photon 事件处理
-    void handlePlayCard(const ExitGames::Common::Hashtable& parameters);
+    void handle_PlayMinionCard(const ExitGames::Common::Hashtable& parameters);
+    void handle_PlaySpellCard(const ExitGames::Common::Hashtable& parameters);
     void handleTurnStart(const ExitGames::Common::Hashtable& parameters);
-
 
     // 游戏结束
     void endGame(players::Player* winner);
@@ -161,12 +179,20 @@ private:
     void distributeInitialHands();
     void addCardToLocalPlayer(std::shared_ptr<CardBase> card);
 
+
+    // 辅助函数
     // 获取卡牌的费用
-    int getCardCost(std::shared_ptr<CardBase> card);
-    int getCardCost(int cardNumber);
+    //int getCardCost(std::shared_ptr<CardBase> card);
+    //int getCardCost(int cardNumber);
 
+    // 检测随从死亡  同时释放资源和展示动画
+    bool checkMinionDie(cardSprite* minion);
 
-    void initEnemyCards();
+    // 获取场上随从牌的index
+    int get_localMinionIndex(cardSprite* minion);
+    int get_opponentMinionIndex(cardSprite* minion);
+
+    //void initEnemyCards();
 
     // 辅助方法：根据卡牌ID查找精灵
     cardSprite* findCardByID(int cardID);

@@ -48,8 +48,8 @@ bool BoardScene::init() {
     }
 
     // 初始化战场卡牌容器
-    localplayedCards.clear();
-    oppentplayedCards.clear();
+    localMinionCard.clear();
+    oppentMinionCard.clear();
 
     // 获取全局 PhotonLib 实例
     photonLib = PhotonLib::getInstance();
@@ -154,88 +154,81 @@ bool BoardScene::init() {
 }
 
 // 创建敌方随从（仅供测试，初始化了4张随从牌在场上）
-void BoardScene::initEnemyCards() {
-    // 初始化4张敌方随从卡牌
-    for (int i = 0; i < 4; i++) {
-        auto cardData = std::make_shared<MinionCard>();
-        cardData->dbfId = 67; // 示例卡牌ID，确保 67.png 存在于 Resources/cards/
-        // 定义固定大小（根据需要调整）
-        Size desiredSize(120, 180);
-
-        // 使用修正后的 createWithCard 方法创建卡牌精灵，并传入期望大小
-        auto card = cardSprite::createWithCard(cardData, desiredSize);
-        if (card) {
-            // 设置卡牌的缩放（如果需要进一步调整）
-            card->setScale(0.8f); // 如果已在 createWithCard 中调整过大小，可省略
-
-            // 添加属性标签（血量5，攻击力1，费用1）
-            addCardStats(card, 5, 1, 1);
-
-            // 添加到敌方已出牌卡牌列表
-            oppentplayedCards.push_back(card);
-
-            // 添加到场景中，设置 z-order 为 50（根据需要调整）
-            this->addChild(card, 50);
-        }
-        else {
-            CCLOG("Failed to create enemy card sprite for cardNumber: %d", cardData->dbfId);
-        }
-        updateEnemyCardsPosition();
-    }
-
-}
+//void BoardScene::initEnemyCards() {
+//    // 初始化4张敌方随从卡牌
+//    for (int i = 0; i < 4; i++) {
+//        auto cardData = std::make_shared<MinionCard>();
+//        cardData->dbfId = 67; // 示例卡牌ID，确保 67.png 存在于 Resources/cards/
+//        // 定义固定大小（根据需要调整）
+//        Size desiredSize(120, 180);
+//
+//        // 使用修正后的 createWithCard 方法创建卡牌精灵，并传入期望大小
+//        auto card = cardSprite::createWithCard(cardData, desiredSize);
+//        if (card) {
+//            // 设置卡牌的缩放（如果需要进一步调整）
+//            card->setScale(0.8f); // 如果已在 createWithCard 中调整过大小，可省略
+//
+//            // 添加属性标签（血量5，攻击力1，费用1）
+//            addCardStats(card, 5, 1, 1);
+//
+//            // 添加到敌方已出牌卡牌列表
+//            oppentMinionCard.push_back(card);
+//
+//            // 添加到场景中，设置 z-order 为 50（根据需要调整）
+//            this->addChild(card, 50);
+//        }
+//        else {
+//            CCLOG("Failed to create enemy card sprite for cardNumber: %d", cardData->dbfId);
+//        }
+//        updateEnemyCardsPosition();
+//    }
+//
+//}
 
 // 添加卡牌的属性标签
-void BoardScene::addCardStats(cardSprite* card, int health, int attack, int cost) {
-    // 存储卡牌属性
-    cardStats[card] = { health, attack, cost };
+void BoardScene::addCardStats(cardSprite* newcard) {
+    if (!newcard) return;
+    // auto minionCard = std::dynamic_pointer_cast<MinionCard>(newcard->card);
+    // if (!minionCard) throw std::runtime_error("Attacker is not a minion card");
 
     // 创建并添加属性标签
-    auto healthLabel = Label::createWithTTF(std::to_string(health), "fonts/arial.ttf", 24);
-    healthLabel->setPosition(Vec2(card->getContentSize().width - 20, 20));
+    auto healthLabel = Label::createWithTTF(std::to_string(newcard->currentHealth), "fonts/arial.ttf", 24);
+    healthLabel->setPosition(Vec2(newcard->getContentSize().width - 20, 20));
     healthLabel->setName("healthLabel");
     healthLabel->enableOutline(Color4B::BLACK, 2);
-    card->addChild(healthLabel);
+    newcard->addChild(healthLabel);
 
-    auto attackLabel = Label::createWithTTF(std::to_string(attack), "fonts/arial.ttf", 24);
+    auto attackLabel = Label::createWithTTF(std::to_string(newcard->currentAttack), "fonts/arial.ttf", 24);
     attackLabel->setPosition(Vec2(20, 20));
     attackLabel->setName("attackLabel");
     attackLabel->enableOutline(Color4B::BLACK, 2);
-    card->addChild(attackLabel);
+    newcard->addChild(attackLabel);
 
-    auto costLabel = Label::createWithTTF(std::to_string(cost), "fonts/arial.ttf", 24);
-    costLabel->setPosition(Vec2(20, card->getContentSize().height - 20));
-    costLabel->setName("costLabel");
-    costLabel->enableOutline(Color4B::BLACK, 2);
-    card->addChild(costLabel);
+    //auto costLabel = Label::createWithTTF(std::to_string(minionCard->cost), "fonts/arial.ttf", 24);
+    //costLabel->setPosition(Vec2(20, newcard->getContentSize().height - 20));
+    //costLabel->setName("costLabel");
+    //costLabel->enableOutline(Color4B::BLACK, 2);
+    //newcard->addChild(costLabel);
 }
-
 
 // 更新卡牌上的属性标签
 void BoardScene::updateCardStats(cardSprite* card)
 {
     if (!card) return;
-    // 检查卡牌是否存在于 cardStats 中
-    auto it = cardStats.find(card);
-    if (it == cardStats.end()) {
-        return;
-    }
-    // 使用迭代器而不是直接访问
-    const auto& stats = it->second;
     // 获取标签
     auto healthLabel = dynamic_cast<Label*>(card->getChildByName("healthLabel"));
     auto attackLabel = dynamic_cast<Label*>(card->getChildByName("attackLabel"));
-    auto costLabel = dynamic_cast<Label*>(card->getChildByName("costLabel"));
+    //auto costLabel = dynamic_cast<Label*>(newcard->getChildByName("costLabel"));
     // 更新标签
-    if (healthLabel && stats.health > 0) {
-        healthLabel->setString(std::to_string(stats.health));
+    if (healthLabel && card->currentHealth > 0) {
+        healthLabel->setString(std::to_string(card->currentHealth));
     }
     if (attackLabel) {
-        attackLabel->setString(std::to_string(stats.attack));
+        attackLabel->setString(std::to_string(card->currentAttack));
     }
-    if (costLabel) {
-        costLabel->setString(std::to_string(stats.cost));
-    }
+    //if (costLabel) {
+    //    costLabel->setString(std::to_string(minionCard->cost));
+    //}
 }
 
 // 返回主菜单
@@ -306,12 +299,12 @@ void BoardScene::createAttackIndicator(const Vec2& startPos) {
 
 // 攻击动画（通过索引找）（敌我公用）
 void BoardScene::attackmove(int attackerIndex, int defenderIndex) {
-    if (attackerIndex < 0 || attackerIndex >= localplayedCards.size() ||
-        defenderIndex < 0 || defenderIndex >= oppentplayedCards.size()) {
+    if (attackerIndex < 0 || attackerIndex >= localMinionCard.size() ||
+        defenderIndex < 0 || defenderIndex >= oppentMinionCard.size()) {
         return;
     }
-    auto attacker = localplayedCards[attackerIndex];
-    auto defender = oppentplayedCards[defenderIndex];
+    auto attacker = localMinionCard[attackerIndex];
+    auto defender = oppentMinionCard[defenderIndex];
     // 保存攻击者的原始位置
     Vec2 originalPos = attacker->getPosition();
     // 获取目标位置
@@ -337,59 +330,27 @@ void BoardScene::attackmove(int attackerIndex, int defenderIndex) {
 }
 
 // 处理随从对随从的攻击
-void BoardScene::handleAttack(cardSprite* attacker, cardSprite* defender) {
-    // 找到攻击者和防御者的索引
-    int attackerIndex = -1;
-    int defenderIndex = -1;
-    // 查找攻击者索引
-    for (size_t i = 0; i < localplayedCards.size(); i++) {
-        if (localplayedCards[i] == attacker) {
-            attackerIndex = i;
-            break;
-        }
-    }
-    // 查找防御者索引
-    for (size_t i = 0; i < oppentplayedCards.size(); i++) {
-        if (oppentplayedCards[i] == defender) {
-            defenderIndex = i;
-            break;
-        }
-    }
-    // 播放攻击动画
-    if (attackerIndex != -1 && defenderIndex != -1) {
-        attackmove(attackerIndex, defenderIndex);
-    }
-    // 先复制需要的数据，避免后续访问可能被删除的数据
-    int attackPower = 0;
+// 没有发送攻击信号
+void BoardScene::handleMinionAttackMinion(int attackerIndex, int defenderIndex) {
+    if (attackerIndex == -1 || defenderIndex == -1) return;
+    
+    // 转换为本地指针处理
+    auto attacker = localMinionCard[attackerIndex];
+    auto defender = oppentMinionCard[defenderIndex];
 
-    // 获取攻击力
-    auto attackerIt = cardStats.find(attacker);
-    if (attackerIt != cardStats.end()) {
-        attackPower = attackerIt->second.attack;
-    }
-    else {
-        return;
-    }
-    // 获取并更新防御者的生命值
-    auto defenderIt = cardStats.find(defender);
-    if (defenderIt != cardStats.end()) {
-        defenderIt->second.health -= attackPower;
+    // get the minion's attack and healeh
+    attacker->currentHealth -= defender->currentAttack;
+    defender->currentHealth -= attacker->currentAttack;
 
-        // 先更新显示
-        updateCardStats(defender);
+    // UI动画 播放攻击动画 更新卡牌UI
+    attackmove(attackerIndex, defenderIndex);
+    updateCardStats(defender);
+    //////// 这里能否加一个时间延迟功能？  展示随从死亡
 
-        // 如果生命值小于等于0，移除卡牌
-        if (defenderIt->second.health <= 0) {
-            // 先从 cardStats 中移除
-            cardStats.erase(defender);
-            // 然后执行移除动画
-            removeCardWithAnimation(defender);
-        }
-    }
-    // 扣除攻击费用
-    if (isLocalPlayerTurn) {
-        player1->money -= 1;
-    }
+    // 检测随从死亡
+    checkMinionDie(attacker);
+    checkMinionDie(defender);
+
     // 更新UI
     updatePlayerUI();
 
@@ -398,14 +359,12 @@ void BoardScene::handleAttack(cardSprite* attacker, cardSprite* defender) {
 }
 
 // 处理对英雄的攻击
-void BoardScene::handleAttackToHero() {
-    if (!attackingCard || !isLocalPlayerTurn) return;
-    // 检查卡牌是否存在于 cardStats 中
-    if (cardStats.find(attackingCard) == cardStats.end()) {
-        return;
-    }
+//////////////////////// 需要先定义攻击信号
+void BoardScene::handleMinionAttackHero(int attackerIndex) {
     // 获取攻击随从的攻击力
-    auto& attackerStats = cardStats[attackingCard];
+    int attack = oppentMinionCard[attackerIndex]->currentAttack;
+
+    // 这里修改 需要定义信号量
     // 扣除对方英雄生命值
     player2->health -= attackerStats.attack;
     // 扣除攻击费用
@@ -457,13 +416,13 @@ void BoardScene::removeCardWithAnimation(cardSprite* card) {
         ),
         CallFunc::create([this, card]() {
             // 从数组中移除
-            auto it = std::find(oppentplayedCards.begin(), oppentplayedCards.end(), card);
-            if (it != oppentplayedCards.end()) {
-                oppentplayedCards.erase(it);
+            auto it = std::find(oppentMinionCard.begin(), oppentMinionCard.end(), card);
+            if (it != oppentMinionCard.end()) {
+                oppentMinionCard.erase(it);
             }
-            it = std::find(localplayedCards.begin(), localplayedCards.end(), card);
-            if (it != localplayedCards.end()) {
-                localplayedCards.erase(it);
+            it = std::find(localMinionCard.begin(), localMinionCard.end(), card);
+            if (it != localMinionCard.end()) {
+                localMinionCard.erase(it);
             }
             card->removeFromParent();
             updatePlayedCardsPosition();
@@ -476,21 +435,7 @@ void BoardScene::removeCardWithAnimation(cardSprite* card) {
     audioPlayer("Music/broken.mp3", false);
 }
 
-// 更新敌人的随从位置
-void BoardScene::updateEnemyCardsPosition() {
-    Size visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height * 0.6f);
-    float cardWidth = 100;
-    float spacing = 20;
 
-    float startX = center.x - (oppentplayedCards.size() * (cardWidth + spacing) - spacing) / 2;
-
-    for (size_t i = 0; i < oppentplayedCards.size(); i++) {
-        Sprite* card = oppentplayedCards[i];
-        Vec2 targetPos = Vec2(startX + i * (cardWidth + spacing), center.y);
-        card->runAction(EaseBackOut::create(MoveTo::create(0.3f, targetPos)));
-    }
-}
 // 鼠标移动检测
 void BoardScene::onMouseMove(Event* event) {
     EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
@@ -544,17 +489,19 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
         bool targetFound = false;
 
         // 检查敌方随从
-        for (auto enemyCard : oppentplayedCards) {
+        for (int i = 0; i < oppentMinionCard.size(); ++i) {
+            cardSprite* enemyCard = oppentMinionCard[i];
             if (enemyCard->getBoundingBox().containsPoint(touchLocation)) {
-                handleAttack(attackingCard, enemyCard);
+                handleMinionAttackMinion(get_localMinionIndex(attackingCard), i);
                 targetFound = true;
                 break;
             }
         }
 
+
         // 检查敌方英雄区域
         if (!targetFound && touchLocation.y > Director::getInstance()->getVisibleSize().height * 0.7f) {
-            handleAttackToHero();
+            handleMinionAttackHero();
         }
 
         // 清除攻击状态
@@ -567,7 +514,7 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
     }
 
     // 检查是否点击了己方随从
-    for (auto card : localplayedCards) {
+    for (auto card : localMinionCard) {
         if (card->getBoundingBox().containsPoint(touchLocation)) {
             // 检查是否有足够的费用攻击
             if (isLocalPlayerTurn && player1->money >= 1) {
@@ -635,8 +582,7 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
             players::Player* currentPlayer = (currentPlayerNumber == 1) ? player1 : player2;
             if (currentPlayer) {
                 // 获取卡牌费用
-                // int cardNumber = cardToHandle->getTag();
-                int cardCost = getCardCost(cardToHandle->card);
+                int cardCost = jsonmanager.getCardCost(cardToHandle->card->cost);
                 if (currentPlayer->getMoney() >= cardCost) { // 使用 getter 方法
                     // 扣除法力值
                     currentPlayer->setMoney(currentPlayer->getMoney() - cardCost);
@@ -645,16 +591,23 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
                     // 更新UI
                     updatePlayerUI();
 
-                    // 发送 PLAY_CARD 事件
-                    /////////////////// need to be editted!!!
-                    sendPlayCardEvent(localPlayerNumber, cardToHandle->card->dbfId);
+                    if (cardToHandle->card->type == cardType::MINION) {
+                        // 发送 PLAY_MINION_CARD 事件
+                        sendPlay_MinionCardEvent(localPlayerNumber, cardToHandle->card->dbfId);
+                        // 显示卡牌在战场上
+                        add_HandCardToBattlefield(localPlayerNumber, cardToHandle);
+                        // 从手牌中移除卡牌
+                        removeCard(cardToHandle);
+                    }
+                    else if (cardToHandle->card->type == cardType::SPELL) {
+                        // 发送 PLAY_SPELL_CARD 事件
+                        sendPlay_SpellCardEvent(localPlayerNumber, cardToHandle->card->dbfId);
+                        
+                        // 发送信号
+                        /////////// 这里需要处理触发法术的逻辑 \\\\\\\\\\\\\\\\
+                        
 
-                    // 显示卡牌在战场上
-                    /////////////////// need to be editted!!!
-                    addCardToBattlefield(localPlayerNumber, cardToHandle->card->dbfId);
-
-                    // 从手牌中移除卡牌
-                    removeCard(cardToHandle);
+                    }
                 }
                 else
                 {
@@ -669,7 +622,7 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
     }
 }
 
-// 将卡牌放回手牌
+// 取消使用牌， 将卡牌放回手牌
 void BoardScene::returnCardToHand(cardSprite* card) {
     Vec2 originalPos = cardOriginalPositions[card];
     card->runAction(Sequence::create(
@@ -683,18 +636,6 @@ void BoardScene::returnCardToHand(cardSprite* card) {
     if (hoveredCard == card) {
         scaleSprite(card, 1.5f);
     }
-}
-
-
-// 获取卡牌费用
-int BoardScene::getCardCost(std::shared_ptr<CardBase> card) {
-    return card->cost;
-}
-
-int BoardScene::getCardCost(int dbfId) {
-    JSONManager manager("cards/json/cards.json");
-
-    return manager.getCardCost(dbfId); 
 }
 
 void BoardScene::initPlayers()
@@ -871,7 +812,7 @@ void BoardScene::removeCard(cardSprite* sprite) {
         localPlayerCards.erase(iter);
         cardOriginalPositions.erase(sprite);
 
-        // 不再将卡牌添加到 playedCards，这里由 handlePlayCard 统一处理
+        // 不再将卡牌添加到 playedCards，这里由 handle_PlayMinionCard 统一处理
         sprite->removeFromParent();
         // 播放音效
         audioPlayer("Music/putcard.mp3", false);
@@ -899,39 +840,91 @@ void BoardScene::updatePlayedCardsPosition() {
     float cardWidth = 100;
     float spacing = 20;
 
-    float startX = center.x - (localplayedCards.size() * (cardWidth + spacing) - spacing) / 2;
+    float startX = center.x - (localMinionCard.size() * (cardWidth + spacing) - spacing) / 2;
 
-    for (size_t i = 0; i < localplayedCards.size(); i++) {
-        Sprite* card = localplayedCards[i];
+    for (size_t i = 0; i < localMinionCard.size(); i++) {
+        Sprite* card = localMinionCard[i];
         Vec2 targetPos = Vec2(startX + i * (cardWidth + spacing), center.y);
         card->runAction(EaseBackOut::create(MoveTo::create(0.3f, targetPos)));
     }
 }
 
-// 发送打牌事件
-///////////////// to be editted
-void BoardScene::sendPlayCardEvent(PlayerNumber playerNumber, CardNumber cardNumber) {
-    EG::Hashtable eventContent;
-    // 使用不同的 key 来区分 playerNumber 和 cardNumber
-    eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(playerNumber));
-    eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(cardNumber));
+// 更新敌人的随从位置
+void BoardScene::updateEnemyCardsPosition() {
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height * 0.6f);
+    float cardWidth = 100;
+    float spacing = 20;
 
-    photonLib->raiseCustomEvent(eventContent, PLAY_CARD, ExitGames::Lite::ReceiverGroup::ALL);
-    CCLOG("Sent PLAY_CARD event with playerNumber: %d, cardNumber: %d", playerNumber, cardNumber);
-    cocosUIListener->writeString(EG::JString(L"Sent PLAY_CARD event with playerNumber: ") +
+    float startX = center.x - (oppentMinionCard.size() * (cardWidth + spacing) - spacing) / 2;
+
+    for (size_t i = 0; i < oppentMinionCard.size(); i++) {
+        Sprite* card = oppentMinionCard[i];
+        Vec2 targetPos = Vec2(startX + i * (cardWidth + spacing), center.y);
+        card->runAction(EaseBackOut::create(MoveTo::create(0.3f, targetPos)));
+    }
+}
+
+// 发送打随从牌事件 been editted
+void BoardScene::sendPlay_MinionCardEvent(PlayerNumber playerNumber, CardNumber dbfID) {
+    EG::Hashtable eventContent;
+    // 使用不同的 key 来区分 playerNumber 和 cardID
+    eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(playerNumber));
+    eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(dbfID));
+
+    photonLib->raiseCustomEvent(eventContent, PLAY_MINION_CARD, ExitGames::Lite::ReceiverGroup::OTHERS); // 修改为只有对方接收信号
+    CCLOG("Sent PLAY_MINION_CARD event with playerNumber: %d, cardID: %d", playerNumber, dbfID);
+    cocosUIListener->writeString(EG::JString(L"Sent PLAY_MinionCard event with playerNumber: ") +
         EG::JString(std::to_wstring(playerNumber).c_str()) +
-        EG::JString(L", cardNumber: ") +
-        EG::JString(std::to_wstring(cardNumber).c_str()));
+        EG::JString(L", cardID: ") +
+        EG::JString(std::to_wstring(dbfID).c_str()));
+}
+
+// 发送打出法术牌信号
+void BoardScene::sendPlay_SpellCardEvent(PlayerNumber playerNumber, CardNumber dbfID) {
+    EG::Hashtable eventContent;
+    // 使用不同的 key 来区分 playerNumber 和 cardID
+    eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(playerNumber));
+    eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(dbfID));
+
+    // 使用 ReceiverGroup::OTHERS 只发送给其他玩家
+    photonLib->raiseCustomEvent(eventContent, PLAY_SPELL_CARD, ExitGames::Lite::ReceiverGroup::OTHERS);
+    CCLOG("Sent PLAY_SPELL_CARD event with playerNumber: %d, cardID: %d", playerNumber, dbfID);
+    cocosUIListener->writeString(EG::JString(L"Sent PLAY_SpellCard event with playerNumber: ") +
+        EG::JString(std::to_wstring(playerNumber).c_str()) +
+        EG::JString(L", cardID: ") +
+        EG::JString(std::to_wstring(dbfID).c_str()));
+}
+
+// 发送攻击事件
+void BoardScene::sendAttackEvent(PlayerNumber attackPlayer, int attackerIndex, int defenderIndex, int damage) {
+    EG::Hashtable eventContent;
+
+    // 使用不同的 key 来区分攻击玩家、攻击者索引、防御者索引和伤害值
+    eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(attackPlayer));  // 攻击玩家
+    eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(attackerIndex)); // 攻击者索引
+    eventContent.put(static_cast<unsigned char>(2), EG::Helpers::ValueToObject<EG::Object>::get(defenderIndex)); // 防御者索引
+    eventContent.put(static_cast<unsigned char>(3), EG::Helpers::ValueToObject<EG::Object>::get(damage));         // 伤害值
+
+    photonLib->raiseCustomEvent(eventContent, ATTACK_EVENT, ExitGames::Lite::ReceiverGroup::ALL);
+}
+
+// 发送抽牌事件
+void BoardScene::sendDrawCardEvent(PlayerNumber playerNumber) {
+
 }
 
 // 处理 Photon 自定义事件
 void BoardScene::onPhotonEvent(int eventCode, const EG::Hashtable& parameters) {
     switch (eventCode) {
-        case PLAY_CARD:
-            handlePlayCard(parameters);
+        case PLAY_MINION_CARD:
+            handle_PlayMinionCard(parameters);
             break;
         case TURN_START:
             handleTurnStart(parameters);
+            break;
+        case PLAY_SPELL_CARD:
+            handle_PlaySpellCard(parameters);
             break;
         default:
             CCLOG("Received unknown eventCode: %d", eventCode);
@@ -941,10 +934,10 @@ void BoardScene::onPhotonEvent(int eventCode, const EG::Hashtable& parameters) {
     }
 }
 
-// 处理打牌事件
-void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
+// 处理打随从牌事件
+void BoardScene::handle_PlayMinionCard(const EG::Hashtable& parameters) {
     int playerNumber = 0;
-    int cardNumber = 0;
+    int dbfId = 0;
 
     // 获取 playerNumber
     const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
@@ -952,17 +945,17 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
         const EG::ValueObject<int>* voPlayerNumber = static_cast<const EG::ValueObject<int>*>(objPlayerNumber);
         if (voPlayerNumber) {
             playerNumber = voPlayerNumber->getDataCopy();
-            CCLOG("Received PLAY_CARD for playerNumber: %d", playerNumber);
+            CCLOG("Received PLAY_MINION_CARD for playerNumber: %d", playerNumber);
         }
         else {
-            CCLOG("Failed to cast playerNumber in PLAY_CARD event.");
-            cocosUIListener->writeString(EG::JString(L"Failed to cast playerNumber in PLAY_CARD event."));
+            CCLOG("Failed to cast playerNumber in PLAY_MINION_CARD event.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast playerNumber in PLAY_MINION_CARD event."));
             return;
         }
     }
     else {
-        CCLOG("playerNumber not found in PLAY_CARD event.");
-        cocosUIListener->writeString(EG::JString(L"playerNumber not found in PLAY_CARD event."));
+        CCLOG("playerNumber not found in PLAY_MINION_CARD event.");
+        cocosUIListener->writeString(EG::JString(L"playerNumber not found in PLAY_MINION_CARD event."));
         return;
     }
 
@@ -971,20 +964,23 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
     if (objCardNumber) {
         const EG::ValueObject<int>* voCardNumber = static_cast<const EG::ValueObject<int>*>(objCardNumber);
         if (voCardNumber) {
-            cardNumber = voCardNumber->getDataCopy();
-            CCLOG("Received PLAY_CARD with cardNumber: %d for playerNumber: %d", cardNumber, playerNumber);
+            dbfId = voCardNumber->getDataCopy();
+            CCLOG("Received PLAY_MINION_CARD with dbfId: %d for playerNumber: %d", dbfId, playerNumber);
         }
         else {
-            CCLOG("Failed to cast cardNumber in PLAY_CARD event.");
-            cocosUIListener->writeString(EG::JString(L"Failed to cast cardNumber in PLAY_CARD event."));
+            CCLOG("Failed to cast dbfId in PLAY_MINION_CARD event.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast dbfId in PLAY_MINION_CARD event."));
             return;
         }
     }
     else {
-        CCLOG("cardNumber not found in PLAY_CARD event.");
-        cocosUIListener->writeString(EG::JString(L"cardNumber not found in PLAY_CARD event."));
+        CCLOG("dbfId not found in PLAY_MINION_CARD event.");
+        cocosUIListener->writeString(EG::JString(L"dbfId not found in PLAY_MINION_CARD event."));
         return;
     }
+
+    // 如果是己方的出随从牌信号，这里不做处理
+    if (playerNumber == localPlayerNumber) return;
 
     // 确定目标玩家
     players::Player* targetPlayer = nullptr;
@@ -995,9 +991,9 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
         targetPlayer = player2;
     }
     // 扣除目标玩家的法力值
-    int cardCost = getCardCost(cardNumber);
+    int cardCost = jsonmanager.getCardCost(dbfId);
     if (targetPlayer->getMoney() < cardCost) {
-        CCLOG("Player %d does not have enough mana to play card %d.", playerNumber, cardNumber);
+        CCLOG("Player %d does not have enough mana to play card %d.", playerNumber, dbfId);
         cocosUIListener->writeString(EG::JString(L"Player does not have enough mana to play the card."));
         return;
     }
@@ -1007,25 +1003,77 @@ void BoardScene::handlePlayCard(const EG::Hashtable& parameters) {
     // 更新UI
     updatePlayerUI();
 
-    // 显示打出的卡牌在战场上
-    addCardToBattlefield(playerNumber, cardNumber);
-
-    // 如果是本地玩家打出的卡牌，则从手牌中移除
-    if (playerNumber == localPlayerNumber) {
-        cardSprite* card = findCardByID(cardNumber);
-        if (card) {
-            removeCard(card);
-        }
+    if (playerNumber != localPlayerNumber) {
+        // 显示打出的卡牌在战场上
+        add_NewCardToBattlefield(playerNumber, dbfId);
     }
+
+    // 如果是本地玩家打出的卡牌，则从手牌中移除 // 在外部函数已经移除过一次 不需要调用
+    //if (playerNumber == localPlayerNumber) {
+    //    cardSprite* card = findCardByID(cardNumber);
+    //    if (card) {
+    //        removeCard(card);
+    //    }
+    //}
 }
 
-// 添加卡牌到战场
-void BoardScene::addCardToBattlefield(int playerNumber, int cardNumber) {
-    JSONManager manager("cards/json/cards.json");
+// 处理打法术牌事件
+void BoardScene::handle_PlaySpellCard(const EG::Hashtable& parameters) {
+    int playerNumber = 0;
+    int dbfId = 0;
 
+    // 获取 playerNumber
+    const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
+    if (objPlayerNumber) {
+        const EG::ValueObject<int>* voPlayerNumber = static_cast<const EG::ValueObject<int>*>(objPlayerNumber);
+        if (voPlayerNumber) {
+            playerNumber = voPlayerNumber->getDataCopy();
+            CCLOG("Received PLAY_SPELL_CARD for playerNumber: %d", playerNumber);
+        }
+        else {
+            CCLOG("Failed to cast playerNumber in PLAY_SPELL_CARD event.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast playerNumber in PLAY_SPELL_CARD event."));
+            return;
+        }
+    }
+    else {
+        CCLOG("playerNumber not found in PLAY_SPELL_CARD event.");
+        cocosUIListener->writeString(EG::JString(L"playerNumber not found in PLAY_SPELL_CARD event."));
+        return;
+    }
+
+    // 获取 cardNumber
+    const EG::Object* objCardNumber = parameters.getValue(static_cast<unsigned char>(1));
+    if (objCardNumber) {
+        const EG::ValueObject<int>* voCardNumber = static_cast<const EG::ValueObject<int>*>(objCardNumber);
+        if (voCardNumber) {
+            dbfId = voCardNumber->getDataCopy();
+            CCLOG("Received PLAY_SPELL_CARD with dbfId: %d for playerNumber: %d", dbfId, playerNumber);
+        }
+        else {
+            CCLOG("Failed to cast dbfId in PLAY_SPELL_CARD event.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast dbfId in PLAY_SPELL_CARD event."));
+            return;
+        }
+    }
+    else {
+        CCLOG("dbfId not found in PLAY_SPELL_CARD event.");
+        cocosUIListener->writeString(EG::JString(L"dbfId not found in PLAY_SPELL_CARD event."));
+        return;
+    }
+
+    // 如果是己方的出法术牌信号，这里不做处理
+    if (playerNumber == localPlayerNumber) return;
+
+    // UI更新
+    ShowOpponentPlayedCard(dbfId);
+}
+
+// 添加卡牌到战场 只有对手打出随从牌时会调用该函数
+void BoardScene::add_NewCardToBattlefield(int playerNumber, int cardNumber) {
     // 创建卡牌精灵，使用修正后的 createWithCard 方法
-    auto cardData = manager.find_by_dbfId(cardNumber);
-    if (!cardData) {
+    auto newCard = jsonmanager.find_by_dbfId(cardNumber);
+    if (!newCard) {
         CCLOG("Card data not found for cardNumber: %d", cardNumber);
         cocosUIListener->writeString(EG::JString(L"Card data not found for cardNumber: ") +
             EG::JString(std::to_wstring(cardNumber).c_str()));
@@ -1033,32 +1081,32 @@ void BoardScene::addCardToBattlefield(int playerNumber, int cardNumber) {
     }
     Size desiredSize(200, 250); // 根据需要调整
     // 创建卡牌精灵
-    auto battlefieldCard = cardSprite::createWithCard(cardData, desiredSize); // 使用修正后的方法
+    auto battlefieldCard = cardSprite::createWithCard(newCard, desiredSize); // 使用修正后的方法
     if (battlefieldCard) {
         battlefieldCard->setTag(cardNumber); // 使用 cardNumber 作为 tag
 
-        if (playerNumber == localPlayerNumber) {
-            // 本地玩家已打出的卡牌
-            //targetPos = Vec2(PLAYED_AREA_PLAYER1_X + localplayedCards.size() * CARD_SPACING, PLAYED_AREA_Y);
-            localplayedCards.push_back(battlefieldCard);
-            updatePlayedCardsPosition();
-        }
-        else {
-            oppentplayedCards.push_back(battlefieldCard);
-            updateEnemyCardsPosition();
-        }
+        auto minionCard = std::dynamic_pointer_cast<MinionCard>(newCard);
+        if (!minionCard) throw std::runtime_error("newCard is not a minion card");
+
+        battlefieldCard->currentAttack = minionCard.get()->attack;
+        battlefieldCard->currentHealth = minionCard.get()->maxhealth;
+
+        //if (playerNumber == localPlayerNumber) {
+        //    // 本地玩家已打出的卡牌
+        //    //targetPos = Vec2(PLAYED_AREA_PLAYER1_X + localMinionCard.size() * CARD_SPACING, PLAYED_AREA_Y);
+        //    localMinionCard.push_back(battlefieldCard);
+        //    updatePlayedCardsPosition();
+        //}
+        //else {
+        //    oppentMinionCard.push_back(battlefieldCard);
+        //    updateEnemyCardsPosition();
+        //}
+
+        oppentMinionCard.push_back(battlefieldCard);
+        updateEnemyCardsPosition();
 
         // 添加到战场并记录位置
         this->addChild(battlefieldCard, 50);
-
-        //// 设置初始位置在目标位置上方并淡入
-        //if (playerNumber == localPlayerNumber) {
-        //    battlefieldCard->setPosition(Vec2(targetPos.x, targetPos.y + 100));
-        //}
-        //else {
-        //    battlefieldCard->setPosition(Vec2(targetPos.x, targetPos.y - 100));
-        //}
-        //battlefieldCard->setOpacity(0);
 
         //// 动画显示卡牌
         //battlefieldCard->runAction(Sequence::create(
@@ -1074,6 +1122,23 @@ void BoardScene::addCardToBattlefield(int playerNumber, int cardNumber) {
     }
 }
 
+// 添加卡牌到战场 只有本地玩家打出随从牌时会调用该函数
+void BoardScene::add_HandCardToBattlefield(int playerNumber, cardSprite* minion) {
+    if (!minion) {
+        CCLOG("Invalid card: minion is null");
+        return;
+    }
+
+    auto minionCard = std::dynamic_pointer_cast<MinionCard>(minion->card);
+    if (!minionCard) { throw std::runtime_error("Card is not a minion card"); return; }
+
+    // 设置卡牌的攻击力和生命值
+    minion->currentAttack = minionCard->attack;
+    minion->currentHealth = minionCard->maxhealth;
+
+    localMinionCard.push_back(minion);
+    updatePlayedCardsPosition();
+}
 
 // 处理回合开始事件
 void BoardScene::handleTurnStart(const EG::Hashtable& parameters) {
@@ -1225,6 +1290,31 @@ cardSprite* BoardScene::findCardByID(int cardNumber) {
     return nullptr;
 }
 
+bool BoardScene::checkMinionDie(cardSprite* minion) {
+    if (minion->currentHealth <= 0) {
+        CCLOG("Releasing attacker with health %d", minion->currentHealth);
+        minion->removeFromParentAndCleanup(true);
+
+        // 然后执行移除动画
+        removeCardWithAnimation(minion);
+    }
+}
+
+int BoardScene::get_localMinionIndex(cardSprite* minion) {
+    for (size_t i = 0; i < localMinionCard.size(); ++i) {
+        if (localMinionCard[i] == minion) return i;
+    }
+    throw std::runtime_error("Minion not found in localMinionCard");
+    return -1;
+}
+
+int BoardScene::get_opponentMinionIndex(cardSprite* minion) {
+    for (size_t i = 0; i < localMinionCard.size(); ++i) {
+        if (oppentMinionCard[i] == minion) return i;
+    }
+    throw std::runtime_error("Minion not found in opponentMinionCard");
+    return -1;
+}
 
 // 处理游戏结束
 void BoardScene::endGame(players::Player* winner) {
@@ -1264,19 +1354,19 @@ BoardScene::~BoardScene()
     }
     localPlayerCards.clear();
 
-    for (auto& card : localplayedCards) {
+    for (auto& card : localMinionCard) {
         if (card) {
             card->removeFromParent();
         }
     }
-    localplayedCards.clear();
+    localMinionCard.clear();
 
-    for (auto& card : oppentplayedCards) {
+    for (auto& card : oppentMinionCard) {
         if (card) {
             card->removeFromParent();
         }
     }
-    oppentplayedCards.clear();
+    oppentMinionCard.clear();
 
     // 清理卡牌位置记录
     cardOriginalPositions.clear();

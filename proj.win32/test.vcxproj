@@ -156,6 +156,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\card\card.cpp" />
     <ClCompile Include="..\Classes\card\SpellCard.cpp" />
     <ClCompile Include="..\Classes\deckstring\Base64\base64.cpp" />
     <ClCompile Include="..\Classes\entity\Hero.cpp" />
