@@ -222,5 +222,7 @@ void EditGroupScene::onFinishButtonClicked(Ref* sender) {
             RemoveSelf::create(),
             nullptr
         ));
+        // ·µ»ØÖ÷²Ëµ¥
+        Director::getInstance()->popScene();
     }
 }

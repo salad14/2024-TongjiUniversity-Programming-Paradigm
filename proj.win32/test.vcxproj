@@ -167,6 +167,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\players\player.cpp" />
     <ClCompile Include="..\Classes\players\GameData.cpp" />
     <ClCompile Include="..\Classes\scene\BoardScene.cpp" />
+    <ClCompile Include="..\Classes\scene\BoardSceneOffline.cpp" />
     <ClCompile Include="..\Classes\scene\EditGroupScene.cpp" />
     <ClCompile Include="..\Classes\scene\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\scene\MainScene.cpp" />
@@ -194,6 +195,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\mechanicsManager\Spelleffects.h" />
     <ClInclude Include="..\Classes\mechanicsManager\Manager.h" />
     <ClInclude Include="..\Classes\mechanicsManager\SpellManager.h" />
+    <ClInclude Include="..\Classes\scene\BoardSceneOffline.h" />
     <ClInclude Include="..\Classes\scene\StartScene.h" />
     <ClInclude Include="..\Classes\battle\battle.h" />
     <ClInclude Include="..\Classes\network\CocosUIListener.h" />

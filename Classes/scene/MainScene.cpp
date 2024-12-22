@@ -1,5 +1,6 @@
 #include "MainScene.h"
 #include "SetScene.h"
+#include "BoardSceneOffline.h"
 #include "EditGroupScene.h"
 #include "SimpleAudioEngine.h"
 #include "BoardScene.h"
@@ -180,10 +181,9 @@ void MainScene::updatePhoton(float dt)
     }
 }
 
-// normalGame ï¿½ï¿½Å¥ï¿½Ä»Øµï¿½
+// normalGame ÆÕÍ¨Áª»úÄ£Ê½°´Å¥»Øµ÷
 void MainScene::normalGameCallback(Ref* pSender)
 {
-    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     
     // Ê¹ÓÃ pushScene£¬±£ÁôÖ÷²Ëµ¥³¡¾°ÔÚ³¡¾°Õ»ÖÐ
@@ -193,30 +193,24 @@ void MainScene::normalGameCallback(Ref* pSender)
 
 }
 
-// adventureGame ï¿½ï¿½Å¥ï¿½Ä»Øµï¿½
+// adventureGame ÈË»ú¶ÔÕ½Ä£Ê½°´Å¥»Øµ÷
 void MainScene::adventureGameCallback(Ref* pSender)
 {
-    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½?
+    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardSceneOffline::createScene()));
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
 
-// collection ï¿½ï¿½Å¥ï¿½Ä»Øµï¿½
+// collection ×Ô¶¨Òå¿¨×é°´Å¥»Øµ÷
 void MainScene::collectionCallback(Ref* pSender)
 {
-    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
     // Ê¹ÓÃ pushScene£¬±£ÁôÖ÷²Ëµ¥³¡¾°ÔÚ³¡¾°Õ»ÖÐ
-    //Director::getInstance()->pushScene(SelectionScene::create());
-    //Director::getInstance()->pushScene(EditGroupScene::create());
+    Director::getInstance()->pushScene(EditGroupScene::create());
 }
 
-// set ï¿½ï¿½Å¥ï¿½Ä»Øµï¿½
+// set ÉèÖÃ½çÃæ°´Å¥»Øµ÷
 void MainScene::setCallback(Ref* pSender)
 {
-    // ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½?
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
-
-    // Ê¹ï¿½ï¿½ pushSceneï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú³ï¿½ï¿½ï¿½Õ»ï¿½ï¿½
     Director::getInstance()->pushScene(SetScene::create());
-   
 }
