@@ -297,14 +297,24 @@ void BoardScene::createAttackIndicator(const Vec2& startPos) {
     attackIndicator->drawCircle(startPos, 30, 0, 360, false, Color4F(1, 0, 0, 0.8f));
 }
 
-// 攻击动画（通过索引找）（敌我公用）
-void BoardScene::attackmove(int attackerIndex, int defenderIndex) {
-    if (attackerIndex < 0 || attackerIndex >= localMinionCard.size() ||
-        defenderIndex < 0 || defenderIndex >= oppentMinionCard.size()) {
-        return;
+// 攻击动画（通过索引找）（敌我公用） // 默认attacker是己方
+void BoardScene::attackmove(PlayerNumber player, int attackerIndex, int defenderIndex) {
+    if (attackerIndex < 0 || defenderIndex < 0) { return; }
+
+    cardSprite* attacker = nullptr;
+    cardSprite* defender = nullptr;
+    if (player == localPlayerNumber) { // 己方是攻击方
+        if (attackerIndex >= localMinionCard.size() || defenderIndex >= oppentMinionCard.size())
+            throw std::runtime_error("out of index");
+        attacker = localMinionCard[attackerIndex];
+        defender = oppentMinionCard[defenderIndex];
+    } else { //对方是攻击方
+        if (defenderIndex >= localMinionCard.size() || attackerIndex >= oppentMinionCard.size())
+            throw std::runtime_error("out of index");
+        attacker = oppentMinionCard[defenderIndex];
+        defender = localMinionCard[attackerIndex];
     }
-    auto attacker = localMinionCard[attackerIndex];
-    auto defender = oppentMinionCard[defenderIndex];
+
     // 保存攻击者的原始位置
     Vec2 originalPos = attacker->getPosition();
     // 获取目标位置
@@ -330,48 +340,38 @@ void BoardScene::attackmove(int attackerIndex, int defenderIndex) {
 }
 
 // 处理随从对随从的攻击
-// 没有发送攻击信号
-void BoardScene::handleMinionAttackMinion(int attackerIndex, int defenderIndex) {
-    if (attackerIndex == -1 || defenderIndex == -1) return;
-    
-    // 转换为本地指针处理
-    auto attacker = localMinionCard[attackerIndex];
-    auto defender = oppentMinionCard[defenderIndex];
-
-    // get the minion's attack and healeh
-    attacker->currentHealth -= defender->currentAttack;
-    defender->currentHealth -= attacker->currentAttack;
-
-    // UI动画 播放攻击动画 更新卡牌UI
-    attackmove(attackerIndex, defenderIndex);
-    updateCardStats(defender);
-    //////// 这里能否加一个时间延迟功能？  展示随从死亡
-
-    // 检测随从死亡
-    checkMinionDie(attacker);
-    checkMinionDie(defender);
-
-    // 更新UI
-    updatePlayerUI();
-
-    // 播放攻击音效
-    audioPlayer("Music/attack.mp3", false);
-}
+//////////////// 没有发送攻击信号
+//void BoardScene::handleMinionAttackMinion(int attackerIndex, int defenderIndex) {
+//    if (attackerIndex == -1 || defenderIndex == -1) return;
+//    
+//    // 转换为本地指针处理
+//    auto attacker = localMinionCard[attackerIndex];
+//    auto defender = oppentMinionCard[defenderIndex];
+//
+//    // 互相伤害
+//    attacker->currentHealth -= defender->currentAttack;
+//    defender->currentHealth -= attacker->currentAttack;
+//
+//    // UI动画 播放攻击动画 更新卡牌UI
+//    attackmove(attackerIndex, defenderIndex);
+//    updateCardStats(defender);
+//    updateCardStats(attacker);
+//    //////// 这里能否加一个时间延迟功能？  展示随从死亡
+//
+//    // 检测随从死亡
+//    checkMinionDie(attacker);
+//    checkMinionDie(defender);
+//
+//    // 更新UI
+//    updatePlayerUI();
+//
+//    // 播放攻击音效
+//    audioPlayer("Music/attack.mp3", false);
+//}
 
 // 处理对英雄的攻击
 //////////////////////// 需要先定义攻击信号
-void BoardScene::handleMinionAttackHero(int attackerIndex) {
-    // 获取攻击随从的攻击力
-    int attack = oppentMinionCard[attackerIndex]->currentAttack;
-
-    // 这里修改 需要定义信号量
-    // 扣除对方英雄生命值
-    player2->health -= attackerStats.attack;
-    // 扣除攻击费用
-    player1->money -= 1;
-    // 更新UI
-    updatePlayerUI();
-
+void BoardScene::handleMinionAttackHero() {
     // 播放攻击音效
     audioPlayer("Music/attack.mp3", false);
 
@@ -405,7 +405,7 @@ void BoardScene::handleMinionAttackHero(int attackerIndex) {
 void BoardScene::removeCardWithAnimation(cardSprite* card) {
     if (!card) return;
     // 先从 cardStats 中移除
-    cardStats.erase(card);
+    // cardStats.erase(card);
 
     // 卡牌消失动画
     card->runAction(Sequence::create(
@@ -492,16 +492,15 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
         for (int i = 0; i < oppentMinionCard.size(); ++i) {
             cardSprite* enemyCard = oppentMinionCard[i];
             if (enemyCard->getBoundingBox().containsPoint(touchLocation)) {
-                handleMinionAttackMinion(get_localMinionIndex(attackingCard), i);
+                sendMinionAttackEvent(localPlayerNumber, get_localMinionIndex(attackingCard), i);
                 targetFound = true;
                 break;
             }
         }
 
-
         // 检查敌方英雄区域
         if (!targetFound && touchLocation.y > Director::getInstance()->getVisibleSize().height * 0.7f) {
-            handleMinionAttackHero();
+            sendMinionAttackEvent(localPlayerNumber, get_localMinionIndex(attackingCard), -1);
         }
 
         // 清除攻击状态
@@ -516,12 +515,9 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
     // 检查是否点击了己方随从
     for (auto card : localMinionCard) {
         if (card->getBoundingBox().containsPoint(touchLocation)) {
-            // 检查是否有足够的费用攻击
-            if (isLocalPlayerTurn && player1->money >= 1) {
-                attackingCard = card;
-                createAttackIndicator(card->getPosition());
-                return true;
-            }
+            attackingCard = card;
+            createAttackIndicator(card->getPosition());
+            return true;
         }
     }
 
@@ -595,7 +591,7 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
                         // 发送 PLAY_MINION_CARD 事件
                         sendPlay_MinionCardEvent(localPlayerNumber, cardToHandle->card->dbfId);
                         // 显示卡牌在战场上
-                        add_HandCardToBattlefield(localPlayerNumber, cardToHandle);
+                        add_HandCardToBattlefield(cardToHandle);
                         // 从手牌中移除卡牌
                         removeCard(cardToHandle);
                     }
@@ -896,22 +892,44 @@ void BoardScene::sendPlay_SpellCardEvent(PlayerNumber playerNumber, CardNumber d
         EG::JString(std::to_wstring(dbfID).c_str()));
 }
 
-// 发送攻击事件
-void BoardScene::sendAttackEvent(PlayerNumber attackPlayer, int attackerIndex, int defenderIndex, int damage) {
+// 发送随从牌攻击的信号
+void BoardScene::sendMinionAttackEvent(PlayerNumber playerNumber, int attackerIndex, int defenderIndex) {
     EG::Hashtable eventContent;
+    // 使用不同的 key 来区分攻击玩家、攻击者索引和防守者索引
+    eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(playerNumber));
+    eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(attackerIndex));
+    eventContent.put(static_cast<unsigned char>(2), EG::Helpers::ValueToObject<EG::Object>::get(defenderIndex));
 
-    // 使用不同的 key 来区分攻击玩家、攻击者索引、防御者索引和伤害值
-    eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(attackPlayer));  // 攻击玩家
-    eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(attackerIndex)); // 攻击者索引
-    eventContent.put(static_cast<unsigned char>(2), EG::Helpers::ValueToObject<EG::Object>::get(defenderIndex)); // 防御者索引
-    eventContent.put(static_cast<unsigned char>(3), EG::Helpers::ValueToObject<EG::Object>::get(damage));         // 伤害值
+    // 使用 ReceiverGroup::OTHERS 只发送给其他玩家
+    photonLib->raiseCustomEvent(eventContent, MINION_ATTACK, ExitGames::Lite::ReceiverGroup::OTHERS);
 
-    photonLib->raiseCustomEvent(eventContent, ATTACK_EVENT, ExitGames::Lite::ReceiverGroup::ALL);
+    CCLOG("Sent MINION_ATTACK_EVENT with playerNumber: %d, attackerIndex: %d, defenderIndex: %d", playerNumber, attackerIndex, defenderIndex);
+    cocosUIListener->writeString(EG::JString(L"Sent MINION_ATTACK_EVENT with playerNumber: ") +
+        EG::JString(std::to_wstring(playerNumber).c_str()) +
+        EG::JString(L", attackerIndex: ") +
+        EG::JString(std::to_wstring(attackerIndex).c_str()) +
+        EG::JString(L", defenderIndex: ") +
+        EG::JString(std::to_wstring(defenderIndex).c_str()));
 }
 
-// 发送抽牌事件
-void BoardScene::sendDrawCardEvent(PlayerNumber playerNumber) {
+// 发送法术攻击事件
+void BoardScene::sendSpellAttackEvent(PlayerNumber attackPlayer, int defenderIndex, int dbfId) {
+    EG::Hashtable eventContent;
+    // 使用不同的 key 来区分攻击玩家、受攻击玩家和法术卡牌编号
+    eventContent.put(static_cast<unsigned char>(0), EG::Helpers::ValueToObject<EG::Object>::get(attackPlayer));
+    eventContent.put(static_cast<unsigned char>(1), EG::Helpers::ValueToObject<EG::Object>::get(defenderIndex));
+    eventContent.put(static_cast<unsigned char>(2), EG::Helpers::ValueToObject<EG::Object>::get(dbfId));
 
+    // 使用 ReceiverGroup::OTHERS 只发送给其他玩家
+    photonLib->raiseCustomEvent(eventContent, SPELL_ATTACK, ExitGames::Lite::ReceiverGroup::ALL);
+
+    CCLOG("Sent SPELL_ATTACK_EVENT with attackPlayer: %d, defenderIndex: %d, cardID: %d", attackPlayer, defenderIndex, dbfId);
+    cocosUIListener->writeString(EG::JString(L"Sent SPELL_ATTACK_EVENT with attackPlayer: ") +
+        EG::JString(std::to_wstring(attackPlayer).c_str()) +
+        EG::JString(L", defenderIndex: ") +
+        EG::JString(std::to_wstring(defenderIndex).c_str()) +
+        EG::JString(L", cardID: ") +
+        EG::JString(std::to_wstring(dbfId).c_str()));
 }
 
 // 处理 Photon 自定义事件
@@ -921,11 +939,14 @@ void BoardScene::onPhotonEvent(int eventCode, const EG::Hashtable& parameters) {
             handle_PlayMinionCard(parameters);
             break;
         case TURN_START:
-            handleTurnStart(parameters);
+            handle_TurnStart(parameters);
             break;
         case PLAY_SPELL_CARD:
             handle_PlaySpellCard(parameters);
             break;
+        case SPELL_ATTACK:
+        case DRAW_CARD:
+        case MINION_ATTACK:
         default:
             CCLOG("Received unknown eventCode: %d", eventCode);
             cocosUIListener->writeString(EG::JString(L"Received unknown eventCode: ") +
@@ -1017,7 +1038,7 @@ void BoardScene::handle_PlayMinionCard(const EG::Hashtable& parameters) {
     //}
 }
 
-// 处理打法术牌事件
+// 处理打出法术牌事件
 void BoardScene::handle_PlaySpellCard(const EG::Hashtable& parameters) {
     int playerNumber = 0;
     int dbfId = 0;
@@ -1065,8 +1086,226 @@ void BoardScene::handle_PlaySpellCard(const EG::Hashtable& parameters) {
     // 如果是己方的出法术牌信号，这里不做处理
     if (playerNumber == localPlayerNumber) return;
 
+    // 如果是对方打出法术牌
     // UI更新
-    ShowOpponentPlayedCard(dbfId);
+    // ShowOpponentPlayedCard(dbfId);
+}
+
+// 处理法术攻击事件
+void BoardScene::handle_SpellAttackEvent(const EG::Hashtable& parameters) {
+    int playerNumber = 0;
+    int defenderIndex = 0;
+    int damage = 0;
+
+    // 获取 playerNumber
+    const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
+    if (objPlayerNumber) {
+        const EG::ValueObject<int>* voPlayerNumber = static_cast<const EG::ValueObject<int>*>(objPlayerNumber);
+        if (voPlayerNumber) {
+            playerNumber = voPlayerNumber->getDataCopy();
+            CCLOG("Received SPELL_ATTACK_EVENT for playerNumber: %d", playerNumber);
+        }
+        else {
+            CCLOG("Failed to cast playerNumber in SPELL_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast playerNumber in SPELL_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("playerNumber not found in SPELL_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"playerNumber not found in SPELL_ATTACK_EVENT."));
+        return;
+    }
+
+    // 获取 defenderIndex
+    const EG::Object* objDefenderIndex = parameters.getValue(static_cast<unsigned char>(1));
+    if (objDefenderIndex) {
+        const EG::ValueObject<int>* voDefenderIndex = static_cast<const EG::ValueObject<int>*>(objDefenderIndex);
+        if (voDefenderIndex) {
+            defenderIndex = voDefenderIndex->getDataCopy();
+            CCLOG("Received SPELL_ATTACK_EVENT with defenderIndex: %d for playerNumber: %d", defenderIndex, playerNumber);
+        }
+        else {
+            CCLOG("Failed to cast defenderIndex in SPELL_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast defenderIndex in SPELL_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("defenderIndex not found in SPELL_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"defenderIndex not found in SPELL_ATTACK_EVENT."));
+        return;
+    }
+
+    // 获取 damage
+    const EG::Object* objDamage = parameters.getValue(static_cast<unsigned char>(2));
+    if (objDamage) {
+        const EG::ValueObject<int>* voDamage = static_cast<const EG::ValueObject<int>*>(objDamage);
+        if (voDamage) {
+            damage = voDamage->getDataCopy();
+            CCLOG("Received SPELL_ATTACK_EVENT with damage: %d", damage);
+        }
+        else {
+            CCLOG("Failed to cast damage in SPELL_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast damage in SPELL_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("damage not found in SPELL_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"damage not found in SPELL_ATTACK_EVENT."));
+        return;
+    }
+
+    auto targetplayer = (localPlayerNumber == 1) ? player2 : player1;
+    auto localplayer = (localPlayerNumber == 1) ? player1 : player2;
+    cardSprite* defender = NULL;
+    if (playerNumber == localPlayerNumber) { // 己方打出法术牌
+        if (defenderIndex == -1) { // 攻击英雄
+            if (!targetplayer->getDamage(damage)) { // 是否死亡
+                endGame(localplayer);
+                cocosUIListener->writeString(EG::JString(L"Hero is dead."));
+            }
+            updatePlayerUI();
+            return;
+        } else {
+            // 获取对方攻击单位
+            defender = oppentMinionCard[defenderIndex];
+            defender->getDamage(damage);
+            checkMinionDie(defender);
+            updateCardStats(defender);
+            // 法术攻击动画
+            // .....
+        }
+    }
+    else { // 对方打出法术牌
+        defender = localMinionCard[defenderIndex];
+        if (defenderIndex == -1) { // 攻击英雄
+            if (!localplayer->getDamage(damage)) { // 是否死亡
+                endGame(targetplayer);
+                cocosUIListener->writeString(EG::JString(L"Hero is dead."));
+            }
+            updatePlayerUI();
+            return;
+        }
+        else {
+            defender = localMinionCard[defenderIndex];
+            defender->getDamage(damage);
+            checkMinionDie(defender);
+            updateCardStats(defender);
+            // 法术攻击动画
+            // .....
+        }
+
+    }
+}
+
+// 处理随从攻击事件
+void BoardScene::handle_MinionAttackEvent(const ExitGames::Common::Hashtable& parameters) {
+    int playerNumber = 0;
+    int attackerIndex = -1;
+    int defenderIndex = -1;
+
+    // 获取 playerNumber
+    const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
+    if (objPlayerNumber) {
+        const EG::ValueObject<int>* voPlayerNumber = static_cast<const EG::ValueObject<int>*>(objPlayerNumber);
+        if (voPlayerNumber) {
+            playerNumber = voPlayerNumber->getDataCopy();
+            CCLOG("Received MINION_ATTACK_EVENT for playerNumber: %d", playerNumber);
+        }
+        else {
+            CCLOG("Failed to cast playerNumber in MINION_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast playerNumber in MINION_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("playerNumber not found in MINION_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"playerNumber not found in MINION_ATTACK_EVENT."));
+        return;
+    }
+
+    // 获取 attackerIndex（攻击者索引）
+    const EG::Object* objAttackerIndex = parameters.getValue(static_cast<unsigned char>(1));
+    if (objAttackerIndex) {
+        const EG::ValueObject<int>* voAttackerIndex = static_cast<const EG::ValueObject<int>*>(objAttackerIndex);
+        if (voAttackerIndex) {
+            attackerIndex = voAttackerIndex->getDataCopy();
+            CCLOG("Received MINION_ATTACK_EVENT with attackerIndex: %d", attackerIndex);
+        }
+        else {
+            CCLOG("Failed to cast attackerIndex in MINION_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast attackerIndex in MINION_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("attackerIndex not found in MINION_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"attackerIndex not found in MINION_ATTACK_EVENT."));
+        return;
+    }
+
+    // 获取 defenderIndex（防守者索引）
+    const EG::Object* objDefenderIndex = parameters.getValue(static_cast<unsigned char>(2));
+    if (objDefenderIndex) {
+        const EG::ValueObject<int>* voDefenderIndex = static_cast<const EG::ValueObject<int>*>(objDefenderIndex);
+        if (voDefenderIndex) {
+            defenderIndex = voDefenderIndex->getDataCopy();
+            CCLOG("Received MINION_ATTACK_EVENT with defenderIndex: %d", defenderIndex);
+        }
+        else {
+            CCLOG("Failed to cast defenderIndex in MINION_ATTACK_EVENT.");
+            cocosUIListener->writeString(EG::JString(L"Failed to cast defenderIndex in MINION_ATTACK_EVENT."));
+            return;
+        }
+    }
+    else {
+        CCLOG("defenderIndex not found in MINION_ATTACK_EVENT.");
+        cocosUIListener->writeString(EG::JString(L"defenderIndex not found in MINION_ATTACK_EVENT."));
+        return;
+    }
+
+    cardSprite* attacker = nullptr;
+    cardSprite* defender = nullptr;
+    if (playerNumber == localPlayerNumber) { // 本地玩家攻击
+        attacker = localMinionCard[attackerIndex];
+        if (defenderIndex != -1)
+            defender = oppentMinionCard[defenderIndex];
+    } else {
+        attacker = oppentMinionCard[attackerIndex];
+        if (defenderIndex != -1)
+            defender = localMinionCard[defenderIndex];
+    }
+
+    if (defenderIndex == -1) { // 攻击英雄
+        auto targetplayer = (localPlayerNumber == 1) ? player2 : player1;
+        auto localplayer = (localPlayerNumber == 1) ? player1 : player2;
+        if (!targetplayer->getDamage(attacker->currentAttack)) {
+            endGame(localplayer);
+            cocosUIListener->writeString(EG::JString(L"Hero is dead."));
+        }
+        updatePlayerUI();
+        handleMinionAttackHero();
+        return;
+    }
+
+    attacker->getDamage(defender->currentAttack);
+    defender->getDamage(attacker->currentAttack);
+
+    attackmove(playerNumber, attackerIndex, defenderIndex);
+    updateCardStats(defender);
+    updateCardStats(attacker);
+
+    // 检测随从死亡
+    checkMinionDie(attacker);
+    checkMinionDie(defender);
+
+    // 更新UI
+    updatePlayerUI();
+
+    // 播放攻击音效
+    audioPlayer("Music/attack.mp3", false);
 }
 
 // 添加卡牌到战场 只有对手打出随从牌时会调用该函数
@@ -1123,7 +1362,7 @@ void BoardScene::add_NewCardToBattlefield(int playerNumber, int cardNumber) {
 }
 
 // 添加卡牌到战场 只有本地玩家打出随从牌时会调用该函数
-void BoardScene::add_HandCardToBattlefield(int playerNumber, cardSprite* minion) {
+void BoardScene::add_HandCardToBattlefield(cardSprite* minion) {
     if (!minion) {
         CCLOG("Invalid card: minion is null");
         return;
@@ -1141,7 +1380,7 @@ void BoardScene::add_HandCardToBattlefield(int playerNumber, cardSprite* minion)
 }
 
 // 处理回合开始事件
-void BoardScene::handleTurnStart(const EG::Hashtable& parameters) {
+void BoardScene::handle_TurnStart(const EG::Hashtable& parameters) {
     int receivedPlayerNumber = 0;
 
     // 获取 receivedPlayerNumber
@@ -1232,7 +1471,7 @@ void BoardScene::addCardToLocalPlayer(std::shared_ptr<CardBase> card) {
     Size desiredSize(120, 180); // 根据需要调整宽度和高度
 
     cardSprite* newCard = cardSprite::createWithCard(card, desiredSize);
-    addCardStats(newCard, 5, 1, 1);  // 默认属性：血量5，攻击力1，费用1
+    addCardStats(newCard);  // 默认属性：血量5，攻击力1，费用1
     if (newCard) {
         CCLOG("Successfully created cardSprite for cardNumber: %d", card->dbfId);
         newCard->setTag(card->dbfId); // 使用 cardNumber 作为 tag
@@ -1297,7 +1536,9 @@ bool BoardScene::checkMinionDie(cardSprite* minion) {
 
         // 然后执行移除动画
         removeCardWithAnimation(minion);
+        return true;
     }
+    return false;
 }
 
 int BoardScene::get_localMinionIndex(cardSprite* minion) {

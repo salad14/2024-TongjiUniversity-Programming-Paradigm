@@ -32,6 +32,7 @@ namespace players {
         // 获取和设置生命值
         int getHealth() const;
         void setHealth(int hp);
+        bool getDamage(int damage); // true 存活  false 死亡
 
         // 获取和设置法力值
         int getMoney() const;
