@@ -29,3 +29,8 @@ Developed by students from software engineering, Computer Science and Technology
 
 12.20 初步实现了卡组选择界面（假设有6套初始卡组可选）
       注：目前的卡组选择界面暂时放在collection按钮下，与匹配界面衔接待完善
+
+12.22 实现了人机对战模式的全流程，整合了现有的所有场景，现在主菜单所有按钮都有用：
+      常规联机绑定在play按钮
+      线下人机对战绑定在adventure按钮
+      自定义卡组界面（仅有界面，底层逻辑待完善）绑定在collection按钮；
