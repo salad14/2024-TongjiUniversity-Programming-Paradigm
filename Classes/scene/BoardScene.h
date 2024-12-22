@@ -163,7 +163,7 @@ private:
     // ÊÂ¼þ·¢ËÍ
     void sendPlay_MinionCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
     void sendPlay_SpellCardEvent(PlayerNumber playerNumber, CardNumber dbfID);
-    void sendSpellAttackEvent(PlayerNumber attackPlayer, int defenderIndex, int dbfId);
+    void sendSpellAttackEvent(PlayerNumber attackPlayer, int defenderIndex, int damage);
     //void sendDrawCardEvent(PlayerNumber playerNumber);
     void sendMinionAttackEvent(PlayerNumber playerNumber, int attackerIndex, int defenderIndex);
     void sendTurnStartEvent();
