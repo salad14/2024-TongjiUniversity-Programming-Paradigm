@@ -37,6 +37,7 @@ private:
         int health;
         int attack;
         int cost;
+        string type;
     };
     std::map<Sprite*, CardInfo> cardStats;
     // 玩家相关
@@ -68,8 +69,8 @@ private:
     void updatePlayedCardsPosition();
     void updateEnemyCardsPosition();
     // 战斗相关函数
-    void initEnemyCards();
-    void addCardStats(Sprite* card, int health, int attack, int cost);
+    //void initEnemyCards();
+    void addCardStats(Sprite* card, int health, int attack, int cost, string type);
     void createAttackIndicator(const Vec2& startPos);
     void handleAttack(Sprite* attacker, Sprite* defender);
     void handleAttackToHero();
@@ -77,5 +78,16 @@ private:
     void updateCardStats(Sprite* card);
     void returnCardToHand(Sprite* card);
     void attackmove(int attackerIndex, int defenderIndex);//攻击动画
+    void spellmove(Sprite* Target);     //法术牌攻击动画
+
+    // 机器玩家函数
+    void AIplay();
+
+    // 在类定义中添加
+    bool hasAttackedThisTurn = false;  // 记录本回合是否已经有随从攻击
+    Label* gameOverLabel;  // 游戏结束提示标签
+    bool isGameOver;       // 游戏是否结束标志
+    void checkGameOver();  // 检查游戏是否结束
+   
 };
 #endif // __BOARD_SCENE_H__

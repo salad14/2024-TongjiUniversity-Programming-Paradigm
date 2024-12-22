@@ -8,6 +8,8 @@
 #include "MainScene.h"
 #include "proj.win32/Alluse.h"
 #include "proj.win32/audioPlayer.h"
+#include <random>
+#include <windows.h>  // 包含 Sleep 函数
 using namespace std;
 USING_NS_CC;
 
@@ -65,30 +67,34 @@ bool BoardScene::init() {
     createPlayerUI();
     updatePlayerUI();
     initDecks();
-    initEnemyCards();
+    //initEnemyCards();
+    // 初始化游戏结束相关变量
+    isGameOver = false;
+    gameOverLabel = nullptr;
+
     return true;
 }
         
-// 创建敌方随从（仅供测试，初始化了4张随从牌在场上）
-void BoardScene::initEnemyCards() {
-    // 初始化4张敌方随从卡牌
-    for (int i = 0; i < 4; i++) {
-        auto card = Sprite::create("card1.png");
-        card->setScale(0.8f);
-
-        // 添加属性标签
-        addCardStats(card, 5, 1, 1);  // 血量5，攻击力1，费用1
-
-        enemyPlayedCards.push_back(card);
-        this->addChild(card);
-    }
-    updateEnemyCardsPosition();
-}
+//// 创建敌方随从（仅供测试，初始化了4张随从牌在场上）
+//void BoardScene::initEnemyCards() {
+//    // 初始化4张敌方随从卡牌
+//    for (int i = 0; i < 4; i++) {
+//        auto card = Sprite::create("card1.png");
+//        card->setScale(0.8f);
+//
+//        // 添加属性标签
+//        addCardStats(card, 3 + (i % 2) + 1, (i % 2) + 1, (i % 2) + 1, "spell");  
+//
+//        enemyPlayedCards.push_back(card);
+//        this->addChild(card);
+//    }
+//    updateEnemyCardsPosition();
+//}
             
 // 添加卡牌的属性标签
-void BoardScene::addCardStats(Sprite* card, int health, int attack, int cost) {
+void BoardScene::addCardStats(Sprite* card, int health, int attack, int cost,string type) {
     // 存储卡牌属性
-    cardStats[card] = { health, attack, cost };
+    cardStats[card] = { health, attack, cost ,type};
 
     // 创建并添加属性标签
     auto healthLabel = Label::createWithTTF(std::to_string(health), "fonts/arial.ttf", 24);
@@ -108,6 +114,12 @@ void BoardScene::addCardStats(Sprite* card, int health, int attack, int cost) {
     costLabel->setName("costLabel");
     costLabel->enableOutline(Color4B::BLACK, 2);
     card->addChild(costLabel);
+
+    auto typeLabel = Label::createWithTTF(type, "fonts/arial.ttf", 24);
+    typeLabel->setPosition(Vec2(card->getContentSize().width/2, card->getContentSize().height/2));
+    typeLabel->setName("typeLabel");
+    typeLabel->enableOutline(Color4B::BLACK, 10);
+    card->addChild(typeLabel);
 }
   
 // 更新卡牌上的属性标签
@@ -185,100 +197,244 @@ void BoardScene::createAttackIndicator(const Vec2& startPos) {
     
 // 攻击动画（通过索引找）（敌我公用）
 void BoardScene::attackmove(int attackerIndex, int defenderIndex) {
-    if (attackerIndex < 0 || attackerIndex >= playedCards.size() ||
-        defenderIndex < 0 || defenderIndex >= enemyPlayedCards.size()) {
-        return;
+    if (isPlayer1Turn)
+    {
+        if (attackerIndex < 0 || attackerIndex >= playedCards.size() ||
+            defenderIndex < 0 || defenderIndex >= enemyPlayedCards.size()) {
+            return;
+        }
+        auto attacker = playedCards[attackerIndex];
+        auto defender = enemyPlayedCards[defenderIndex];
+        // 保存攻击者的原始位置
+        Vec2 originalPos = attacker->getPosition();
+        // 获取目标位置
+        Vec2 targetPos = defender->getPosition();
+        // 创建攻击动画序列
+        attacker->runAction(Sequence::create(
+            // 快速移动到目标位置
+            EaseIn::create(MoveTo::create(0.2f, targetPos), 2.0f),
+            // 添加一个很短的停顿
+            DelayTime::create(0.1f),
+            // 返回原始位置
+            EaseOut::create(MoveTo::create(0.2f, originalPos), 2.0f),
+            nullptr
+        ));
+        // 可以添加一个简单的受击效果
+        defender->runAction(Sequence::create(
+            // 晃动效果
+            RotateBy::create(0.1f, 10),
+            RotateBy::create(0.1f, -20),
+            RotateBy::create(0.1f, 10),
+            nullptr
+        ));
     }
-    auto attacker = playedCards[attackerIndex];
-    auto defender = enemyPlayedCards[defenderIndex];
-    // 保存攻击者的原始位置
-    Vec2 originalPos = attacker->getPosition();
-    // 获取目标位置
-    Vec2 targetPos = defender->getPosition();
-    // 创建攻击动画序列
-    attacker->runAction(Sequence::create(
-        // 快速移动到目标位置
-        EaseIn::create(MoveTo::create(0.2f, targetPos), 2.0f),
-        // 添加一个很短的停顿
-        DelayTime::create(0.1f),
-        // 返回原始位置
-        EaseOut::create(MoveTo::create(0.2f, originalPos), 2.0f),
-        nullptr
-    ));
-    // 可以添加一个简单的受击效果
-    defender->runAction(Sequence::create(
-        // 晃动效果
-        RotateBy::create(0.1f, 10),
-        RotateBy::create(0.1f, -20),
-        RotateBy::create(0.1f, 10),
-        nullptr
-    ));
+    else
+    {
+        if (attackerIndex < 0 || attackerIndex >= playedCards.size() ||
+            defenderIndex < 0 || defenderIndex >= enemyPlayedCards.size()) {
+            return;
+        }
+        auto attacker = enemyPlayedCards[attackerIndex];
+        auto defender = playedCards[defenderIndex];
+        // 保存攻击者的原始位置
+        Vec2 originalPos = attacker->getPosition();
+        // 获取目标位置
+        Vec2 targetPos = defender->getPosition();
+        // 创建攻击动画序列
+        attacker->runAction(Sequence::create(
+            // 快速移动到目标位置
+            EaseIn::create(MoveTo::create(1.0f, targetPos), 2.0f),
+            // 添加一个很短的停顿
+            DelayTime::create(0.3f),
+            // 返回原始位置
+            EaseOut::create(MoveTo::create(1.0f, originalPos), 2.0f),
+            nullptr
+        ));
+        // 可以添加一个简单的受击效果
+        defender->runAction(Sequence::create(
+            // 晃动效果
+            RotateBy::create(0.1f, 10),
+            RotateBy::create(0.1f, -20),
+            RotateBy::create(0.1f, 10),
+            nullptr
+        ));
+    }
 }
 
+// 法术牌攻击动画
+//效果：
+//1.从2028 * 1280的窗口底端中间发出一个火焰图标（文件路径为“ImageElements / spell.png”）移动到屏幕中上的Target上，表示攻击
+//2. * Sprite Target 缺省为NULL，为NULL时从底端中间移动火焰图标到顶端中间
+void BoardScene::spellmove(Sprite* Target) {
+    // 创建法术图标精灵
+    auto spell = Sprite::create("ImageElements/spell.png");
+    Vec2 targetPos;
+    if (isPlayer1Turn)
+    {
+        // 设置初始位置（底端中间）
+        spell->setPosition(Vec2(2028 / 2, 0));
+        this->addChild(spell);
+        if (Target == NULL) {
+            // 如果没有目标，移动到顶端中间
+            targetPos = Vec2(2028 / 2, 1280);
+
+        }
+        else {
+            // 如果有目标，移动到目标位置
+            targetPos = Target->getPosition();
+        }
+    }
+    else
+    {
+        // 设置初始位置（顶端中间）
+        spell->setPosition(Vec2(2028 / 2, 1280));
+        this->addChild(spell);
+        if (Target == NULL) {
+            // 如果没有目标，移动到底端中间
+            targetPos = Vec2(2028 / 2, 0);
+
+        }
+        else {
+            // 如果有目标，移动到目标位置
+            targetPos = Target->getPosition();
+        }
+    }
+    // 创建移动动作
+    auto moveTo = MoveTo::create(0.8f, targetPos);
+
+    // 创建淡出动作
+    auto fadeOut = FadeOut::create(0.2f);
+
+    // 创建动作序列（移动后淡出并移除）
+    auto sequence = Sequence::create(
+        moveTo,
+        fadeOut,
+        RemoveSelf::create(),
+        nullptr
+    );
+    // 播放音效
+    audioPlayer("Music/spell.mp3", false);
+    // 执行动作
+    spell->runAction(sequence);
+}
 // 处理随从对随从的攻击
 void BoardScene::handleAttack(Sprite* attacker, Sprite* defender) {
-    // 找到攻击者和防御者的索引
-    int attackerIndex = -1;
-    int defenderIndex = -1;
-    // 查找攻击者索引
-    for (size_t i = 0; i < playedCards.size(); i++) {
-        if (playedCards[i] == attacker) {
-            attackerIndex = i;
-            break;
+    if (isPlayer1Turn)
+    {
+        hasAttackedThisTurn = true;  // 标记已经有随从攻击
+        // 找到攻击者和防御者的索引
+        int attackerIndex = -1;
+        int defenderIndex = -1;
+        // 查找攻击者索引
+        for (size_t i = 0; i < playedCards.size(); i++) {
+            if (playedCards[i] == attacker) {
+                attackerIndex = i;
+                break;
+            }
         }
-    }
-    // 查找防御者索引
-    for (size_t i = 0; i < enemyPlayedCards.size(); i++) {
-        if (enemyPlayedCards[i] == defender) {
-            defenderIndex = i;
-            break;
+        // 查找防御者索引
+        for (size_t i = 0; i < enemyPlayedCards.size(); i++) {
+            if (enemyPlayedCards[i] == defender) {
+                defenderIndex = i;
+                break;
+            }
         }
-    }
-    // 播放攻击动画
-    if (attackerIndex != -1 && defenderIndex != -1) {
-        attackmove(attackerIndex, defenderIndex);
-    }
-    // 先复制需要的数据，避免后续访问可能被删除的数据
-    int attackPower = 0;
-
-    // 获取攻击力
-    auto attackerIt = cardStats.find(attacker);
-    if (attackerIt != cardStats.end()) {
-        attackPower = attackerIt->second.attack;
-    }
-    else {
-        return;
-    }
-    // 获取并更新防御者的生命值
-    auto defenderIt = cardStats.find(defender);
-    if (defenderIt != cardStats.end()) {
-        defenderIt->second.health -= attackPower;
-
-        // 先更新显示
-        updateCardStats(defender);
-
-        // 如果生命值小于等于0，移除卡牌
-        if (defenderIt->second.health <= 0) {
-            // 先从 cardStats 中移除
-            cardStats.erase(defender);
-            // 然后执行移除动画
-            removeCardWithAnimation(defender);
+        // 播放攻击动画
+        if (attackerIndex != -1 && defenderIndex != -1) {
+            attackmove(attackerIndex, defenderIndex);
+           
         }
+        // 先复制需要的数据，避免后续访问可能被删除的数据
+        int attackPower = 0;
+        // 获取攻击力
+        auto attackerIt = cardStats.find(attacker);
+        if (attackerIt != cardStats.end()) {
+            attackPower = attackerIt->second.attack;
+        }
+        else {
+            return;
+        }
+        // 获取并更新防御者的生命值
+        auto defenderIt = cardStats.find(defender);
+        if (defenderIt != cardStats.end()) {
+            defenderIt->second.health -= attackPower;
+
+            // 先更新显示
+            updateCardStats(defender);
+
+            // 如果生命值小于等于0，移除卡牌
+            if (defenderIt->second.health <= 0) {
+                // 先从 cardStats 中移除
+                cardStats.erase(defender);
+                // 然后执行移除动画
+                removeCardWithAnimation(defender);
+            }
+        }
+        // 播放攻击音效
+        audioPlayer("Music/attack.mp3", false);
     }
-    // 扣除攻击费用
-    if (isPlayer1Turn) {
-        player1->money -= 1;
+    else
+    {
+        // 找到攻击者和防御者的索引
+        int attackerIndex = -1;
+        int defenderIndex = -1;
+        // 查找攻击者索引
+        for (size_t i = 0; i < enemyPlayedCards.size(); i++) {
+            if (enemyPlayedCards[i] == attacker) {
+                attackerIndex = i;
+                break;
+            }
+        }
+        // 查找防御者索引
+        for (size_t i = 0; i < playedCards.size(); i++) {
+            if (playedCards[i] == defender) {
+                defenderIndex = i;
+                break;
+            }
+        }
+        // 播放攻击动画
+        if (attackerIndex != -1 && defenderIndex != -1) {
+            attackmove(attackerIndex, defenderIndex);
+            //Sleep(2000);
+        }
+        // 先复制需要的数据，避免后续访问可能被删除的数据
+        int attackPower = 0;
+        // 获取攻击力
+        auto attackerIt = cardStats.find(attacker);
+        if (attackerIt != cardStats.end()) {
+            attackPower = attackerIt->second.attack;
+        }
+        else {
+            return;
+        }
+        // 获取并更新防御者的生命值
+        auto defenderIt = cardStats.find(defender);
+        if (defenderIt != cardStats.end()) {
+            defenderIt->second.health -= attackPower;
+
+            // 先更新显示
+            updateCardStats(defender);
+
+            // 如果生命值小于等于0，移除卡牌
+            if (defenderIt->second.health <= 0) {
+                // 先从 cardStats 中移除
+                cardStats.erase(defender);
+                // 然后执行移除动画
+                removeCardWithAnimation(defender);
+            }
+        }
+        // 播放攻击音效
+        audioPlayer("Music/attack.mp3", false);
     }
     // 更新UI
     updatePlayerUI();
-
-    // 播放攻击音效
-    audioPlayer("Music/attack.mp3", false);
+    checkGameOver();
 }
  
 // 处理对英雄的攻击
 void BoardScene::handleAttackToHero() {
     if (!attackingCard || !isPlayer1Turn) return;
+    hasAttackedThisTurn = true;  // 标记已经有随从攻击
     // 检查卡牌是否存在于 cardStats 中
     if (cardStats.find(attackingCard) == cardStats.end()) {
         return;
@@ -287,14 +443,11 @@ void BoardScene::handleAttackToHero() {
     auto& attackerStats = cardStats[attackingCard];
     // 扣除对方英雄生命值
     player2->health -= attackerStats.attack;
-    // 扣除攻击费用
-    player1->money -= 1;
     // 更新UI
     updatePlayerUI();
-
+    checkGameOver();
     // 播放攻击音效
     audioPlayer("Music/attack.mp3", false);
-
     //以下实现一个画面震动效果
     // 获取背景精灵（通过tag或名字）
     auto background = this->getChildByTag(0);  // 之前添加背景时设置的tag为0
@@ -316,7 +469,7 @@ void BoardScene::handleAttackToHero() {
             MoveTo::create(0, originalPos),
             nullptr
         );
-
+       
         background->runAction(shake);
     }
 }
@@ -373,62 +526,68 @@ void BoardScene::updateEnemyCardsPosition() {
 
 // 点击开始处理
 bool BoardScene::onTouchBegan(Touch* touch, Event* event) {
-    Vec2 touchLocation = touch->getLocation();
 
-    // 如果已经选中了攻击随从，检查是否点击了有效目标
-    if (attackingCard) {
-        // 检查是否点击了敌方随从或敌方英雄区域
-        bool targetFound = false;
+    if (isPlayer1Turn)
+    {
+        Vec2 touchLocation = touch->getLocation();
 
-        // 检查敌方随从
-        for (auto enemyCard : enemyPlayedCards) {
-            if (enemyCard->getBoundingBox().containsPoint(touchLocation)) {
-                handleAttack(attackingCard, enemyCard);
-                targetFound = true;
-                break;
+        // 如果已经选中了攻击随从，检查是否点击了有效目标
+        if (attackingCard) {
+            // 检查是否点击了敌方随从或敌方英雄区域
+            bool targetFound = false;
+
+            // 检查敌方随从
+            for (auto enemyCard : enemyPlayedCards) {
+                if (enemyCard->getBoundingBox().containsPoint(touchLocation)) {
+                    handleAttack(attackingCard, enemyCard);
+                    targetFound = true;
+                    break;
+                }
             }
+
+            // 检查敌方英雄区域
+            if (!targetFound && touchLocation.y > Director::getInstance()->getVisibleSize().height * 0.7f) {
+                handleAttackToHero();
+            }
+
+            // 清除攻击状态
+            attackingCard = nullptr;
+            if (attackIndicator) {
+                attackIndicator->removeFromParent();
+                attackIndicator = nullptr;
+            }
+            return true;
         }
 
-        // 检查敌方英雄区域
-        if (!targetFound && touchLocation.y > Director::getInstance()->getVisibleSize().height * 0.7f) {
-            handleAttackToHero();
-        }
-
-        // 清除攻击状态
-        attackingCard = nullptr;
-        if (attackIndicator) {
-            attackIndicator->removeFromParent();
-            attackIndicator = nullptr;
-        }
-        return true;
-    }
-
-    // 检查是否点击了己方随从
-    for (auto card : playedCards) {
-        if (card->getBoundingBox().containsPoint(touchLocation)) {
-            // 检查是否有足够的费用攻击
-            if (isPlayer1Turn && player1->money >= 1) {
+        // 检查是否点击了己方随从
+        for (auto card : playedCards) {
+            if (card->getBoundingBox().containsPoint(touchLocation)) {
+                // 检查是否已经攻击过
+                if (hasAttackedThisTurn) {
+                    // 可以添加提示效果
+                    return false;
+                }
                 attackingCard = card;
                 createAttackIndicator(card->getPosition());
                 return true;
             }
         }
-    }
 
-    // 检查手牌区域的卡牌
-    for (auto it = dragCards.rbegin(); it != dragCards.rend(); ++it) {
-        Sprite* sprite = *it;
-        Vec2 locationInNode = sprite->convertToNodeSpace(touchLocation);
-        Size s = sprite->getContentSize();
-        Rect rect = Rect(0, 0, s.width, s.height);
-        if (rect.containsPoint(locationInNode)) {
-            selectedCard = sprite;
-            scaleSprite(sprite, 1.0f);
-            return true;
+        // 检查手牌区域的卡牌
+        for (auto it = dragCards.rbegin(); it != dragCards.rend(); ++it) {
+            Sprite* sprite = *it;
+            Vec2 locationInNode = sprite->convertToNodeSpace(touchLocation);
+            Size s = sprite->getContentSize();
+            Rect rect = Rect(0, 0, s.width, s.height);
+            if (rect.containsPoint(locationInNode)) {
+                selectedCard = sprite;
+                scaleSprite(sprite, 1.0f);
+                return true;
+            }
         }
+        selectedCard = nullptr;
+        return false;
     }
-    selectedCard = nullptr;
-    return false;
 }
     
 // 点击拖动处理
@@ -468,6 +627,7 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event) {
                 currentPlayer->money -= cardCost;
                 removeCard(cardToHandle);
                 updatePlayerUI();
+                checkGameOver();
             }
             else {
                 returnCardToHand(cardToHandle);
@@ -526,7 +686,7 @@ void BoardScene::scaleSprite(Sprite* sprite, float scale) {
     sprite->runAction(ScaleTo::create(0.1f, scale));
 }
     
-// 移除卡牌
+// 出牌
 void BoardScene::removeCard(Sprite* sprite) {
     if (!sprite) return;
     if (sprite == hoveredCard) {
@@ -538,9 +698,26 @@ void BoardScene::removeCard(Sprite* sprite) {
         dragCards.erase(iter);
         cardOriginalPositions.erase(sprite);
 
-        // 添加到场上
-        playedCards.push_back(sprite);
-        updatePlayedCardsPosition();
+        //如果该张牌是随从
+        if (cardStats[sprite].type == "partner")
+        {
+            // 添加到场上
+            playedCards.push_back(sprite);
+            updatePlayedCardsPosition();
+        }
+        
+        //如果该张牌是法术
+        if (cardStats[sprite].type == "spell")
+        {
+            spellmove(NULL);
+            // 扣除对方英雄生命值
+            player2->health -= cardStats[sprite].attack;
+            // 更新UI
+            updatePlayerUI();
+            checkGameOver();
+            sprite->removeFromParent();
+        }
+        
         // 播放音效
         audioPlayer("music/putcard.mp3", false);
         // 更新剩余手牌位置
@@ -638,8 +815,9 @@ void BoardScene::updatePlayerUI() {
     
 // 回合切换
 void BoardScene::switchTurn() {
-    isPlayer1Turn = !isPlayer1Turn;
 
+    isPlayer1Turn = !isPlayer1Turn;
+    hasAttackedThisTurn = false;  // 重置攻击标记
     // 加载点击音效
     audioPlayer("Music/ClickSoundEffect.mp3", false);
 
@@ -649,6 +827,7 @@ void BoardScene::switchTurn() {
     currentPlayer->money = currentPlayer->maxmoney;
     // 更新UI
     updatePlayerUI();
+    checkGameOver();
     // 回合切换动画
     turnIndicator->runAction(Sequence::create(
         FadeOut::create(0.2f),
@@ -659,6 +838,25 @@ void BoardScene::switchTurn() {
         nullptr
     ));
 
+    AIplay();
+
+    isPlayer1Turn = !isPlayer1Turn;
+    // 切换回合时的逻辑
+    currentPlayer = isPlayer1Turn ? player1 : player2;
+    currentPlayer->maxmoney = std::min(currentPlayer->maxmoney + 1, 10);
+    currentPlayer->money = currentPlayer->maxmoney;
+    // 更新UI
+    updatePlayerUI();
+    checkGameOver();
+    // 回合切换动画
+    turnIndicator->runAction(Sequence::create(
+        FadeOut::create(0.2f),
+        CallFunc::create([this]() {
+            updatePlayerUI();
+            }),
+        FadeIn::create(0.2f),
+        nullptr
+    ));
     // 回合开始时抽一张牌
     drawCard();
 }
@@ -706,8 +904,14 @@ void BoardScene::drawCard() {
         cardOriginalPositions[newCard] = originalPos;
         dragCards.push_back(newCard);
 
+        // 随机生成卡牌属性
+        int health = 1 + rand() % 7;
+        int damage = 1 + rand() % 7;
+        int cost = 1 + rand() % 7;
+        string type = rand() % 2 ? "spell" : "partner";
         // 添加卡牌属性
-        addCardStats(newCard, 5, 1, 1);  // 默认属性：血量5，攻击力1，费用1
+        addCardStats(newCard, health, damage, cost, type);
+
         // 抽牌动画序列
         newCard->runAction(Sequence::create(
             EaseOut::create(MoveBy::create(0.2f, Vec2(0, 50)), 2.0f),
@@ -726,7 +930,121 @@ void BoardScene::drawCard() {
         deckNode1->removeChild(card);
     }
 }
-          
+
+void BoardScene::AIplay() 
+{
+    // 从牌堆抽一张牌
+    auto card = player2->playerCards.back();
+    player2->playerCards.pop_back();
+    auto texture = card->getTexture();
+    card->removeFromParent();
+
+    auto newCard = Sprite::createWithTexture(texture);
+    int health = 1 + rand() % 5;  // 1-5的生命值
+    int damage = 1 + rand() % 4;  // 1-4的攻击力
+    int cost = 1 + rand() % 3;    // 1-3的费用
+    string type = (rand() % 100 < 50) ? "partner" : "spell";  // 50%概率生成随从
+
+    addCardStats(newCard, health, damage, cost, type);
+    if (type == "partner") {
+
+        // 播放出牌音效
+        audioPlayer("Music/putcard.mp3", false);
+        newCard->setScale(0.8f);
+        // 添加到场上
+        enemyPlayedCards.push_back(newCard);
+        this->addChild(newCard);
+        updateEnemyCardsPosition();
+        
+    }
+    else {
+        // 播放出牌音效
+        audioPlayer("Music/putcard.mp3", false);
+        newCard->setScale(0.8f);
+        // 添加到场上
+        enemyPlayedCards.push_back(newCard);
+        this->addChild(newCard);
+        updateEnemyCardsPosition();
+
+        enemyPlayedCards.pop_back();
+        // 缩放一段时间让玩家看清
+        // 设置目标放大和缩小的比例
+        float scaleUpFactor = 2.0f;   // 放大倍数
+        float scaleDownFactor = 0.0f; // 缩小到消失，最终大小为 0
+        // 创建放大动作，3秒钟内从当前大小放大到 2 倍
+        auto scaleUpAction = cocos2d::ScaleTo::create(1.5f, scaleUpFactor); // 放大 1.5 秒
+        // 创建缩小动作，2秒钟内从放大后的状态缩小到 0
+        auto scaleDownAction = cocos2d::ScaleTo::create(1.5f, scaleDownFactor); // 缩小 1.5 秒
+        // 创建消失动作，3秒钟内透明度变为 0
+        auto fadeOutAction = cocos2d::FadeOut::create(1.5f);  // 透明度变化持续 1.5 秒
+        // 在动作结束后移除精灵
+        newCard->runAction(cocos2d::Sequence::create(
+            scaleUpAction,
+            scaleDownAction,
+            fadeOutAction,
+            cocos2d::CallFunc::create([newCard]() {
+                newCard->removeFromParent();  // 动作完成后移除精灵
+                }), nullptr
+        ));
+        updateEnemyCardsPosition();
+       
+        // 使用法术卡直接造成伤害
+        spellmove(nullptr);
+        player1->health -= damage;
+        audioPlayer("Music/spell.mp3", false);
+    }
+
+    // AI随机攻击
+    if (!enemyPlayedCards.empty()) {
+        auto attackerCard = enemyPlayedCards.at(rand() % enemyPlayedCards.size());//随机挑选一个ai方随从
+        // 80%概率发动攻击
+        if (rand() % 100 < 80) {
+            if (!playedCards.empty()) {
+                // 随机选择一个玩家随从攻击
+                int targetIndex = rand() % playedCards.size();
+                handleAttack(attackerCard, playedCards[targetIndex]);
+            }
+            else {
+                // 直接攻击玩家英雄
+                player1->health -= cardStats[attackerCard].attack;
+                audioPlayer("Music/attack.mp3", false);
+                //Sleep(1000);
+
+            }
+        }
+        
+    }
+    updatePlayerUI();
+    checkGameOver();
+}
+
+// 添加游戏结束检查
+void BoardScene::checkGameOver() {
+    if (isGameOver) return;
+
+    if (player1->health <= 0 || player2->health <= 0) {
+        isGameOver = true;
+
+        // 创建游戏结束标签
+        gameOverLabel = Label::createWithTTF(
+            player1->health <= 0 ? "You Lose" : "You Win",
+            "fonts/arial.ttf",
+            120
+        );
+
+        auto visibleSize = Director::getInstance()->getVisibleSize();
+        gameOverLabel->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+        gameOverLabel->enableOutline(Color4B::BLACK, 4);
+        this->addChild(gameOverLabel, 100);
+
+        // 添加动画效果
+        gameOverLabel->setScale(0.1f);
+        gameOverLabel->runAction(Sequence::create(
+            EaseElasticOut::create(ScaleTo::create(1.0f, 1.0f)),
+            nullptr
+        ));
+    }
+}
 // 取消按钮回调
 void BoardScene::cancelCallback(Ref* pSender) {
     // 加载点击音效

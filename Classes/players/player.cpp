@@ -17,7 +17,7 @@ Player::Player(const string s)
 void Player::setPlayerCards()
 {
 	for (int i = 0; i < 30; ++i) {
-		auto sprite = Sprite::create("cardfortest.png");
+		auto sprite = Sprite::create("card1.png");
 		this->playerCards.push_back(sprite);
 	}
 }
