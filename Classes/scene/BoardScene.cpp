@@ -153,6 +153,91 @@ bool BoardScene::init() {
     return true;
 }
 
+// 创建敌方随从（仅供测试，初始化了4张随从牌在场上）
+void BoardScene::initEnemyCards() {
+    // 初始化4张敌方随从卡牌
+    for (int i = 0; i < 4; i++) {
+        auto cardData = std::make_shared<MinionCard>();
+        cardData->dbfId = 67; // 示例卡牌ID，确保 67.png 存在于 Resources/cards/
+        // 定义固定大小（根据需要调整）
+        Size desiredSize(120, 180);
+
+        // 使用修正后的 createWithCard 方法创建卡牌精灵，并传入期望大小
+        auto card = cardSprite::createWithCard(cardData, desiredSize);
+        if (card) {
+            // 设置卡牌的缩放（如果需要进一步调整）
+            card->setScale(0.8f); // 如果已在 createWithCard 中调整过大小，可省略
+
+            // 添加属性标签（血量5，攻击力1，费用1）
+            addCardStats(card, 5, 1, 1);
+
+            // 添加到敌方已出牌卡牌列表
+            oppentplayedCards.push_back(card);
+
+            // 添加到场景中，设置 z-order 为 50（根据需要调整）
+            this->addChild(card, 50);
+        }
+        else {
+            CCLOG("Failed to create enemy card sprite for cardNumber: %d", cardData->dbfId);
+        }
+        updateEnemyCardsPosition();
+    }
+
+}
+
+// 添加卡牌的属性标签
+void BoardScene::addCardStats(cardSprite* card, int health, int attack, int cost) {
+    // 存储卡牌属性
+    cardStats[card] = { health, attack, cost };
+
+    // 创建并添加属性标签
+    auto healthLabel = Label::createWithTTF(std::to_string(health), "fonts/arial.ttf", 24);
+    healthLabel->setPosition(Vec2(card->getContentSize().width - 20, 20));
+    healthLabel->setName("healthLabel");
+    healthLabel->enableOutline(Color4B::BLACK, 2);
+    card->addChild(healthLabel);
+
+    auto attackLabel = Label::createWithTTF(std::to_string(attack), "fonts/arial.ttf", 24);
+    attackLabel->setPosition(Vec2(20, 20));
+    attackLabel->setName("attackLabel");
+    attackLabel->enableOutline(Color4B::BLACK, 2);
+    card->addChild(attackLabel);
+
+    auto costLabel = Label::createWithTTF(std::to_string(cost), "fonts/arial.ttf", 24);
+    costLabel->setPosition(Vec2(20, card->getContentSize().height - 20));
+    costLabel->setName("costLabel");
+    costLabel->enableOutline(Color4B::BLACK, 2);
+    card->addChild(costLabel);
+}
+
+
+// 更新卡牌上的属性标签
+void BoardScene::updateCardStats(cardSprite* card)
+{
+    if (!card) return;
+    // 检查卡牌是否存在于 cardStats 中
+    auto it = cardStats.find(card);
+    if (it == cardStats.end()) {
+        return;
+    }
+    // 使用迭代器而不是直接访问
+    const auto& stats = it->second;
+    // 获取标签
+    auto healthLabel = dynamic_cast<Label*>(card->getChildByName("healthLabel"));
+    auto attackLabel = dynamic_cast<Label*>(card->getChildByName("attackLabel"));
+    auto costLabel = dynamic_cast<Label*>(card->getChildByName("costLabel"));
+    // 更新标签
+    if (healthLabel && stats.health > 0) {
+        healthLabel->setString(std::to_string(stats.health));
+    }
+    if (attackLabel) {
+        attackLabel->setString(std::to_string(stats.attack));
+    }
+    if (costLabel) {
+        costLabel->setString(std::to_string(stats.cost));
+    }
+}
+
 // 返回主菜单
 void BoardScene::cancelCallback(Ref* pSender)
 {
@@ -204,47 +289,208 @@ void BoardScene::checkDropArea() {
     bool inDropArea =
         abs(spritePos.x - center.x) <= PUTOUT_CARD_REGION_HALF_X &&
         abs(spritePos.y - center.y) <= PUTOUT_CARD_REGION_HALF_Y;
+}
 
-    if (inDropArea)
-    {
-        // 直接设置卡牌颜色和描边
-        selectedCard->setColor(Color3B(255, 100, 100));  // 使用较浅的红色
+// 瞄准 选择攻击对象
+void BoardScene::createAttackIndicator(const Vec2& startPos) {
+    if (attackIndicator) {
+        attackIndicator->removeFromParent();
+    }
 
-        // 创建一个描边效果
-        if (!selectedCard->getChildByName("outline"))
-        {
-            auto cardSize = selectedCard->getContentSize();
-            auto outline = DrawNode::create();
-            outline->setName("outline");
+    attackIndicator = DrawNode::create();
+    this->addChild(attackIndicator, 100);
 
-            // 绘制粗边框，这里设置边框宽度为5像素
-            Vec2 vertices[] = {
-                Vec2(0, 0),
-                Vec2(cardSize.width, 0),
-                Vec2(cardSize.width, cardSize.height),
-                Vec2(0, cardSize.height)
-            };
+    // 绘制红色瞄准圈
+    attackIndicator->drawCircle(startPos, 30, 0, 360, false, Color4F(1, 0, 0, 0.8f));
+}
 
-            outline->drawPolygon(vertices, 4,
-                Color4F(1, 0, 0, 0.0f),     // 填充颜色（透明）
-                5.0f,                        // 边框宽度
-                Color4F(1, 0, 0, 1.0f)      // 边框颜色（红色）
-            );
+// 攻击动画（通过索引找）（敌我公用）
+void BoardScene::attackmove(int attackerIndex, int defenderIndex) {
+    if (attackerIndex < 0 || attackerIndex >= localplayedCards.size() ||
+        defenderIndex < 0 || defenderIndex >= oppentplayedCards.size()) {
+        return;
+    }
+    auto attacker = localplayedCards[attackerIndex];
+    auto defender = oppentplayedCards[defenderIndex];
+    // 保存攻击者的原始位置
+    Vec2 originalPos = attacker->getPosition();
+    // 获取目标位置
+    Vec2 targetPos = defender->getPosition();
+    // 创建攻击动画序列
+    attacker->runAction(Sequence::create(
+        // 快速移动到目标位置
+        EaseIn::create(MoveTo::create(0.2f, targetPos), 2.0f),
+        // 添加一个很短的停顿
+        DelayTime::create(0.1f),
+        // 返回原始位置
+        EaseOut::create(MoveTo::create(0.2f, originalPos), 2.0f),
+        nullptr
+    ));
+    // 可以添加一个简单的受击效果
+    defender->runAction(Sequence::create(
+        // 晃动效果
+        RotateBy::create(0.1f, 10),
+        RotateBy::create(0.1f, -20),
+        RotateBy::create(0.1f, 10),
+        nullptr
+    ));
+}
 
-            selectedCard->addChild(outline, 1);
+// 处理随从对随从的攻击
+void BoardScene::handleAttack(cardSprite* attacker, cardSprite* defender) {
+    // 找到攻击者和防御者的索引
+    int attackerIndex = -1;
+    int defenderIndex = -1;
+    // 查找攻击者索引
+    for (size_t i = 0; i < localplayedCards.size(); i++) {
+        if (localplayedCards[i] == attacker) {
+            attackerIndex = i;
+            break;
         }
     }
-    else
-    {
-        selectedCard->setColor(Color3B::WHITE);
-        // 移除描边效果
-        auto outline = selectedCard->getChildByName("outline");
-        if (outline) {
-            outline->removeFromParent();
+    // 查找防御者索引
+    for (size_t i = 0; i < oppentplayedCards.size(); i++) {
+        if (oppentplayedCards[i] == defender) {
+            defenderIndex = i;
+            break;
         }
+    }
+    // 播放攻击动画
+    if (attackerIndex != -1 && defenderIndex != -1) {
+        attackmove(attackerIndex, defenderIndex);
+    }
+    // 先复制需要的数据，避免后续访问可能被删除的数据
+    int attackPower = 0;
+
+    // 获取攻击力
+    auto attackerIt = cardStats.find(attacker);
+    if (attackerIt != cardStats.end()) {
+        attackPower = attackerIt->second.attack;
+    }
+    else {
+        return;
+    }
+    // 获取并更新防御者的生命值
+    auto defenderIt = cardStats.find(defender);
+    if (defenderIt != cardStats.end()) {
+        defenderIt->second.health -= attackPower;
+
+        // 先更新显示
+        updateCardStats(defender);
+
+        // 如果生命值小于等于0，移除卡牌
+        if (defenderIt->second.health <= 0) {
+            // 先从 cardStats 中移除
+            cardStats.erase(defender);
+            // 然后执行移除动画
+            removeCardWithAnimation(defender);
+        }
+    }
+    // 扣除攻击费用
+    if (isLocalPlayerTurn) {
+        player1->money -= 1;
+    }
+    // 更新UI
+    updatePlayerUI();
+
+    // 播放攻击音效
+    audioPlayer("Music/attack.mp3", false);
+}
+
+// 处理对英雄的攻击
+void BoardScene::handleAttackToHero() {
+    if (!attackingCard || !isLocalPlayerTurn) return;
+    // 检查卡牌是否存在于 cardStats 中
+    if (cardStats.find(attackingCard) == cardStats.end()) {
+        return;
+    }
+    // 获取攻击随从的攻击力
+    auto& attackerStats = cardStats[attackingCard];
+    // 扣除对方英雄生命值
+    player2->health -= attackerStats.attack;
+    // 扣除攻击费用
+    player1->money -= 1;
+    // 更新UI
+    updatePlayerUI();
+
+    // 播放攻击音效
+    audioPlayer("Music/attack.mp3", false);
+
+    //以下实现一个画面震动效果
+    // 获取背景精灵（通过tag或名字）
+    auto background = this->getChildByTag(0);  // 之前添加背景时设置的tag为0
+    // 或者通过名字获取
+    // auto background = this->getChildByName("background");
+
+    if (background) {
+        // 保存原始位置
+        Vec2 originalPos = background->getPosition();
+
+        // 创建震动序列
+        auto shake = Sequence::create(
+            MoveBy::create(0.02f, Vec2(-10, -5)),
+            MoveBy::create(0.02f, Vec2(20, 10)),
+            MoveBy::create(0.02f, Vec2(-20, -10)),
+            MoveBy::create(0.02f, Vec2(20, 10)),
+            MoveBy::create(0.02f, Vec2(-10, -5)),
+            // 确保回到原始位置
+            MoveTo::create(0, originalPos),
+            nullptr
+        );
+
+        background->runAction(shake);
     }
 }
 
+// 移除卡牌并播放动画
+void BoardScene::removeCardWithAnimation(cardSprite* card) {
+    if (!card) return;
+    // 先从 cardStats 中移除
+    cardStats.erase(card);
+
+    // 卡牌消失动画
+    card->runAction(Sequence::create(
+        Spawn::create(
+            FadeOut::create(0.5f),
+            ScaleTo::create(0.5f, 0.1f),
+            nullptr
+        ),
+        CallFunc::create([this, card]() {
+            // 从数组中移除
+            auto it = std::find(oppentplayedCards.begin(), oppentplayedCards.end(), card);
+            if (it != oppentplayedCards.end()) {
+                oppentplayedCards.erase(it);
+            }
+            it = std::find(localplayedCards.begin(), localplayedCards.end(), card);
+            if (it != localplayedCards.end()) {
+                localplayedCards.erase(it);
+            }
+            card->removeFromParent();
+            updatePlayedCardsPosition();
+            updateEnemyCardsPosition();
+            }),
+        nullptr
+    ));
+
+    // 播放移除音效
+    audioPlayer("Music/broken.mp3", false);
+}
+
+// 更新敌人的随从位置
+void BoardScene::updateEnemyCardsPosition() {
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height * 0.6f);
+    float cardWidth = 100;
+    float spacing = 20;
+
+    float startX = center.x - (oppentplayedCards.size() * (cardWidth + spacing) - spacing) / 2;
+
+    for (size_t i = 0; i < oppentplayedCards.size(); i++) {
+        Sprite* card = oppentplayedCards[i];
+        Vec2 targetPos = Vec2(startX + i * (cardWidth + spacing), center.y);
+        card->runAction(EaseBackOut::create(MoveTo::create(0.3f, targetPos)));
+    }
+}
 // 鼠标移动检测
 void BoardScene::onMouseMove(Event* event) {
     EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
@@ -290,10 +536,49 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
     if (!isLocalPlayerTurn) {
         return false;
     }
-
     Vec2 touchLocation = touch->getLocation();
 
-    // 从后向前检查（使最上层的精灵优先响应）
+    // 如果已经选中了攻击随从，检查是否点击了有效目标
+    if (attackingCard) {
+        // 检查是否点击了敌方随从或敌方英雄区域
+        bool targetFound = false;
+
+        // 检查敌方随从
+        for (auto enemyCard : oppentplayedCards) {
+            if (enemyCard->getBoundingBox().containsPoint(touchLocation)) {
+                handleAttack(attackingCard, enemyCard);
+                targetFound = true;
+                break;
+            }
+        }
+
+        // 检查敌方英雄区域
+        if (!targetFound && touchLocation.y > Director::getInstance()->getVisibleSize().height * 0.7f) {
+            handleAttackToHero();
+        }
+
+        // 清除攻击状态
+        attackingCard = nullptr;
+        if (attackIndicator) {
+            attackIndicator->removeFromParent();
+            attackIndicator = nullptr;
+        }
+        return true;
+    }
+
+    // 检查是否点击了己方随从
+    for (auto card : localplayedCards) {
+        if (card->getBoundingBox().containsPoint(touchLocation)) {
+            // 检查是否有足够的费用攻击
+            if (isLocalPlayerTurn && player1->money >= 1) {
+                attackingCard = card;
+                createAttackIndicator(card->getPosition());
+                return true;
+            }
+        }
+    }
+
+    // 检测手牌
     for (auto it = localPlayerCards.rbegin(); it != localPlayerCards.rend(); ++it) {
         cardSprite* sprite = *it;
         Vec2 locationInNode = sprite->convertToNodeSpace(touchLocation);
@@ -311,13 +596,25 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
     selectedCard = nullptr;
     return false;
 }
-void BoardScene::onTouchMoved(Touch* touch, Event* event)
-{
-    if (selectedCard)
-    {
+
+void BoardScene::onTouchMoved(Touch* touch, Event* event) {
+    if (selectedCard) {
         selectedCard->setPosition(selectedCard->getPosition() + touch->getDelta());
+        checkDropArea();
+    }
+    else if (attackingCard && attackIndicator) {
+        // 更新攻击指示器位置
+        attackIndicator->clear();
+        Vec2 startPos = attackingCard->getPosition();
+        Vec2 currentPos = touch->getLocation();
+
+        // 绘制攻击线
+        attackIndicator->drawLine(startPos, currentPos, Color4F(1, 0, 0, 0.8f));
+        // 绘制瞄准圈
+        attackIndicator->drawCircle(currentPos, 30, 0, 360, false, Color4F(1, 0, 0, 0.8f));
     }
 }
+
 void BoardScene::onTouchEnded(Touch* touch, Event* event)
 {
     if (selectedCard)
@@ -361,34 +658,33 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
                 }
                 else
                 {
-                    // 费用不足，回到原位
-                    Vec2 originalPos = cardOriginalPositions[cardToHandle];
-                    cardToHandle->runAction(EaseBackOut::create(MoveTo::create(0.5f, originalPos)));
+                    returnCardToHand(cardToHandle);
                 }
             }
         }
         else
         {
-            // 不在出牌区域，回到原位
-            Vec2 originalPos = cardOriginalPositions[cardToHandle];
-
-            // 使用缓动动画回到原位
-            cardToHandle->runAction(Sequence::create(
-                EaseBackOut::create(MoveTo::create(0.5f, originalPos)),
-                CallFunc::create([cardToHandle]() {
-                    cardToHandle->setColor(Color3B::WHITE);
-                    cardToHandle->setOpacity(255);
-                    }),
-                nullptr
-            ));
-
-            // 如果鼠标仍在卡牌上，恢复放大效果
-            if (hoveredCard == cardToHandle) {
-                scaleSprite(cardToHandle, 1.5f);
-            }
+            returnCardToHand(cardToHandle);
         }
     }
 }
+
+// 将卡牌放回手牌
+void BoardScene::returnCardToHand(cardSprite* card) {
+    Vec2 originalPos = cardOriginalPositions[card];
+    card->runAction(Sequence::create(
+        EaseBackOut::create(MoveTo::create(0.5f, originalPos)),
+        CallFunc::create([card]() {
+            card->setColor(Color3B::WHITE);
+            card->setOpacity(255);
+            }),
+        nullptr
+    ));
+    if (hoveredCard == card) {
+        scaleSprite(card, 1.5f);
+    }
+}
+
 
 // 获取卡牌费用
 int BoardScene::getCardCost(std::shared_ptr<CardBase> card) {
@@ -584,19 +880,9 @@ void BoardScene::removeCard(cardSprite* sprite) {
         Size visibleSize = Director::getInstance()->getVisibleSize();
         for (size_t i = removedIndex; i < localPlayerCards.size(); i++) {
             cardSprite* card = localPlayerCards[i];
-            // 计算新位置
-            Vec2 newPos;
-            if (localPlayerNumber == 1) {
-                newPos = Vec2(CARD_REGION_X + i * (card->getContentSize().width + 30), CARD_REGION_Y);
-            }
-            else {
-                newPos = Vec2(visibleSize.width - CARD_REGION_X - card->getContentSize().width - i * (card->getContentSize().width + 30), CARD_REGION_Y);
-            }
-
-            // 更新存储的原始位置
+            Vec2 newPos(CARD_REGION_X + i * (card->getContentSize().width + 30), CARD_REGION_Y);
             cardOriginalPositions[card] = newPos;
 
-            // 添加移动动画
             card->runAction(Sequence::create(
                 EaseInOut::create(MoveTo::create(0.3f, newPos), 2.0f),
                 EaseElasticOut::create(ScaleTo::create(0.2f, 1.0f)),
@@ -606,34 +892,21 @@ void BoardScene::removeCard(cardSprite* sprite) {
     }
 }
 
-// 更新场上已打出卡牌的显示
+// 更新己方随从的位置
 void BoardScene::updatePlayedCardsPosition() {
     Size visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height / 2);
-    float cardWidth = 100;  // 假设卡牌宽度为100
-    float spacing = 120;     // 卡牌间距
+    Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height * 0.45f);
+    float cardWidth = 100;
+    float spacing = 20;
 
-    // 本地玩家已打出的卡牌
-    float startX_local = PLAYED_AREA_PLAYER1_X - (localplayedCards.size() * (cardWidth + spacing) - spacing) / 2;
+    float startX = center.x - (localplayedCards.size() * (cardWidth + spacing) - spacing) / 2;
+
     for (size_t i = 0; i < localplayedCards.size(); i++) {
         Sprite* card = localplayedCards[i];
-        Vec2 targetPos = Vec2(startX_local + i * (cardWidth + spacing), PLAYED_AREA_Y + 100);
-
-        // 使用动画移动到目标位置
-        card->runAction(EaseBackOut::create(MoveTo::create(0.3f, targetPos)));
-    }
-
-    // 对手玩家已打出的卡牌
-    float startX_opponent = PLAYED_AREA_PLAYER2_X - (oppentplayedCards.size() * (cardWidth + spacing) - spacing) / 2;
-    for (size_t i = 0; i < oppentplayedCards.size(); i++) {
-        Sprite* card = oppentplayedCards[i];
-        Vec2 targetPos = Vec2(startX_opponent + i * (cardWidth + spacing), PLAYED_AREA_Y - 100);
-
-        // 使用动画移动到目标位置
+        Vec2 targetPos = Vec2(startX + i * (cardWidth + spacing), center.y);
         card->runAction(EaseBackOut::create(MoveTo::create(0.3f, targetPos)));
     }
 }
-
 
 // 发送打牌事件
 ///////////////// to be editted
@@ -758,44 +1031,41 @@ void BoardScene::addCardToBattlefield(int playerNumber, int cardNumber) {
             EG::JString(std::to_wstring(cardNumber).c_str()));
         return;
     }
-    Size desiredSize(100, 150); // 根据需要调整
+    Size desiredSize(200, 250); // 根据需要调整
     // 创建卡牌精灵
     auto battlefieldCard = cardSprite::createWithCard(cardData, desiredSize); // 使用修正后的方法
     if (battlefieldCard) {
         battlefieldCard->setTag(cardNumber); // 使用 cardNumber 作为 tag
 
-        // 设置战场上卡牌的位置
-        Vec2 targetPos;
-
         if (playerNumber == localPlayerNumber) {
             // 本地玩家已打出的卡牌
-            targetPos = Vec2(PLAYED_AREA_PLAYER1_X + localplayedCards.size() * CARD_SPACING, PLAYED_AREA_Y);
+            //targetPos = Vec2(PLAYED_AREA_PLAYER1_X + localplayedCards.size() * CARD_SPACING, PLAYED_AREA_Y);
             localplayedCards.push_back(battlefieldCard);
+            updatePlayedCardsPosition();
         }
         else {
-            // 对手玩家已打出的卡牌
-            targetPos = Vec2(PLAYED_AREA_PLAYER2_X + oppentplayedCards.size() * CARD_SPACING, PLAYED_AREA_Y + 200);
             oppentplayedCards.push_back(battlefieldCard);
+            updateEnemyCardsPosition();
         }
 
         // 添加到战场并记录位置
-        this->addChild(battlefieldCard, 1);
+        this->addChild(battlefieldCard, 50);
 
-        // 设置初始位置在目标位置上方并淡入
-        if (playerNumber == localPlayerNumber) {
-            battlefieldCard->setPosition(Vec2(targetPos.x, targetPos.y + 100));
-        }
-        else {
-            battlefieldCard->setPosition(Vec2(targetPos.x, targetPos.y - 100));
-        }
-        battlefieldCard->setOpacity(0);
+        //// 设置初始位置在目标位置上方并淡入
+        //if (playerNumber == localPlayerNumber) {
+        //    battlefieldCard->setPosition(Vec2(targetPos.x, targetPos.y + 100));
+        //}
+        //else {
+        //    battlefieldCard->setPosition(Vec2(targetPos.x, targetPos.y - 100));
+        //}
+        //battlefieldCard->setOpacity(0);
 
-        // 动画显示卡牌
-        battlefieldCard->runAction(Sequence::create(
-            FadeIn::create(0.5f),
-            MoveTo::create(0.5f, targetPos),
-            nullptr
-        ));
+        //// 动画显示卡牌
+        //battlefieldCard->runAction(Sequence::create(
+        //    FadeIn::create(0.5f),
+        //    MoveTo::create(0.5f, targetPos),
+        //    nullptr
+        //));
     }
     else {
         CCLOG("Failed to create battlefield card sprite for cardNumber: %d", cardNumber);
@@ -894,18 +1164,15 @@ void BoardScene::addCardToLocalPlayer(std::shared_ptr<CardBase> card) {
     players::Player* localPlayer = (localPlayerNumber == 1) ? player1 : player2;
     // localPlayer->addCardToHand(card);
 
-    Size desiredSize(100, 150);
+    Size desiredSize(120, 180); // 根据需要调整宽度和高度
 
     cardSprite* newCard = cardSprite::createWithCard(card, desiredSize);
-
+    addCardStats(newCard, 5, 1, 1);  // 默认属性：血量5，攻击力1，费用1
     if (newCard) {
         CCLOG("Successfully created cardSprite for cardNumber: %d", card->dbfId);
         newCard->setTag(card->dbfId); // 使用 cardNumber 作为 tag
-
-        //float xPos = CARD_REGION_X + localPlayerCards.size() * (newCard->getContentSize().width + 30);
         Vec2 originalPos(CARD_REGION_X + localPlayerCards.size() * (newCard->getContentSize().width + 30),
             CARD_REGION_Y);
-        //Vec2 originalPos(xPos, CARD_REGION_Y);
         CCLOG("Setting card position to: (%f, %f)", originalPos.x, originalPos.y);
 
         // 添加到待出牌区域并记录位置
