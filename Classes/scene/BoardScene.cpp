@@ -180,8 +180,7 @@ void BoardScene::addCardStats(cardSprite* newcard) {
 }
 
 // 更新卡牌上的属性标签
-void BoardScene::updateCardStats(cardSprite* card)
-{
+void BoardScene::updateCardStats(cardSprite* card) {
     if (!card) return;
     // 检查卡牌是否存在于 cardStats 中
     auto healthLabel = dynamic_cast<Label*>(card->getChildByName("healthLabel"));
@@ -200,8 +199,7 @@ void BoardScene::updateCardStats(cardSprite* card)
 }
 
 // 返回主菜单
-void BoardScene::cancelCallback(Ref* pSender)
-{
+void BoardScene::cancelCallback(Ref* pSender) {
     // 加载点击音效
     audioPlayer("Music/ClickSoundEffect.mp3", false);
     // 离开房间
@@ -212,8 +210,7 @@ void BoardScene::cancelCallback(Ref* pSender)
 }
 
 // 创建中央出牌区域
-void BoardScene::createDropArea()
-{
+void BoardScene::createDropArea() {
     dropArea = DrawNode::create();
 
 
@@ -546,7 +543,7 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
             players::Player* currentPlayer = (currentPlayerNumber == 1) ? player1 : player2;
             if (currentPlayer) {
                 // 获取卡牌费用
-                int cardCost = jsonmanager.getCardCost(cardToHandle->card->cost);
+                int cardCost = jsonmanager.getCardCost(cardToHandle->card->dbfId);
                 if (currentPlayer->getMoney() >= cardCost) {// 使用 getter 方法
                     // 扣除法力值
                     currentPlayer->setMoney(currentPlayer->getMoney() - cardCost);

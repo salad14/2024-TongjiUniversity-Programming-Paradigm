@@ -102,13 +102,6 @@ private:
     cardSprite* attackingCard;//攻击
     DrawNode* attackIndicator;//被攻击
 
-    // 卡牌属性结构
-    //struct CardInfo {
-    //    int health;
-    //    int attack;
-    //    int cost;
-    //};
-
     //std::map<cardSprite*, CardInfo> cardStats;
 
     // 玩家信息 UI
