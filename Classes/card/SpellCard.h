@@ -100,14 +100,6 @@ public:
         return effects;
     }
 
-    //const std::string& getDescription() const override {
-    //    return text;
-    //}
-
-    //const std::string& getName() const override {
-    //    return name;
-    //}
-
     int getDbfId() const { return dbfId; }
     std::string getName() const { return name; }
     std::string getText() const { return text; }

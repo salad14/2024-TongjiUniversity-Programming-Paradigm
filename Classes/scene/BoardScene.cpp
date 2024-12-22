@@ -338,7 +338,7 @@ void BoardScene::handleMinionAttackMinion(int attackerIndex, int defenderIndex) 
     auto attacker = localMinionCard[attackerIndex];
     auto defender = oppentMinionCard[defenderIndex];
 
-    // get the minion's attack and healeh
+    // get the minion's attack and health
     attacker->currentHealth -= defender->currentAttack;
     defender->currentHealth -= attacker->currentAttack;
 
@@ -603,8 +603,9 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
                         // 发送 PLAY_SPELL_CARD 事件
                         sendPlay_SpellCardEvent(localPlayerNumber, cardToHandle->card->dbfId);
                         
-                        // 发送信号
-                        /////////// 这里需要处理触发法术的逻辑 \\\\\\\\\\\\\\\\
+                        
+                        //1. 发送效果信号
+                        //2./////////// 这里需要处理触发法术的逻辑 \\\\\\\\\\\\\\\\
                         
 
                     }
@@ -1065,7 +1066,7 @@ void BoardScene::handle_PlaySpellCard(const EG::Hashtable& parameters) {
     // 如果是己方的出法术牌信号，这里不做处理
     if (playerNumber == localPlayerNumber) return;
 
-    // UI更新
+    // TO DO: UI更新
     ShowOpponentPlayedCard(dbfId);
 }
 
@@ -1276,7 +1277,6 @@ void BoardScene::addCardToLocalPlayer(std::shared_ptr<CardBase> card) {
             EG::JString(std::to_wstring(card->dbfId).c_str()));
     }
 }
-
 
 // 辅助方法：根据卡牌ID查找精灵
 cardSprite* BoardScene::findCardByID(int cardNumber) {
