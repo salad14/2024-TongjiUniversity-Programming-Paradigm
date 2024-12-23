@@ -191,7 +191,7 @@ private:
 
     // 获取场上随从牌的index
     int get_localMinionIndex(cardSprite* minion);
-    int get_opponentMinionIndex(cardSprite* minion);
+    int get_opponentMinionIndex(const cardSprite* minion);
 
     //void initEnemyCards();
 

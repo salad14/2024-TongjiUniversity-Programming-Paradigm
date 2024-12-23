@@ -306,35 +306,6 @@ void BoardScene::attackmove(PlayerNumber player, int attackerIndex, int defender
     ));
 }
 
-// 处理随从对随从的攻击
-//void BoardScene::handleMinionAttackMinion(int attackerIndex, int defenderIndex) {
-//    if (attackerIndex == -1 || defenderIndex == -1) return;
-//    
-//    // 找到攻击者和防御者的索引
-//    auto attacker = localMinionCard[attackerIndex];
-//    auto defender = oppentMinionCard[defenderIndex];
-//
-//   
-//    attacker->currentHealth -= defender->currentAttack;
-//    defender->currentHealth -= attacker->currentAttack;
-//
-//    
-//    attackmove(attackerIndex, defenderIndex);
-//    updateCardStats(defender);
-//    updateCardStats(attacker);
-//    
-//
-//   
-//    checkMinionDie(attacker);
-//    checkMinionDie(defender);
-//
-//   
-//    updatePlayerUI();
-//
-//    
-//    audioPlayer("Music/attack.mp3", false);
-//}
-
 // 处理对英雄的攻击
 void BoardScene::handleMinionAttackHero() {
     // 播放攻击音效
@@ -1142,7 +1113,6 @@ void BoardScene::handle_SpellAttackEvent(const EG::Hashtable& parameters) {
             return;
         }
         else {
-            // ????????????λ
             defender = oppentMinionCard[defenderIndex];
             defender->getDamage(damage);
             checkMinionDie(defender);
@@ -1521,7 +1491,7 @@ int BoardScene::get_localMinionIndex(cardSprite* minion) {
     return -1;
 }
 
-int BoardScene::get_opponentMinionIndex(cardSprite* minion) {
+int BoardScene::get_opponentMinionIndex(const cardSprite* minion) {
     for (size_t i = 0; i < localMinionCard.size(); ++i) {
         if (oppentMinionCard[i] == minion) return i;
     }
@@ -1553,7 +1523,6 @@ void BoardScene::update(float dt) {
 
 BoardScene::~BoardScene()
 {
-    // ???? PhotonLib ?????????????
     PhotonLib* photonLib = PhotonLib::getInstance();
     if (photonLib) {
         photonLib->setCustomEventCallback(nullptr);
