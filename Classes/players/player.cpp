@@ -60,17 +60,18 @@ namespace players {
     }
 
     void Player::increaseMana() {
-        if (money < maxmoney) {
-            money += 1;
+        if (roundmoney < maxmoney) {
+            //money += 1;
+            roundmoney += 1;
+            money = roundmoney;
         }
     }
 
 
     // 获取和设置法力值
-    int Player::getMoney() const
-    {
-        return money;
-    }
+    int Player::getMoney() const { return money; }
+
+    int Player::getroundmoney() const { return roundmoney; }
 
     void Player::setMoney(int m)
     {

@@ -843,7 +843,7 @@ void BoardScene::sendMinionAttackEvent(PlayerNumber playerNumber, int attackerIn
     eventContent.put(static_cast<unsigned char>(2), EG::Helpers::ValueToObject<EG::Object>::get(defenderIndex));
 
 
-    photonLib->raiseCustomEvent(eventContent, MINION_ATTACK, ExitGames::Lite::ReceiverGroup::OTHERS);
+    photonLib->raiseCustomEvent(eventContent, MINION_ATTACK, ExitGames::Lite::ReceiverGroup::ALL);
     CCLOG("Sent MINION_ATTACK_EVENT with playerNumber: %d, attackerIndex: %d, defenderIndex: %d", playerNumber, attackerIndex, defenderIndex);
     cocosUIListener->writeString(EG::JString(L"Sent MINION_ATTACK_EVENT with playerNumber: ") +
         EG::JString(std::to_wstring(playerNumber).c_str()) +
@@ -1222,7 +1222,7 @@ void BoardScene::handle_MinionAttackEvent(const ExitGames::Common::Hashtable& pa
             defender = localMinionCard[defenderIndex];
     }
 
-    if (defenderIndex == -1) { // ???????
+    if (defenderIndex == -1) { // ¹¥»÷Ó¢ÐÛ
         auto targetplayer = (localPlayerNumber == 1) ? player2 : player1;
         auto localplayer = (localPlayerNumber == 1) ? player1 : player2;
         if (!targetplayer->getDamage(attacker->currentAttack)) {

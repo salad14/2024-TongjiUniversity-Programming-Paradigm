@@ -36,6 +36,7 @@ namespace players {
 
         // 获取和设置法力值
         int getMoney() const; // 获取当前法力值
+        int getroundmoney() const; // 获取当前回合法力值
         void setMoney(int m); // 设置当前法力值
         int getMaxMoney() const; // 获取法力值上限
         void setMaxMoney(int maxm); //  设置最大法力值
