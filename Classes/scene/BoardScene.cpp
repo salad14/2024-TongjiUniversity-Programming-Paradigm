@@ -751,7 +751,7 @@ void BoardScene::removeCard(cardSprite* sprite) {
         cardOriginalPositions.erase(sprite);
 
         // 不再将卡牌添加到 playedCards，这里由 handlePlayCard 统一处理
-        sprite->removeFromParent();
+        // sprite->removeFromParent();
         // 播放音效
         audioPlayer("Music/putcard.mp3", false);
 
@@ -1286,6 +1286,8 @@ void BoardScene::add_NewCardToBattlefield(int playerNumber, int cardNumber) {
         //}
 
         oppentMinionCard.push_back(battlefieldCard);
+        addCardStats(battlefieldCard);
+        updateCardStats(battlefieldCard);
         updateEnemyCardsPosition();
 
         // ?????????????λ??
@@ -1320,6 +1322,7 @@ void BoardScene::add_HandCardToBattlefield(cardSprite* minion) {
     minion->currentHealth = minionCard->maxhealth;
 
     localMinionCard.push_back(minion);
+    updateCardStats(minion);
     updatePlayedCardsPosition();
 }
 
