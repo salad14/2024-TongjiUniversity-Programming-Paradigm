@@ -43,6 +43,7 @@ bool BoardSceneOffline::init() {
     );
     cancel->setPosition(Vec2(1940, 20));
     auto menu = Menu::create(cancel, nullptr);
+
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu);
     // 创建触摸监听器
@@ -321,7 +322,11 @@ void BoardSceneOffline::spellmove(Sprite* Target) {
 void BoardSceneOffline::handleAttack(Sprite* attacker, Sprite* defender) {
     if (isPlayer1Turn)
     {
-        hasAttackedThisTurn = true;  // 标记已经有随从攻击
+        // 检查本张攻击者回合内是否已经攻击过
+        if (hasAttacked[attacker]) {
+            return; // 如果已经攻击过，直接返回
+        }
+        hasAttacked[attacker] = true; // 标记为已攻击
         // 找到攻击者和防御者的索引
         int attackerIndex = -1;
         int defenderIndex = -1;
@@ -375,6 +380,10 @@ void BoardSceneOffline::handleAttack(Sprite* attacker, Sprite* defender) {
     }
     else
     {
+        // 检查本张攻击者回合内是否已经攻击过
+        if (hasAttacked[attacker]) {
+            return; // 如果已经攻击过，直接返回
+        }
         // 找到攻击者和防御者的索引
         int attackerIndex = -1;
         int defenderIndex = -1;
@@ -434,7 +443,12 @@ void BoardSceneOffline::handleAttack(Sprite* attacker, Sprite* defender) {
 // 处理对英雄的攻击
 void BoardSceneOffline::handleAttackToHero() {
     if (!attackingCard || !isPlayer1Turn) return;
-    hasAttackedThisTurn = true;  // 标记已经有随从攻击
+    // 检查攻击者是否已经攻击过
+    if (hasAttacked[attackingCard]) {
+        return; // 如果已经攻击过，直接返回
+    }
+    hasAttacked[attackingCard] = true; // 标记为已攻击
+
     // 检查卡牌是否存在于 cardStats 中
     if (cardStats.find(attackingCard) == cardStats.end()) {
         return;
@@ -527,6 +541,7 @@ void BoardSceneOffline::updateEnemyCardsPosition() {
 // 点击开始处理
 bool BoardSceneOffline::onTouchBegan(Touch* touch, Event* event) {
 
+    
     if (isPlayer1Turn)
     {
         Vec2 touchLocation = touch->getLocation();
@@ -563,10 +578,10 @@ bool BoardSceneOffline::onTouchBegan(Touch* touch, Event* event) {
         for (auto card : playedCards) {
             if (card->getBoundingBox().containsPoint(touchLocation)) {
                 // 检查是否已经攻击过
-                if (hasAttackedThisTurn) {
-                    // 可以添加提示效果
-                    return false;
-                }
+                //if (hasAttackedThisTurn) {
+                //    // 可以添加提示效果
+                //    return false;
+                //}
                 attackingCard = card;
                 createAttackIndicator(card->getPosition());
                 return true;
@@ -592,6 +607,9 @@ bool BoardSceneOffline::onTouchBegan(Touch* touch, Event* event) {
 
 // 点击拖动处理
 void BoardSceneOffline::onTouchMoved(Touch* touch, Event* event) {
+    if (isGameOver) {// 游戏结束,无法出牌或瞄准
+        return;
+    }
     if (selectedCard) {
         selectedCard->setPosition(selectedCard->getPosition() + touch->getDelta());
         checkDropArea();
@@ -611,6 +629,7 @@ void BoardSceneOffline::onTouchMoved(Touch* touch, Event* event) {
 
 // 点击结束处理
 void BoardSceneOffline::onTouchEnded(Touch* touch, Event* event) {
+   
     if (selectedCard) {
         Size visibleSize = Director::getInstance()->getVisibleSize();
         Vec2 center = Vec2(visibleSize.width / 2, visibleSize.height / 2);
@@ -787,7 +806,7 @@ void BoardSceneOffline::createPlayerUI() {
     turnIndicator->enableOutline(Color4B::BLACK, 2);
     this->addChild(turnIndicator);
     // 回合结束按钮
-    auto endTurnBtn = MenuItemImage::create(
+    endTurnBtn = MenuItemImage::create(
         "button/endturn.png",
         "button/endturnSelected.png",
         CC_CALLBACK_0(BoardSceneOffline::switchTurn, this)
@@ -817,7 +836,10 @@ void BoardSceneOffline::updatePlayerUI() {
 void BoardSceneOffline::switchTurn() {
 
     isPlayer1Turn = !isPlayer1Turn;
-    hasAttackedThisTurn = false;  // 重置攻击标记
+    
+    // 重置每张随从的攻击状态
+    hasAttacked.clear(); 
+
     // 加载点击音效
     audioPlayer("Music/ClickSoundEffect.mp3", false);
 
@@ -940,58 +962,71 @@ void BoardSceneOffline::AIplay()
     card->removeFromParent();
 
     auto newCard = Sprite::createWithTexture(texture);
-    int health = 1 + rand() % 5;  // 1-5的生命值
-    int damage = 1 + rand() % 4;  // 1-4的攻击力
-    int cost = 1 + rand() % 3;    // 1-3的费用
-    string type = (rand() % 100 < 50) ? "partner" : "spell";  // 50%概率生成随从
 
-    addCardStats(newCard, health, damage, cost, type);
-    if (type == "partner") {
+    while (1)
+    {
+        int health = 1 + rand() % 5;  // 1-5的生命值
+        int damage = 1 + rand() % 4;  // 1-4的攻击力
+        int cost = 1 + rand() % 3;    // 1-3的费用
+        string type = (rand() % 100 < 50) ? "partner" : "spell";  // 50%概率生成随从
+        addCardStats(newCard, health, damage, cost, type);
 
-        // 播放出牌音效
-        audioPlayer("Music/putcard.mp3", false);
-        newCard->setScale(0.8f);
-        // 添加到场上
-        enemyPlayedCards.push_back(newCard);
-        this->addChild(newCard);
-        updateEnemyCardsPosition();
+        if (player2->money >= cardStats[newCard].cost)
+        {
+            player2->money -= cardStats[newCard].cost;
+            if (type == "partner") {
 
-    }
-    else {
-        // 播放出牌音效
-        audioPlayer("Music/putcard.mp3", false);
-        newCard->setScale(0.8f);
-        // 添加到场上
-        enemyPlayedCards.push_back(newCard);
-        this->addChild(newCard);
-        updateEnemyCardsPosition();
+                // 播放出牌音效
+                audioPlayer("Music/putcard.mp3", false);
+                newCard->setScale(0.8f);
+                // 添加到场上
+                enemyPlayedCards.push_back(newCard);
+                this->addChild(newCard);
+                updateEnemyCardsPosition();
 
-        enemyPlayedCards.pop_back();
-        // 缩放一段时间让玩家看清
-        // 设置目标放大和缩小的比例
-        float scaleUpFactor = 2.0f;   // 放大倍数
-        float scaleDownFactor = 0.0f; // 缩小到消失，最终大小为 0
-        // 创建放大动作，3秒钟内从当前大小放大到 2 倍
-        auto scaleUpAction = cocos2d::ScaleTo::create(1.5f, scaleUpFactor); // 放大 1.5 秒
-        // 创建缩小动作，2秒钟内从放大后的状态缩小到 0
-        auto scaleDownAction = cocos2d::ScaleTo::create(1.5f, scaleDownFactor); // 缩小 1.5 秒
-        // 创建消失动作，3秒钟内透明度变为 0
-        auto fadeOutAction = cocos2d::FadeOut::create(1.5f);  // 透明度变化持续 1.5 秒
-        // 在动作结束后移除精灵
-        newCard->runAction(cocos2d::Sequence::create(
-            scaleUpAction,
-            scaleDownAction,
-            fadeOutAction,
-            cocos2d::CallFunc::create([newCard]() {
-                newCard->removeFromParent();  // 动作完成后移除精灵
-                }), nullptr
-        ));
-        updateEnemyCardsPosition();
+            }
+            else {
+                // 播放出牌音效
+                audioPlayer("Music/putcard.mp3", false);
+                newCard->setScale(0.8f);
+                // 添加到场上
+                enemyPlayedCards.push_back(newCard);
+                this->addChild(newCard);
+                updateEnemyCardsPosition();
 
-        // 使用法术卡直接造成伤害
-        spellmove(nullptr);
-        player1->health -= damage;
-        audioPlayer("Music/spell.mp3", false);
+                enemyPlayedCards.pop_back();
+                // 缩放一段时间让玩家看清
+                // 设置目标放大和缩小的比例
+                float scaleUpFactor = 2.0f;   // 放大倍数
+                float scaleDownFactor = 0.0f; // 缩小到消失，最终大小为 0
+                // 创建放大动作，3秒钟内从当前大小放大到 2 倍
+                auto scaleUpAction = cocos2d::ScaleTo::create(1.5f, scaleUpFactor); // 放大 1.5 秒
+                // 创建缩小动作，2秒钟内从放大后的状态缩小到 0
+                auto scaleDownAction = cocos2d::ScaleTo::create(1.5f, scaleDownFactor); // 缩小 1.5 秒
+                // 创建消失动作，3秒钟内透明度变为 0
+                auto fadeOutAction = cocos2d::FadeOut::create(1.5f);  // 透明度变化持续 1.5 秒
+                // 在动作结束后移除精灵
+                newCard->runAction(cocos2d::Sequence::create(
+                    scaleUpAction,
+                    scaleDownAction,
+                    fadeOutAction,
+                    cocos2d::CallFunc::create([newCard]() {
+                        newCard->removeFromParent();  // 动作完成后移除精灵
+                        }), nullptr
+                ));
+                updateEnemyCardsPosition();
+
+                // 使用法术卡直接造成伤害
+                spellmove(nullptr);
+                player1->health -= damage;
+                audioPlayer("Music/spell.mp3", false);
+            }
+            break;
+        }
+        else
+        {
+            continue;
+        }
     }
 
     // AI随机攻击
@@ -1012,7 +1047,6 @@ void BoardSceneOffline::AIplay()
 
             }
         }
-
     }
     updatePlayerUI();
     checkGameOver();
@@ -1031,6 +1065,8 @@ void BoardSceneOffline::checkGameOver() {
             "fonts/arial.ttf",
             120
         );
+        // 禁用回合切换按钮
+        endTurnBtn->setEnabled(false); 
 
         auto visibleSize = Director::getInstance()->getVisibleSize();
         gameOverLabel->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
@@ -1049,6 +1085,9 @@ void BoardSceneOffline::checkGameOver() {
 void BoardSceneOffline::cancelCallback(Ref* pSender) {
     // 加载点击音效
     audioPlayer("Music/ClickSoundEffect.mp3", false);
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MainScene::createScene()));
+    // 返回主菜单
+    Director::getInstance()->popScene();
+    // 切换到主菜单
+    //Director::getInstance()->replaceScene(TransitionFade::create(0.2f, MainScene::createScene(), Color3B::WHITE));
 }
 

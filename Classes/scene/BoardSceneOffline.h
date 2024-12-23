@@ -113,10 +113,11 @@ private:
     void AIplay();
 
     // 在类定义中添加
-    bool hasAttackedThisTurn = false;  // 记录本回合是否已经有随从攻击
+    unordered_map<Sprite*, bool> hasAttacked; // 新增标记某张随从回合内是否已经攻击过
     Label* gameOverLabel;  // 游戏结束提示标签
     bool isGameOver;       // 游戏是否结束标志
     void checkGameOver();  // 检查游戏是否结束
+    MenuItemImage* endTurnBtn; // 保存回合切换按钮的指针，用于在游戏结束时禁用
 
 };
 #endif // __OFFLINE_BOARD_SCENE_H__

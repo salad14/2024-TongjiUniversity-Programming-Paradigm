@@ -196,7 +196,9 @@ void MainScene::normalGameCallback(Ref* pSender)
 // adventureGame 人机对战模式按钮回调
 void MainScene::adventureGameCallback(Ref* pSender)
 {
-    Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardSceneOffline::createScene()));
+    //Director::getInstance()->replaceScene(TransitionFade::create(0.2f, BoardSceneOffline::createScene()));
+     // 使用 pushScene，保留主菜单场景在场景栈中
+    Director::getInstance()->pushScene(BoardSceneOffline::create());
     audioPlayer("../Resources/Music/ClickSoundEffect.mp3", false);
 }
 
