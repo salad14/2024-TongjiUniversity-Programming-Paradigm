@@ -1103,9 +1103,9 @@ void BoardScene::handle_SpellAttackEvent(const EG::Hashtable& parameters) {
     auto targetplayer = (localPlayerNumber == 1) ? player2 : player1;
     auto localplayer = (localPlayerNumber == 1) ? player1 : player2;
     cardSprite* defender = NULL;
-    if (playerNumber == localPlayerNumber) { // ?????????????
-        if (defenderIndex == -1) { // ???????
-            if (!targetplayer->getDamage(damage)) { // ???????
+    if (playerNumber == localPlayerNumber) { // ¼º·½¹¥»÷
+        if (defenderIndex == -1) { // ¹¥»÷Ó¢ÐÛ
+            if (!targetplayer->getDamage(damage)) { // Ó¢ÐÛËÀÍö
                 endGame(localplayer);
                 cocosUIListener->writeString(EG::JString(L"Hero is dead."));
             }
@@ -1116,15 +1116,14 @@ void BoardScene::handle_SpellAttackEvent(const EG::Hashtable& parameters) {
             defender = oppentMinionCard[defenderIndex];
             defender->getDamage(damage);
             checkMinionDie(defender);
-            updateCardStats(defender);
+            // updateCardStats(defender);
             // ????????????
             // .....
         }
     }
-    else { // ????????????
-        defender = localMinionCard[defenderIndex];
-        if (defenderIndex == -1) { // ???????
-            if (!localplayer->getDamage(damage)) { // ???????
+    else { // µÐ·½¹¥»÷
+        if (defenderIndex == -1) { // ¹¥»÷Ó¢ÐÛ
+            if (!localplayer->getDamage(damage)) { // Ó¢ÐÛËÀÍö
                 endGame(targetplayer);
                 cocosUIListener->writeString(EG::JString(L"Hero is dead."));
             }
@@ -1135,11 +1134,10 @@ void BoardScene::handle_SpellAttackEvent(const EG::Hashtable& parameters) {
             defender = localMinionCard[defenderIndex];
             defender->getDamage(damage);
             checkMinionDie(defender);
-            updateCardStats(defender);
+            // updateCardStats(defender);
             // ????????????
             // .....
         }
-
     }
 }
 
@@ -1149,7 +1147,6 @@ void BoardScene::handle_MinionAttackEvent(const ExitGames::Common::Hashtable& pa
     int attackerIndex = -1;
     int defenderIndex = -1;
 
-    // ??? playerNumber
     const EG::Object* objPlayerNumber = parameters.getValue(static_cast<unsigned char>(0));
     if (objPlayerNumber) {
         const EG::ValueObject<int>* voPlayerNumber = static_cast<const EG::ValueObject<int>*>(objPlayerNumber);
@@ -1169,7 +1166,6 @@ void BoardScene::handle_MinionAttackEvent(const ExitGames::Common::Hashtable& pa
         return;
     }
 
-    // ??? attackerIndex??????????????
     const EG::Object* objAttackerIndex = parameters.getValue(static_cast<unsigned char>(1));
     if (objAttackerIndex) {
         const EG::ValueObject<int>* voAttackerIndex = static_cast<const EG::ValueObject<int>*>(objAttackerIndex);
@@ -1189,7 +1185,6 @@ void BoardScene::handle_MinionAttackEvent(const ExitGames::Common::Hashtable& pa
         return;
     }
 
-    // ??? defenderIndex??????????????
     const EG::Object* objDefenderIndex = parameters.getValue(static_cast<unsigned char>(2));
     if (objDefenderIndex) {
         const EG::ValueObject<int>* voDefenderIndex = static_cast<const EG::ValueObject<int>*>(objDefenderIndex);
@@ -1211,7 +1206,7 @@ void BoardScene::handle_MinionAttackEvent(const ExitGames::Common::Hashtable& pa
 
     cardSprite* attacker = nullptr;
     cardSprite* defender = nullptr;
-    if (playerNumber == localPlayerNumber) { // ??????????
+    if (playerNumber == localPlayerNumber) { // ¼º·½Ëæ´Ó¹¥»÷
         attacker = localMinionCard[attackerIndex];
         if (defenderIndex != -1)
             defender = oppentMinionCard[defenderIndex];
@@ -1223,11 +1218,21 @@ void BoardScene::handle_MinionAttackEvent(const ExitGames::Common::Hashtable& pa
     }
 
     if (defenderIndex == -1) { // ¹¥»÷Ó¢ÐÛ
-        auto targetplayer = (localPlayerNumber == 1) ? player2 : player1;
-        auto localplayer = (localPlayerNumber == 1) ? player1 : player2;
-        if (!targetplayer->getDamage(attacker->currentAttack)) {
-            endGame(localplayer);
-            cocosUIListener->writeString(EG::JString(L"Hero is dead."));
+        auto targetplayer = (localPlayerNumber == 1) ? player2 : player1; // µÐ·½Ó¢ÐÛ
+        auto localplayer = (localPlayerNumber == 1) ? player1 : player2;  // ¼º·½Ó¢ÐÛ
+        if (playerNumber == localPlayerNumber) { // ¼º·½Ëæ´Ó¹¥»÷¶Ô·½Ó¢ÐÛ
+            if (!targetplayer->getDamage(attacker->currentAttack)) {
+                endGame(localplayer);
+                cocosUIListener->writeString(EG::JString(L"Hero is dead."));
+                return;
+            }
+        }
+        else { // µÐ·½Ëæ´Ó¹¥»÷¼º·½Ó¢ÐÛ
+            if (!localplayer->getDamage(attacker->currentAttack)) {
+                endGame(localplayer);
+                cocosUIListener->writeString(EG::JString(L"Hero is dead."));
+                return;
+            }
         }
         updatePlayerUI();
         handleMinionAttackHero();
@@ -1241,11 +1246,11 @@ void BoardScene::handle_MinionAttackEvent(const ExitGames::Common::Hashtable& pa
     updateCardStats(defender);
     updateCardStats(attacker);
 
-    // ??????????
+    // ¼ì²éËæ´ÓÊÇ·ñËÀÍö
     checkMinionDie(attacker);
     checkMinionDie(defender);
 
-    // ????UI
+    // ¸üÐÂUI
     updatePlayerUI();
 
     // ?????????§¹
@@ -1476,8 +1481,8 @@ cardSprite* BoardScene::findCardByID(int cardNumber) {
 
 bool BoardScene::checkMinionDie(cardSprite* minion) {
     if (minion->currentHealth <= 0) {
-        CCLOG("Releasing attacker with health %d", minion->currentHealth);
-        minion->removeFromParentAndCleanup(true);
+        CCLOG("Minion die!  Releasing attacker with health %d", minion->currentHealth);
+        // minion->removeFromParentAndCleanup(true);
 
         // ?????????????
         removeCardWithAnimation(minion);
