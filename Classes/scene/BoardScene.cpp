@@ -278,8 +278,8 @@ void BoardScene::attackmove(PlayerNumber player, int attackerIndex, int defender
     else {
         if (defenderIndex >= localMinionCard.size() || attackerIndex >= oppentMinionCard.size())
             throw std::runtime_error("out of index");
-        attacker = oppentMinionCard[defenderIndex];
-        defender = localMinionCard[attackerIndex];
+        attacker = oppentMinionCard[attackerIndex];
+        defender = localMinionCard[defenderIndex];
     }
 
     // 保存攻击者的原始位置
@@ -1253,7 +1253,7 @@ void BoardScene::handle_MinionAttackEvent(const ExitGames::Common::Hashtable& pa
     // 更新UI
     updatePlayerUI();
 
-    // ?????????Ч
+    //攻击音效
     audioPlayer("Music/attack.mp3", false);
 }
 
@@ -1522,7 +1522,6 @@ void BoardScene::endGame(players::Player* winner) {
     }
 
 
-    // ??????????????
     // std::string result = winner->getNickname() + " Wins!";
     auto resultLabel = Label::createWithTTF(result, "fonts/arial.ttf", 48);
     resultLabel->setPosition(Director::getInstance()->getVisibleSize() / 2);
