@@ -11,7 +11,9 @@
 #include <cstdint> 
 #include <vector>
 #include <map>
-USING_NS_CC;
+USING_NS_CC; 
+
+#define DEBUG_PATTERN 0
 
 static JSONManager jsonmanager("cards/json/cards.json");
 
@@ -43,6 +45,7 @@ public:
     std::shared_ptr<CardBase> card;
     int currentHealth = 0;
     int currentAttack = 0;
+    bool hasattacked = false;
 };
 
 //class minionSprite : public cocos2d::Sprite {

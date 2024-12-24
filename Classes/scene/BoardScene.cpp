@@ -82,6 +82,7 @@ bool BoardScene::init() {
 
     // 添加背景图片
     auto title_sprite = Sprite::create("board.png");
+    
     if (title_sprite == nullptr) {
         problemLoading("board.png");
         cocosUIListener->writeString(EG::JString(L"Failed to load board.png"));
@@ -94,6 +95,7 @@ bool BoardScene::init() {
         title_sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
         this->addChild(title_sprite, 0);
     }
+    title_sprite->setTag(0);  // 添加这行
 
     // 创建返回按钮
     auto cancel = MenuItemImage::create(
@@ -427,16 +429,28 @@ bool BoardScene::onTouchBegan(Touch* touch, Event* event)
         // 检查敌方随从
         for (int i = 0; i < oppentMinionCard.size(); ++i) {
             cardSprite* enemyCard = oppentMinionCard[i];
+#if DEBUG_PATTERN
             if (enemyCard->getBoundingBox().containsPoint(touchLocation)) {
                 sendMinionAttackEvent(localPlayerNumber, get_localMinionIndex(attackingCard), i);
                 targetFound = true;
+                enemyCard->hasattacked = true;
+                break;
+            }
+
+#else
+            if (enemyCard->getBoundingBox().containsPoint(touchLocation) && attackingCard->hasattacked == false) {
+                sendMinionAttackEvent(localPlayerNumber, get_localMinionIndex(attackingCard), i);
+                targetFound = true;
+                attackingCard->hasattacked = true;
                 break;
             }
         }
-
+#endif
         // 检查敌方英雄区域
-        if (!targetFound && touchLocation.y > Director::getInstance()->getVisibleSize().height * 0.7f) {
+        if (!targetFound && touchLocation.y > Director::getInstance()->getVisibleSize().height * 0.7f && attackingCard->hasattacked == false) {
             sendMinionAttackEvent(localPlayerNumber, get_localMinionIndex(attackingCard), -1);
+            targetFound = true;
+            attackingCard->hasattacked = true;
         }
 
         // 清除攻击状态
@@ -1453,6 +1467,10 @@ void BoardScene::handle_TurnStart(const EG::Hashtable& parameters) {
             endGame((currentPlayerNumber == 1) ? player2 : player1);
         }
     }
+
+    for (auto it : localMinionCard) { it->hasattacked = false; }
+    for (auto it : oppentMinionCard) { it->hasattacked = false; }
+
 
     cocosUIListener->writeString(EG::JString(L"Handled TURN_START event. Switched turn."));
 }
