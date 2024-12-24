@@ -32,13 +32,15 @@ namespace players {
         // 获取和设置生命值
         int getHealth() const;
         void setHealth(int hp);
+        bool getDamage(int damage); // true 存活  false 死亡
 
         // 获取和设置法力值
-        int getMoney() const;
-        void setMoney(int m);
-        int getMaxMoney() const;
-        void setMaxMoney(int maxm);
-        void increaseMana();
+        int getMoney() const; // 获取当前法力值
+        int getroundmoney() const; // 获取当前回合法力值
+        void setMoney(int m); // 设置当前法力值
+        int getMaxMoney() const; // 获取法力值上限
+        void setMaxMoney(int maxm); //  设置最大法力值
+        void increaseMana();     // 增加法力值
 
         // 玩家携带的卡组
         std::vector<CardNumber> getPlayerCards() const;
@@ -70,7 +72,8 @@ namespace players {
         ~Player();
 
         int health = 30;   // 当前生命值
-        int money = 5;     // 当前法力值
+        int money = 0;     // 当前法力值
+        int roundmoney = 0; // 当前回合法力值
         int maxmoney = 10;  // 最大法力值
     private:
         GameData& gameData; // 引用 GameData
