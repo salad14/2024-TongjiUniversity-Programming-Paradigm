@@ -308,7 +308,46 @@ void BoardScene::attackmove(PlayerNumber player, int attackerIndex, int defender
     ));
 }
 
+// 法术牌攻击动画
+//效果：
+//1.从2028 * 1280的窗口底端中间发出一个火焰图标（文件路径为“ImageElements / spell.png”）移动到屏幕中上的Target上，表示攻击
+//2. * Sprite Target 缺省为NULL，为NULL时从底端中间移动火焰图标到顶端中间
+void BoardScene::spellmove(Sprite* Target) {
+    // 创建法术图标精灵
+    auto spell = Sprite::create("ImageElements/spell.png");
 
+    // 设置初始位置（底端中间）
+    spell->setPosition(Vec2(2028 / 2, 0));
+    this->addChild(spell);
+
+    // 计算目标位置
+    Vec2 targetPos;
+    if (Target == NULL) {
+        // 如果没有目标，移动到顶端中间
+        targetPos = Vec2(2028 / 2, 1280);
+    }
+    else {
+        // 如果有目标，移动到目标位置
+        targetPos = Target->getPosition();
+    }
+    // 创建移动动作
+    auto moveTo = MoveTo::create(0.8f, targetPos);
+
+    // 创建淡出动作
+    auto fadeOut = FadeOut::create(0.2f);
+
+    // 创建动作序列（移动后淡出并移除）
+    auto sequence = Sequence::create(
+        moveTo,
+        fadeOut,
+        RemoveSelf::create(),
+        nullptr
+    );
+    // 播放音效
+    audioPlayer("Audio/spell.mp3", false);
+    // 执行动作
+    spell->runAction(sequence);
+}
 
 // 处理对英雄的攻击
 void BoardScene::handleMinionAttackHero() {
@@ -569,15 +608,21 @@ void BoardScene::onTouchEnded(Touch* touch, Event* event)
                                 if (enemyCard->getBoundingBox().containsPoint(touchLocation)) {
                                     sendSpellAttackEvent(localPlayerNumber, i, amount);
                                     targetFound = true;
+                                    spellmove(static_cast<cocos2d::Sprite*>(enemyCard));
                                     break;
                                 }
                             }
+
+                            
 
                             // 检查敌方英雄区域
                             if (!targetFound && touchLocation.y > Director::getInstance()->getVisibleSize().height * 0.7f) {
                                 targetFound = true;
                                 sendSpellAttackEvent(localPlayerNumber, -1, amount);
+                                spellmove(nullptr);
                             }
+
+                            
 
                             if (targetFound) {
                                 removeSpellCard = true;

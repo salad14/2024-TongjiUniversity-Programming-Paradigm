@@ -155,7 +155,7 @@ private:
     // void handleMinionAttackMinion(int attacker, int defender); // 改为index索引用来绑定  方便双方同时处理 需要保证两边同步index相同
     void removeCardWithAnimation(cardSprite* card);
     void handleMinionAttackHero(); // 纯UI函数
-    
+    void spellmove(Sprite* Target);     //法术牌攻击动画
 
     // 事件发送
     void sendPlay_MinionCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
