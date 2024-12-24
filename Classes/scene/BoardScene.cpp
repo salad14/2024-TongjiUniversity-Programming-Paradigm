@@ -1222,7 +1222,7 @@ void BoardScene::handle_MinionAttackEvent(const ExitGames::Common::Hashtable& pa
         auto localplayer = (localPlayerNumber == 1) ? player1 : player2;  // 己方英雄
         if (playerNumber == localPlayerNumber) { // 己方随从攻击对方英雄
             if (!targetplayer->getDamage(attacker->currentAttack)) {
-                endGame(localplayer);
+                endGame(targetplayer);
                 cocosUIListener->writeString(EG::JString(L"Hero is dead."));
                 return;
             }
@@ -1509,8 +1509,21 @@ int BoardScene::get_opponentMinionIndex(const cardSprite* minion) {
 
 // ???????????
 void BoardScene::endGame(players::Player* winner) {
+    std::string result;
+    if (localPlayerNumber == 1) {
+        if (winner->getNickname() == "player1")
+            result = "You Win!";
+        else result = "You Lose!";
+    }
+    else {
+        if (winner->getNickname() == "player1")
+            result = "You Lose!";
+        else result = "You Win!";
+    }
+
+
     // ??????????????
-    std::string result = winner->getNickname() + " Wins!";
+    // std::string result = winner->getNickname() + " Wins!";
     auto resultLabel = Label::createWithTTF(result, "fonts/arial.ttf", 48);
     resultLabel->setPosition(Director::getInstance()->getVisibleSize() / 2);
     this->addChild(resultLabel, 10);

@@ -135,7 +135,7 @@ private:
     // 玩家管理
     void initPlayers();
     void createPlayerUI();
-    void updatePlayerUI(); // 没有完成
+    void updatePlayerUI();
     void switchTurn();
 
     // 卡牌管理
