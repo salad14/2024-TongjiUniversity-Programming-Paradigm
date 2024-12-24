@@ -210,7 +210,7 @@ void SelectionScene::startCallback(Ref* pSender)
     // 
     // 通过全局变量传递？？？？
     // 目前打算在 Alluse.h 中定义一个全局变量，
-    m_selectedIndex;//这是目前选中的卡组编号
+    SELECT_CARDS = m_selectedIndex + 1;//这是目前选中的卡组编号
     
     // 或者使用 Photon什么的传一个int？？？（待完善）
 

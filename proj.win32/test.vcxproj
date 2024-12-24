@@ -176,6 +176,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\scene\SelectionScene.cpp" />
     <ClCompile Include="..\Classes\scene\SetScene.cpp" />
     <ClCompile Include="..\Classes\scene\StartScene.cpp" />
+    <ClCompile Include="Alluse.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

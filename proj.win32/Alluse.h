@@ -58,8 +58,8 @@ constexpr int SELECT_ICON_SPACING = 350;  // Í¼±ê¼ä¾à
 constexpr int SELECT_START_X = 300;    // µÚÒ»¸öÍ¼±êµÄX×ø±ê
 constexpr int SELECT_START_Y = 800;    // µÚÒ»ÐÐÍ¼±êµÄY×ø±ê
 constexpr int SELECT_ICONS_PER_ROW = 3;     // Ã¿ÐÐÍ¼±êÊý
-
-
+extern int SELECT_CARDS;  // Ñ¡ÔñµÄ¶ÔÓ¦ÅÆ¿â
+ 
 //MatchingScene Æ¥Åä³¡¾°ÉèÖÃ
 constexpr int MATCHING_SCENE_CANCEL_OFFSET_X = 30;      // Æ¥Åä³¡¾° È¡Ïû°´Å¥ X Æ«ÒÆÁ¿
 constexpr int MATCHING_SCENE_CANCEL_OFFSET_Y = -440;      // Æ¥Åä³¡¾° È¡Ïû°´Å¥ Y Æ«ÒÆÁ¿£¨Ïà¶ÔÓÚÆÁÄ»ÖÐÐÄ£©
@@ -92,7 +92,9 @@ constexpr int SETSCENE_CLOSE_BUTTON_Y = 470;                          // ÉèÖÃ³¡¾
 // Î»ÖÃÊôÐÔÓëÆÁÄ»×ø±êÉèÖÃ£¨Ô¤Áô£©
 
 
-// Õ½¶·²ÎÊýÉèÖÃ£¨Ô¤Áô£©
+// Õ½¶·²ÎÊýÉèÖÃ
+constexpr int UPWARLD_ATTACK = 0;			// 0 -> 1¹¥»÷
+constexpr int DOWNWARLD_ATTACK = 1;			// 1 -> 0¹¥»÷
 
 // ÐòºÅÓë»¶Ó­ÌáÊ¾Óï¼üÖµ¶Ô
 

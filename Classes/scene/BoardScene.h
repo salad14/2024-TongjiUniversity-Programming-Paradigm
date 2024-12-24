@@ -11,7 +11,11 @@
 #include <cstdint> 
 #include <vector>
 #include <map>
-USING_NS_CC;
+USING_NS_CC; 
+
+#define DEBUG_PATTERN 0
+
+static JSONManager jsonmanager("cards/json/cards.json");
 
 class cardSprite : public cocos2d::Sprite {
 public:
@@ -35,9 +39,24 @@ public:
         return nullptr;
     }
 
+    void getDamage(int damage) { this->currentHealth -= damage; }
+
 public:
     std::shared_ptr<CardBase> card;
+    int currentHealth = 0;
+    int currentAttack = 0;
+    bool hasattacked = false;
 };
+
+//class minionSprite : public cocos2d::Sprite {
+//public:
+//    static minionSprite* creatWithCard(const std::shared_ptr<CardBase>& card, const Size& desiredSize = Size(200, 250)) {
+//
+//    }
+//public:
+//    int currentHealth;  // > 0
+//    int attack;
+//};
 
 class BoardScene : public cocos2d::Scene
 {
@@ -63,7 +82,7 @@ private:
     cocos2d::DrawNode* dropArea;
 
     // 本地玩家
-    int localPlayerNumber;
+    int localPlayerNumber; // 1, 2
 
     players::Player* player1;
     players::Player* player2;
@@ -77,8 +96,8 @@ private:
     // 手牌管理
     std::vector<cardSprite*> localPlayerCards; // 手中的卡牌
     std::map<cardSprite*, cocos2d::Vec2> cardOriginalPositions; // 卡牌的原始位置
-    std::vector<cardSprite*> localplayedCards;        // 本地玩家已打出的卡牌
-    std::vector<cardSprite*> oppentplayedCards;        // 对方玩家已打出的卡牌
+    std::vector<cardSprite*> localMinionCard;        // 本地玩家场上的随从牌
+    std::vector<cardSprite*> oppentMinionCard;        // 对方玩家场上的随从牌
 
     // 卡牌状态
     cardSprite* selectedCard;//选中
@@ -86,14 +105,7 @@ private:
     cardSprite* attackingCard;//攻击
     DrawNode* attackIndicator;//被攻击
 
-    // 卡牌属性结构
-    struct CardInfo {
-        int health;
-        int attack;
-        int cost;
-    };
-
-    std::map<cardSprite*, CardInfo> cardStats;
+    //std::map<cardSprite*, CardInfo> cardStats;
 
     // 玩家信息 UI
     cocos2d::Label* localPlayerHealth;
@@ -126,30 +138,41 @@ private:
     // 玩家管理
     void initPlayers();
     void createPlayerUI();
-    void updatePlayerUI(); // 没有完成
+    void updatePlayerUI();
     void switchTurn();
 
     // 卡牌管理
     void removeCard(cardSprite* sprite);
     void updatePlayedCardsPosition();
     void updateEnemyCardsPosition();
-    void addCardStats(cardSprite* card, int health, int attack, int cost);
+    void addCardStats(cardSprite* card);
     void updateCardStats(cardSprite* card);
     void returnCardToHand(cardSprite* card);
-    void addCardToBattlefield(int playerNumber, int cardNumber);
+    void add_NewCardToBattlefield(int playerNumber, int cardNumber);
+    void add_HandCardToBattlefield(cardSprite* minion);
     void createAttackIndicator(const Vec2& startPos);
-    void attackmove(int attackerIndex, int defenderIndex);
-    void handleAttack(cardSprite* attacker, cardSprite* defender);
+    void attackmove(PlayerNumber player, int attackerIndex, int defenderIndex);
+    // void handleMinionAttackMinion(int attacker, int defender); // 改为index索引用来绑定  方便双方同时处理 需要保证两边同步index相同
     void removeCardWithAnimation(cardSprite* card);
-    void handleAttackToHero();
+    void handleMinionAttackHero(); // 纯UI函数
+    
+
     // 事件发送
-    void sendPlayCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
+    void sendPlay_MinionCardEvent(PlayerNumber playerNumber, CardNumber cardNumber);
+    void sendPlay_SpellCardEvent(PlayerNumber playerNumber, CardNumber dbfID);
+    void sendSpellAttackEvent(PlayerNumber attackPlayer, int defenderIndex, int damage);
+    //void sendDrawCardEvent(PlayerNumber playerNumber);
+    void sendMinionAttackEvent(PlayerNumber playerNumber, int attackerIndex, int defenderIndex);
     void sendTurnStartEvent();
 
     // Photon 事件处理
-    void handlePlayCard(const ExitGames::Common::Hashtable& parameters);
-    void handleTurnStart(const ExitGames::Common::Hashtable& parameters);
-
+    void handle_PlayMinionCard(const ExitGames::Common::Hashtable& parameters);
+    void handle_PlaySpellCard(const ExitGames::Common::Hashtable& parameters);
+    void handle_SpellAttackEvent(const ExitGames::Common::Hashtable& parameters);
+    //void handle_DrawCardEvent(const ExitGames::Common::Hashtable& parameters);
+    void handle_MinionAttackEvent(const ExitGames::Common::Hashtable& parameters);  
+    void handle_TurnStart(const ExitGames::Common::Hashtable& parameters);
+    
 
     // 游戏结束
     void endGame(players::Player* winner);
@@ -161,12 +184,21 @@ private:
     void distributeInitialHands();
     void addCardToLocalPlayer(std::shared_ptr<CardBase> card);
 
+
+    // 辅助函数
     // 获取卡牌的费用
-    int getCardCost(std::shared_ptr<CardBase> card);
-    int getCardCost(int cardNumber);
+    //int getCardCost(std::shared_ptr<CardBase> card);
+    //int getCardCost(int cardNumber);
+
+    // 检测随从死亡  同时释放资源和展示动画
+    bool checkMinionDie(cardSprite* minion);
+
+    // 获取场上随从牌的index
+    int get_localMinionIndex(cardSprite* minion);
+    int get_opponentMinionIndex(const cardSprite* minion);
 
 
-    void initEnemyCards();
+    //void initEnemyCards();
 
     // 辅助方法：根据卡牌ID查找精灵
     cardSprite* findCardByID(int cardID);

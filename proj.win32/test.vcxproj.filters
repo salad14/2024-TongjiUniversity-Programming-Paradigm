@@ -48,6 +48,9 @@
     <ClCompile Include="..\Classes\scene\BoardSceneOffline.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
+    <ClCompile Include="Alluse.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
